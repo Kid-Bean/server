@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.mypage.domain.Member;
+import soongsil.kidbean.server.member.domain.Member;
 
 @Getter
 @Entity
