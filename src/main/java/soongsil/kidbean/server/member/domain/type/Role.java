@@ -1,5 +1,5 @@
 package soongsil.kidbean.server.member.domain.type;
 
 public enum Role {
-    ADMIN, USER;
+    ADMIN, USER
 }

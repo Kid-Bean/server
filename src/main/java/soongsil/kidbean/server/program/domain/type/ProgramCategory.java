@@ -1,5 +1,5 @@
 package soongsil.kidbean.server.program.domain.type;
 
-public enum Category {
-    HOSPITAL, ACADEMY;
+public enum ProgramCategory {
+    HOSPITAL, ACADEMY
 }

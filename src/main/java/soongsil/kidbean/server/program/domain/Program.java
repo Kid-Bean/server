@@ -2,51 +2,48 @@ package soongsil.kidbean.server.program.domain;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.program.domain.type.Category;
+import soongsil.kidbean.server.program.domain.type.ProgramCategory;
+
 @Entity
-@Table(name = "program")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Program {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "program_id")
     private Long programId;
 
-    @NotNull
-    @Column(length = 10)
+    @Column(name = "teacher_name", length = 10)
     private String teacherName;
 
-    @NotNull
-    @Column(length =25)
+    @Column(name = "title", length = 25)
     private String title;
 
-    @NotNull
-    @Column(length =63)
+    @Column(name = "place", length = 63)
     private String place;
 
-    @Column(length =100)
+    @Column(name = "phone_number", length = 100)
     private String phoneNumber;
 
-    @Column(length =1000)
+    @Column(name = "content", length = 1000)
     private String content;
 
+    @Column(name = "category")
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private ProgramCategory programCategory;
 
-    @Column(length =50)
+    @Column(name = "teacher_image_url", length = 50)
     private String teacherImageUrl;
 
-    @Column(length =50)
+    @Column(name = "program_image_url", length = 50)
     private String programImageUrl;
 
+    @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_id")
     private Member member;
-
 }

@@ -1,11 +1,7 @@
 package soongsil.kidbean.server.member.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.type.Gender;
@@ -13,7 +9,6 @@ import soongsil.kidbean.server.member.domain.type.Role;
 
 import java.time.LocalDate;
 
-@Table(name="member")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,23 +19,23 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Email
-    @Column(length = 25)
+    @Column(name = "email", length = 25)
     private String email;
 
-    @NotNull
-    @Column(length =20)
+    @Column(name = "nickname", length = 20)
     private String nickname;
 
+    @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotNull
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "score")
     private Long score;
-
 }
