@@ -18,7 +18,7 @@ public class Analysis {
 
     @JoinColumn(name = "solved_id")
     @OneToOne(fetch = FetchType.LAZY)
-    RecordQuizSolved solvedId;
+    private RecordQuizSolved solvedId;
 
     @Builder
     public Analysis(RecordQuizSolved solvedId) {

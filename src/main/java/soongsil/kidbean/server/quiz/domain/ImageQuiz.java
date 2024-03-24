@@ -9,6 +9,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 
+@Table(name = "image_quiz")
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,7 +33,7 @@ public class ImageQuiz {
     @Column(name = "title", length = 30)
     private String title;
 
-    @Column(name = "level")
+    @Column(name = "quiz_level")
     @Enumerated(EnumType.STRING)
     private Level level;
 

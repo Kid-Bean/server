@@ -31,15 +31,15 @@ public class RecordQuizSolved {
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    Member member;
+    private Member member;
 
     @JoinColumn(name = "sentence_quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    SentenceQuiz sentenceQuiz;
+    private SentenceQuiz sentenceQuiz;
 
     @JoinColumn(name = "answer_quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    AnswerQuiz answerQuiz;
+    private AnswerQuiz answerQuiz;
 
     @Builder
     public RecordQuizSolved(String recordAnswer, String sentenceAnswer, LocalDateTime solvedTime, Member member, SentenceQuiz sentenceQuiz, AnswerQuiz answerQuiz) {

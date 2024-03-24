@@ -30,11 +30,11 @@ public class ImageQuizSolved {
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    Member member;
+    private Member member;
 
     @JoinColumn(name = "image_quiz_id")
     @OneToOne(fetch = FetchType.LAZY)
-    ImageQuiz imageQuiz;
+    private ImageQuiz imageQuiz;
 
     @Builder
     public ImageQuizSolved(LocalDateTime solvedTime, Boolean isCorrect, String answer, Member member, ImageQuiz imageQuiz) {

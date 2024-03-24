@@ -21,7 +21,7 @@ public class Word {
 
     @JoinColumn(name = "quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    SentenceQuiz quiz;
+    private SentenceQuiz quiz;
 
     @Builder
     public Word(String content, SentenceQuiz quiz) {
