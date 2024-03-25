@@ -27,7 +27,7 @@ public class ImageQuiz {
     @Column(name = "answer", length = 20)
     private String answer;
 
-    @Column(name = "image_url", length = 50)
+    @Column(name = "image_url", length = 200)
     private String imageUrl;
 
     @Column(name = "title", length = 30)
