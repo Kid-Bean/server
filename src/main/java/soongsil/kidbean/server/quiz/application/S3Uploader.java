@@ -40,9 +40,11 @@ public class S3Uploader {
     }
 
     private String upload(File uploadFile, String dirName) {
+        log.info("upload start");
         String fileName = dirName + "/" + uploadFile.getName();
+        log.info("fileName = {}", fileName);
         String uploadImageUrl = putS3(uploadFile, fileName);
-
+        log.info("uploadImageUrl = {}", uploadImageUrl);
         //로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
         removeNewFile(uploadFile);
 
@@ -56,6 +58,7 @@ public class S3Uploader {
                 new PutObjectRequest(bucket, fileName, uploadFile)
                         .withCannedAcl(CannedAccessControlList.PublicRead)
         );
+        log.info("File Upload : " + fileName);
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
