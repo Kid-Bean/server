@@ -21,7 +21,7 @@ public class Analysis {
     private RecordQuizSolved solvedId;
 
     @Builder
-    public Analysis(RecordQuizSolved solvedId) {
+    private Analysis(RecordQuizSolved solvedId) {
         this.solvedId = solvedId;
     }
 }

@@ -28,7 +28,7 @@ public class AnswerQuiz {
     private Member member;
 
     @Builder
-    public AnswerQuiz(String title, String content, Member member) {
+    private AnswerQuiz(String title, String content, Member member) {
         this.title = title;
         this.content = content;
         this.member = member;

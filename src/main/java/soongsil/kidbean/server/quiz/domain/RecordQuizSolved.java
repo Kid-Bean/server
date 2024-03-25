@@ -42,7 +42,7 @@ public class RecordQuizSolved {
     private AnswerQuiz answerQuiz;
 
     @Builder
-    public RecordQuizSolved(String recordAnswer, String sentenceAnswer, LocalDateTime solvedTime, Member member, SentenceQuiz sentenceQuiz, AnswerQuiz answerQuiz) {
+    private RecordQuizSolved(String recordAnswer, String sentenceAnswer, LocalDateTime solvedTime, Member member, SentenceQuiz sentenceQuiz, AnswerQuiz answerQuiz) {
         this.recordAnswer = recordAnswer;
         this.sentenceAnswer = sentenceAnswer;
         this.solvedTime = solvedTime;
