@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import io.findify.s3mock.S3Mock;
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import soongsil.kidbean.server.quiz.application.config.AwsS3MockConfig;
 
+@Slf4j
 @Import(AwsS3MockConfig.class)
 @SpringBootTest
 class S3UploaderTest {
@@ -53,13 +55,16 @@ class S3UploaderTest {
 
         //when
         String urlPath = s3Uploader.upload(file, dirName);
-        s3Uploader.deleteFile(path, dirName);
+
+        //생성된 파일을 제거
+        String generatedPath = urlPath.split("/" + BUCKET_NAME + "/" + dirName + "/")[1];
+        s3Uploader.deleteFile(generatedPath, dirName);
 
         // then
         assertThat(urlPath).contains(path);
         assertThat(urlPath).contains(dirName);
         //파일이 삭제 되었기 때문에 exception 발생
-        assertThatThrownBy(() -> amazonS3.getObject(BUCKET_NAME, dirName + "/" + path))
+        assertThatThrownBy(() -> amazonS3.getObject(BUCKET_NAME, urlPath))
                 .isInstanceOf(AmazonS3Exception.class);
     }
 }

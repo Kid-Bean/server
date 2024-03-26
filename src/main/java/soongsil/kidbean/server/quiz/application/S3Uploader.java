@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,13 +41,10 @@ public class S3Uploader {
     }
 
     private String upload(File uploadFile, String dirName) {
-        log.info("upload start");
         String fileName = dirName + "/" + uploadFile.getName();
-        log.info("fileName = {}", fileName);
         String uploadImageUrl = putS3(uploadFile, fileName);
-        log.info("uploadImageUrl = {}", uploadImageUrl);
         //로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
-        removeNewFile(uploadFile);
+        removeLocalNewFile(uploadFile);
 
         //업로드된 파일의 S3 URL 주소 반환
         return uploadImageUrl;
@@ -63,16 +61,18 @@ public class S3Uploader {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    private void removeNewFile(File targetFile) {
+    private void removeLocalNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
+            log.info("로컬 파일이 삭제되었습니다.");
         } else {
-            log.info("파일이 삭제되지 못했습니다.");
+            log.info("로컬 파일이 삭제되지 못했습니다.");
         }
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        //UUID로 파일 이름 중복 제거
+        String fileName = UUID.randomUUID() + Objects.requireNonNull(file.getOriginalFilename());
+        File convertFile = new File(fileName);
 
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
