@@ -28,8 +28,8 @@ public class AwsS3MockConfig {
 
     //@Primary 없으면 s3에 파일 생성됨
     @Primary
-    @Bean(destroyMethod = "shutdown")
-    public AmazonS3 amazonS3(S3Mock s3Mock) {
+    @Bean
+    public AmazonS3 amazonS3() {
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
                 "http://localhost:9001", region);
 
