@@ -14,12 +14,10 @@ import org.springframework.context.annotation.Primary;
 @TestConfiguration
 public class AwsS3MockConfig {
 
-    @Value("${cloud.aws.s3.bucket}")
-    public String bucket;
-
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    //9001번 포트 사용
     @Bean
     public S3Mock s3Mock() {
         return new S3Mock.Builder()
@@ -29,22 +27,17 @@ public class AwsS3MockConfig {
     }
 
     //@Primary 없으면 s3에 파일 생성됨
-    @Bean
     @Primary
+    @Bean(destroyMethod = "shutdown")
     public AmazonS3 amazonS3(S3Mock s3Mock) {
-        s3Mock.start();
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
                 "http://localhost:9001", region);
 
-        AmazonS3 client = AmazonS3ClientBuilder
+        return AmazonS3ClientBuilder
                 .standard()
                 .withPathStyleAccessEnabled(true)
                 .withEndpointConfiguration(endpoint)
                 .withCredentials(new AWSStaticCredentialsProvider(new AnonymousAWSCredentials()))
                 .build();
-
-        client.createBucket(bucket);
-
-        return client;
     }
 }
