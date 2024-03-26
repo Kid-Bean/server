@@ -34,6 +34,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     //s3 테스트를 위한 mock 라이브러리
     testImplementation 'io.findify:s3mock_2.13:0.2.6'
+
+    //테스트 코드에서 lombok 사용
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
