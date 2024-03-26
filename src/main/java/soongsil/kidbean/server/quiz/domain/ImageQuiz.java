@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 import soongsil.kidbean.server.quiz.domain.type.Level;
+import soongsil.kidbean.server.quiz.domain.vo.ImageInfo;
 
 @Table(name = "image_quiz")
 @Getter
@@ -27,14 +28,11 @@ public class ImageQuiz {
     @Column(name = "answer", length = 20)
     private String answer;
 
-    @Column(name = "image_url", length = 200)
-    private String imageUrl;
-
     @Column(name = "title", length = 30)
     private String title;
 
-    @Column(name = "file_name", length = 200)
-    private String fileName;
+    @Embedded
+    private ImageInfo imageInfo;
 
     @Column(name = "quiz_level")
     @Enumerated(EnumType.STRING)
@@ -45,13 +43,11 @@ public class ImageQuiz {
     private Member member;
 
     @Builder
-    public ImageQuiz(Category category, String answer, String imageUrl, String title, String fileName, Level level,
-                     Member member) {
+    public ImageQuiz(Category category, String answer, String title, ImageInfo imageInfo, Level level, Member member) {
         this.category = category;
         this.answer = answer;
-        this.imageUrl = imageUrl;
         this.title = title;
-        this.fileName = fileName;
+        this.imageInfo = imageInfo;
         this.level = level;
         this.member = member;
     }
