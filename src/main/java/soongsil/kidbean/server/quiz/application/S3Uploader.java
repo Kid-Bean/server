@@ -27,21 +27,21 @@ public class S3Uploader {
     private String bucket;
 
     //MultipartFile을 전달받아 File로 전환한 후 S3에 업로드 후 url return
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public String upload(MultipartFile multipartFile, String folderName) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(FileConvertFailException::new);
 
-        return upload(uploadFile, dirName);
+        return upload(uploadFile, folderName);
     }
 
     //S3 버킷에 있는 파일을 삭제
-    public void deleteFile(String fileName, String dirName) {
-        String deleteFileName = dirName + "/" + fileName;
+    public void deleteFile(String fileName, String folderName) {
+        String deleteFileName = folderName + "/" + fileName;
         amazonS3Client.deleteObject(bucket, deleteFileName);
     }
 
-    private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + uploadFile.getName();
+    private String upload(File uploadFile, String folderName) {
+        String fileName = folderName + "/" + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
         //로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
         removeLocalNewFile(uploadFile);
