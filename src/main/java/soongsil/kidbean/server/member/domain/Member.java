@@ -2,10 +2,13 @@ package soongsil.kidbean.server.member.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.type.Gender;
 import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.Level;
 
 import java.time.LocalDate;
 
@@ -22,8 +25,8 @@ public class Member {
     @Column(name = "email", length = 25)
     private String email;
 
-    @Column(name = "nickname", length = 20)
-    private String nickname;
+    @Column(name = "name", length = 20)
+    private String name;
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
@@ -38,4 +41,14 @@ public class Member {
 
     @Column(name = "score")
     private Long score;
+
+    @Builder
+    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+        this.email = email;
+        this.name = name;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.role = role;
+        this.score = score;
+    }
 }
