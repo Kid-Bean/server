@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz.application;
+package soongsil.kidbean.server.quiz;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import soongsil.kidbean.server.quiz.application.config.AwsS3MockConfig;
+import soongsil.kidbean.server.config.AwsS3MockConfig;
+import soongsil.kidbean.server.global.application.S3Uploader;
+import soongsil.kidbean.server.global.vo.ImageInfo;
 
 @Slf4j
 @Import(AwsS3MockConfig.class)
@@ -49,20 +51,21 @@ class S3UploaderTest {
         // given
         String path = "test.png";
         String contentType = "image/png";
-        String dirName = "test";
+        String folderName = "test";
 
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
         //when
-        String urlPath = s3Uploader.upload(file, dirName);
+        String urlPath = s3Uploader.upload(file, folderName);
 
         //생성된 파일을 제거
-        String generatedPath = urlPath.split("/" + BUCKET_NAME + "/" + dirName + "/")[1];
-        s3Uploader.deleteFile(generatedPath, dirName);
+        String generatedPath = urlPath.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
+        ImageInfo imageInfo = new ImageInfo(urlPath, generatedPath, folderName);
+        s3Uploader.deleteFile(imageInfo);
 
         // then
         assertThat(urlPath).contains(path);
-        assertThat(urlPath).contains(dirName);
+        assertThat(urlPath).contains(folderName);
         //파일이 삭제 되었기 때문에 exception 발생
         assertThatThrownBy(() -> amazonS3.getObject(BUCKET_NAME, urlPath))
                 .isInstanceOf(AmazonS3Exception.class);

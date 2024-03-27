@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz.application.config;
+package soongsil.kidbean.server.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.AnonymousAWSCredentials;

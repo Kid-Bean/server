@@ -5,7 +5,7 @@ import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 
 @Builder
-public record ImageQuizMemberDetailResponse (
+public record ImageQuizMemberDetailResponse(
         String title,
         String imageUrl,
         String answer
@@ -14,7 +14,7 @@ public record ImageQuizMemberDetailResponse (
         return ImageQuizMemberDetailResponse
                 .builder()
                 .title(imageQuiz.getTitle())
-                .imageUrl(imageQuiz.getImageUrl())
+                .imageUrl(imageQuiz.getImageInfo().getImageUrl())
                 .answer(imageQuiz.getAnswer())
                 .build();
     }
