@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz;
+package soongsil.kidbean.server.global.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import soongsil.kidbean.server.config.AwsS3MockConfig;
+import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.ImageInfo;
 

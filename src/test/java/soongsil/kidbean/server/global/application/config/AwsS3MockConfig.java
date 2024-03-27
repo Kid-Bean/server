@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.config;
+package soongsil.kidbean.server.global.application.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.AnonymousAWSCredentials;
