@@ -6,8 +6,13 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
 import java.util.Optional;
+import soongsil.kidbean.server.quiz.domain.type.Category;
 
 @Repository
 public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
     Optional<ImageQuiz> findByMemberAndQuizId(Member member, Long quizId);
+
+    //해당 카테고리의 row 개수
+    Integer countByCategory(Category category);
+
 }
