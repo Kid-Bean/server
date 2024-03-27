@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz.domain.vo;
+package soongsil.kidbean.server.global.vo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

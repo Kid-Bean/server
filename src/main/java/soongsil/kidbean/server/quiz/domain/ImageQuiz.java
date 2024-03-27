@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 import soongsil.kidbean.server.quiz.domain.type.Level;
-import soongsil.kidbean.server.quiz.domain.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.ImageInfo;
 
 @Table(name = "image_quiz")
 @Getter
