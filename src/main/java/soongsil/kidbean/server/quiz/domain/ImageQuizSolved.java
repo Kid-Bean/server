@@ -37,7 +37,8 @@ public class ImageQuizSolved {
     private ImageQuiz imageQuiz;
 
     @Builder
-    private ImageQuizSolved(LocalDateTime solvedTime, Boolean isCorrect, String answer, Member member, ImageQuiz imageQuiz) {
+    public ImageQuizSolved(LocalDateTime solvedTime, Boolean isCorrect, String answer, Member member,
+                           ImageQuiz imageQuiz) {
         this.solvedTime = solvedTime;
         this.isCorrect = isCorrect;
         this.answer = answer;

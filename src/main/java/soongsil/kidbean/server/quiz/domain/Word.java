@@ -24,7 +24,7 @@ public class Word {
     private SentenceQuiz quiz;
 
     @Builder
-    private Word(String content, SentenceQuiz quiz) {
+    public Word(String content, SentenceQuiz quiz) {
         this.content = content;
         this.quiz = quiz;
     }
