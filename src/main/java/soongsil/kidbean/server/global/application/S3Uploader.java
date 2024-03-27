@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz.application;
+package soongsil.kidbean.server.global.application;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.quiz.exception.FileConvertFailException;
 
 @Slf4j
@@ -35,8 +36,8 @@ public class S3Uploader {
     }
 
     //S3 버킷에 있는 파일을 삭제
-    public void deleteFile(String fileName, String folderName) {
-        String deleteFileName = folderName + "/" + fileName;
+    public void deleteFile(ImageInfo imageInfo) {
+        String deleteFileName = imageInfo.getFolderName() + "/" + imageInfo.getFileName();
         amazonS3Client.deleteObject(bucket, deleteFileName);
     }
 
