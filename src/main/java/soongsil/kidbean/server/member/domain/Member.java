@@ -43,7 +43,7 @@ public class Member {
     private Long score;
 
     @Builder
-    private Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
         this.email = email;
         this.name = name;
         this.gender = gender;

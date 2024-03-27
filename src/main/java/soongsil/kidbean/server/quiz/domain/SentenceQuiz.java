@@ -25,7 +25,7 @@ public class SentenceQuiz {
     private Member member;
 
     @Builder
-    private SentenceQuiz(String title, Member member) {
+    public SentenceQuiz(String title, Member member) {
         this.title = title;
         this.member = member;
     }
