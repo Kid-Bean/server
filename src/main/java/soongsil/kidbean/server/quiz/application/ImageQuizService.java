@@ -22,9 +22,12 @@ public class ImageQuizService {
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
-        ImageQuiz imageQuiz = imageQuizRepository.findByMemberAndQuizId(member, quizId)
+        ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(RuntimeException::new);
 
-        return ImageQuizMemberDetailResponse.from(imageQuiz);
+        ImageQuiz imageQuizInfo = imageQuizRepository.findByMemberAndQuiz(member, imageQuiz)
+                .orElseThrow(RuntimeException::new);
+
+        return ImageQuizMemberDetailResponse.from(imageQuizInfo);
     }
 }

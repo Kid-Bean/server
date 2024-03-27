@@ -14,7 +14,7 @@ public record ImageQuizMemberDetailResponse (
         return ImageQuizMemberDetailResponse
                 .builder()
                 .title(imageQuiz.getTitle())
-                .imageUrl(imageQuiz.getImageUrl())
+                .imageUrl(imageQuiz.getImageInfo().getImageUrl())
                 .answer(imageQuiz.getAnswer())
                 .build();
     }
