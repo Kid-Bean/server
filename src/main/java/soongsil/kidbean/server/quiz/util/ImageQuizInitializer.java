@@ -23,7 +23,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (imageQuizRepository.count() > 0) {
-            log.info("더미 데이터 이미 존재");
+            log.info("더미 데이터 존재");
         } else {
             //더미 데이터 작성
             List<ImageQuiz> imageQuizList = List.of(

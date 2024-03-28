@@ -36,18 +36,19 @@ public class ImageQuizService {
 
     //해당 카테고리에서 문제를 랜덤으로 선택
     public ImageQuizResponse selectRandomProblem() {
-
         Category category = selectRandomCategory();
-        //해당 카테고리에 있는 ImageQuiz보다 작은 수의 idx 생성
-        int idx = RandomUtil.getPositiveInt() % imageQuizRepository.countByCategory(category);
-        Page<ImageQuiz> imageQuizPage =
-                imageQuizRepository.findAllByCategory(category, PageRequest.of(idx, 1));
+        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(category);
 
         if (imageQuizPage.hasContent()) {
             return ImageQuizResponse.from(imageQuizPage.getContent().get(0));
         } else {
             throw new ImageQuizNotFoundException();
         }
+    }
+
+    private Page<ImageQuiz> generateRandomPageWithCategory(Category category) {
+        int idx = RandomUtil.getPositiveInt() % imageQuizRepository.countByCategory(category);
+        return imageQuizRepository.findAllByCategory(category, PageRequest.of(idx, 1));
     }
 
     private Category selectRandomCategory() {
