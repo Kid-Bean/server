@@ -33,15 +33,11 @@ class S3UploaderTest {
     @Autowired
     private S3Uploader s3Uploader;
 
-    private static String BUCKET_NAME;
-    private static final String path = "test.png";
-    private static final String contentType = "image/png";
-    private static final String folderName = "test";
-
     @Value("${cloud.aws.s3.bucket}")
-    private void setBucketName(String name) {
-        BUCKET_NAME = name;
-    }
+    private String BUCKET_NAME;
+    private final String path = "test.png";
+    private final String contentType = "image/png";
+    private final String folderName = "test";
 
     //S3Mock 서버 실행, 사용할 버킷 생성
     @BeforeAll
