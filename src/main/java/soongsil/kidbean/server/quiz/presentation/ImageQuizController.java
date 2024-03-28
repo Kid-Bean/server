@@ -9,20 +9,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("quiz/image")
+@RequestMapping("/quiz/image")
 public class ImageQuizController {
 
     private final ImageQuizService imageQuizService;
 
     @GetMapping("/{memberId}/{quizId}")
     public ResponseEntity<ImageQuizMemberDetailResponse> getImageQuizById(@PathVariable Long memberId,
-                                                                          @PathVariable Long quizId)
-    {
+                                                                          @PathVariable Long quizId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(imageQuizService.getImageQuizById(memberId, quizId));
+    }
+
+    @GetMapping
+    public ResponseEntity<ImageQuizResponse> getRandomImageQuiz() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(imageQuizService.selectRandomProblem());
     }
 }

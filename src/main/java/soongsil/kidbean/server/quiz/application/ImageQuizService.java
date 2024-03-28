@@ -12,6 +12,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
@@ -34,7 +35,7 @@ public class ImageQuizService {
     }
 
     //해당 카테고리에서 문제를 랜덤으로 선택
-    private ImageQuiz selectRandomProblem() {
+    public ImageQuizResponse selectRandomProblem() {
 
         Category category = selectRandomCategory();
         //해당 카테고리에 있는 ImageQuiz보다 작은 수의 idx 생성
@@ -43,7 +44,7 @@ public class ImageQuizService {
                 imageQuizRepository.findAllByCategory(category, PageRequest.of(idx, 1));
 
         if (imageQuizPage.hasContent()) {
-            return imageQuizPage.getContent().get(0);
+            return ImageQuizResponse.from(imageQuizPage.getContent().get(0));
         } else {
             throw new ImageQuizNotFoundException();
         }
