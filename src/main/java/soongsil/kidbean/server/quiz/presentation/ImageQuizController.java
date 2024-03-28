@@ -26,10 +26,10 @@ public class ImageQuizController {
                 .body(imageQuizService.getImageQuizById(memberId, quizId));
     }
 
-    @GetMapping
-    public ResponseEntity<ImageQuizResponse> getRandomImageQuiz() {
+    @GetMapping("/{userId}")
+    public ResponseEntity<ImageQuizResponse> getRandomImageQuiz(@PathVariable Long userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.selectRandomProblem());
+                .body(imageQuizService.selectRandomProblem(userId));
     }
 }

@@ -15,7 +15,7 @@ public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
     Optional<ImageQuiz> findByMemberAndQuizId(Member member, Long quizId);
 
     //해당 카테고리의 row 개수
-    Integer countByCategory(Category category);
+    Integer countByMemberAndCategory(Member member, Category category);
 
-    Page<ImageQuiz> findAllByCategory(Category category, Pageable pageable);
+    Page<ImageQuiz> findAllByMemberAndCategory(Member member, Category category, Pageable pageable);
 }

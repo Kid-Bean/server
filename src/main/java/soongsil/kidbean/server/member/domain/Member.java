@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.type.Gender;
 import soongsil.kidbean.server.member.domain.type.Role;
-import soongsil.kidbean.server.quiz.domain.type.Category;
-import soongsil.kidbean.server.quiz.domain.type.Level;
 
 import java.time.LocalDate;
 
@@ -43,7 +41,8 @@ public class Member {
     private Long score;
 
     @Builder
-    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+    public Member(Long memberId, String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+        this.memberId = memberId;
         this.email = email;
         this.name = name;
         this.gender = gender;
