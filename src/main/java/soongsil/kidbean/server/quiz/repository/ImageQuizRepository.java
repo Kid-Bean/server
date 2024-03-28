@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
-    Optional<ImageQuiz> findByMemberAndQuiz(Member member, ImageQuiz imageQuiz);
+    Optional<ImageQuiz> findByQuizIdAndMember(Long quizId, Member member);
 }
