@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ import soongsil.kidbean.server.global.vo.ImageInfo;
 @Slf4j
 @Import(AwsS3MockConfig.class)
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class S3UploaderTest {
 
@@ -31,22 +33,26 @@ class S3UploaderTest {
     @Autowired
     private S3Uploader s3Uploader;
 
-    @Value("cloud.aws.s3.bucket")
-    private static final String BUCKET_NAME = "testbucket";
+    private static String BUCKET_NAME;
     private static final String path = "test.png";
     private static final String contentType = "image/png";
     private static final String folderName = "test";
 
+    @Value("${cloud.aws.s3.bucket}")
+    private void setBucketName(String name) {
+        BUCKET_NAME = name;
+    }
+
     //S3Mock 서버 실행, 사용할 버킷 생성
     @BeforeAll
-    static void setUp(@Autowired S3Mock s3Mock, @Autowired AmazonS3 amazonS3) {
+    void setUp(@Autowired S3Mock s3Mock, @Autowired AmazonS3 amazonS3) {
         s3Mock.start();
         amazonS3.createBucket(BUCKET_NAME);
     }
 
     //S3Mock 종료
     @AfterAll
-    static void tearDown(@Autowired S3Mock s3Mock, @Autowired AmazonS3 amazonS3) {
+    void tearDown(@Autowired S3Mock s3Mock, @Autowired AmazonS3 amazonS3) {
         amazonS3.shutdown();
         s3Mock.stop();
     }
