@@ -28,9 +28,15 @@ public class S3Uploader {
     private String bucket;
 
     //MultipartFile을 전달받아 File로 전환한 후 S3에 업로드 후 url return
-    public String upload(MultipartFile multipartFile, String folderName) throws IOException {
-        File uploadFile = convert(multipartFile)
-                .orElseThrow(FileConvertFailException::new);
+    public String upload(MultipartFile multipartFile, String folderName) {
+        File uploadFile;
+
+        try {
+            uploadFile = convert(multipartFile)
+                    .orElseThrow(FileConvertFailException::new);
+        } catch (IOException e) {
+            throw new FileConvertFailException();
+        }
 
         return upload(uploadFile, folderName);
     }

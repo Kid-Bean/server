@@ -9,8 +9,9 @@ import io.findify.s3mock.S3Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 
+@Profile("test")
 @TestConfiguration
 public class AwsS3MockConfig {
 
@@ -26,8 +27,6 @@ public class AwsS3MockConfig {
                 .build();
     }
 
-    //@Primary 없으면 s3에 파일 생성됨
-    @Primary
     @Bean
     public AmazonS3 amazonS3() {
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
