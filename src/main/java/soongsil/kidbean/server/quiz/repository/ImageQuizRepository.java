@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.quiz.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.member.domain.Member;
@@ -15,4 +17,5 @@ public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
     //해당 카테고리의 row 개수
     Integer countByCategory(Category category);
 
+    Page<ImageQuiz> findAllByCategory(Category category, Pageable pageable);
 }
