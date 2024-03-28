@@ -51,4 +51,8 @@ public class ImageQuiz {
         this.level = level;
         this.member = member;
     }
+
+    public void setImageInfo(ImageInfo imageInfo) {
+        this.imageInfo = imageInfo;
+    }
 }
