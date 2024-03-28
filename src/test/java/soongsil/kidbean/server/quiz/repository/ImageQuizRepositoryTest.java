@@ -1,6 +1,11 @@
 package soongsil.kidbean.server.quiz.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL2;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_NONE;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_OBJECT;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_PLANT;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +28,7 @@ class ImageQuizRepositoryTest {
     @BeforeEach
     void setUp() {
         List<ImageQuiz> imageQuizList =
-                List.of(new ImageQuiz(Category.ANIMAL, "answer1", "title1", null, null, null),
-                        new ImageQuiz(Category.NONE, "answer2", "title2", null, null, null),
-                        new ImageQuiz(Category.ANIMAL, "answer3", "title3", null, null, null),
-                        new ImageQuiz(Category.OBJECT, "answer4", "title4", null, null, null),
-                        new ImageQuiz(Category.PLANT, "answer5", "title5", null, null, null));
+                List.of(IMAGE_QUIZ_ANIMAL, IMAGE_QUIZ_ANIMAL2, IMAGE_QUIZ_NONE, IMAGE_QUIZ_PLANT, IMAGE_QUIZ_OBJECT);
 
         imageQuizRepository.saveAll(imageQuizList);
     }
