@@ -8,7 +8,8 @@ import soongsil.kidbean.server.quiz.domain.type.Category;
 public record ImageQuizMemberDetailResponse (
         String title,
         String imageUrl,
-        String answer
+        String answer,
+        Category category
 ) {
     public static ImageQuizMemberDetailResponse from(ImageQuiz imageQuiz) {
         return ImageQuizMemberDetailResponse
@@ -16,6 +17,7 @@ public record ImageQuizMemberDetailResponse (
                 .title(imageQuiz.getTitle())
                 .imageUrl(imageQuiz.getImageInfo().getImageUrl())
                 .answer(imageQuiz.getAnswer())
+                .category(imageQuiz.getCategory())
                 .build();
     }
 }
