@@ -31,13 +31,13 @@ public class QuizSolvedService {
                 .map(SolvedImageInfo::from)
                 .toList();
 
-        return SolvedImageListResponse.of(solvedImageInfoList);
+        return SolvedImageListResponse.from(solvedImageInfoList);
     }
 
     public SolvedImageDetailResponse solvedImageDetail(Long solvedId) {
         ImageQuizSolved imageQuizSolved = findImageQuizSolvedById(solvedId);
 
-        return SolvedImageDetailResponse.of(imageQuizSolved);
+        return SolvedImageDetailResponse.from(imageQuizSolved);
     }
 
     private ImageQuizSolved findImageQuizSolvedById(Long solvedId) {

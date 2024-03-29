@@ -9,7 +9,7 @@ public record SolvedImageDetailResponse(
         String answer,
         String kidAnswer
 ) {
-    public static SolvedImageDetailResponse of(ImageQuizSolved imageQuizSolved) {
+    public static SolvedImageDetailResponse from(ImageQuizSolved imageQuizSolved) {
         ImageQuiz imageQuiz = imageQuizSolved.getImageQuiz();
 
         return new SolvedImageDetailResponse(
