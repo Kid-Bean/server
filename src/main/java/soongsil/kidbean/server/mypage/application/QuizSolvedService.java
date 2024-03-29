@@ -33,6 +33,8 @@ public class QuizSolvedService {
         return SolvedImageListResponse.of(solvedImageInfoList);
     }
 
+
+
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);

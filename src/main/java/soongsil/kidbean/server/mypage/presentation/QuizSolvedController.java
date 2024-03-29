@@ -17,7 +17,7 @@ public class QuizSolvedController {
     private final QuizSolvedService quizSolvedService;
 
     @GetMapping("/image/{memberId}")
-    public ResponseEntity<SolvedImageListResponse> findSolvedImage(@PathVariable Long memberId) {
+    public ResponseEntity<SolvedImageListResponse> findSolvedImage(@PathVariable(name = "memberId") Long memberId) {
         return ResponseEntity.ok(quizSolvedService.findSolvedImage(memberId));
     }
 }
