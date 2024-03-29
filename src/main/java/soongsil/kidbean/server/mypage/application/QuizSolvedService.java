@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.mypage.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.mypage.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.mypage.dto.response.SolvedImageListResponse;
 import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
@@ -33,7 +34,16 @@ public class QuizSolvedService {
         return SolvedImageListResponse.of(solvedImageInfoList);
     }
 
+    public SolvedImageDetailResponse solvedImageDetail(Long solvedId) {
+        ImageQuizSolved imageQuizSolved = findImageQuizSolvedById(solvedId);
 
+        return SolvedImageDetailResponse.of(imageQuizSolved);
+    }
+
+    private ImageQuizSolved findImageQuizSolvedById(Long solvedId) {
+        return imageQuizSolvedRepository.findById(solvedId)
+                .orElseThrow(RuntimeException::new);
+    }
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)

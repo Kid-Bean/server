@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.mypage.application.QuizSolvedService;
+import soongsil.kidbean.server.mypage.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.mypage.dto.response.SolvedImageListResponse;
 
 @RestController
@@ -16,8 +17,15 @@ public class QuizSolvedController {
 
     private final QuizSolvedService quizSolvedService;
 
-    @GetMapping("/image/{memberId}")
-    public ResponseEntity<SolvedImageListResponse> findSolvedImage(@PathVariable(name = "memberId") Long memberId) {
+    @GetMapping("/image/list/{memberId}")
+    public ResponseEntity<SolvedImageListResponse> findSolvedImageList(
+            @PathVariable(name = "memberId") Long memberId) {
         return ResponseEntity.ok(quizSolvedService.findSolvedImage(memberId));
+    }
+
+    @GetMapping("/image/{solvedId}")
+    public ResponseEntity<SolvedImageDetailResponse> findSolvedImageDetail(
+            @PathVariable(name = "solvedId") Long solvedId) {
+        return ResponseEntity.ok(quizSolvedService.solvedImageDetail(solvedId));
     }
 }
