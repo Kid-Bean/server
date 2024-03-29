@@ -55,4 +55,11 @@ public class ImageQuiz {
     public void setImageInfo(ImageInfo imageInfo) {
         this.imageInfo = imageInfo;
     }
+
+    public void update(String title, String answer, Category category, ImageInfo imageInfo) {
+        this.title = title;
+        this.answer = answer;
+        this.category = category;
+        this.imageInfo = imageInfo;
+    }
 }

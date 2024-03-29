@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -26,6 +27,8 @@ public class ImageQuizService {
     private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
+    private static final String BUCKET_NAME = "kidbean.s3.ap-northeast-2.amazonaws.com";
+
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
@@ -43,23 +46,46 @@ public class ImageQuizService {
         String folderName = "quiz" + "/" +  request.category();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
+        String generatedPath = uploadUrl.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
+
         ImageQuiz imageQuiz = request.toImageQuiz(member);
         imageQuiz.setImageInfo(
                 ImageInfo.builder()
-                .imageUrl(uploadUrl)
-                .build());
+                        .imageUrl(uploadUrl)
+                        .fileName(generatedPath)
+                        .folderName("quiz" + "/" + request.category())
+                        .build());
 
         imageQuizRepository.save(imageQuiz);
     }
 
     @Transactional
-    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId) {
+    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) throws IOException {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
-
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(RuntimeException::new);
 
-        //imageQuiz.update(request.title(), request.answer(), request.category());
+        // 이미지 수정이 되지 않는 것 default
+        ImageInfo imageInfo = imageQuiz.getImageInfo();
+
+        // 이미지 수정이 된 경우 (이미지 수정이 됐을 때는 filename이 공백("")이 아니므로 file 받아옴)
+        String originalUrl = imageQuiz.getImageInfo().getImageUrl();
+        log.info("original: " + originalUrl);
+
+        if (!image.getOriginalFilename().isEmpty()) {
+            s3Uploader.deleteFile(imageQuiz.getImageInfo());
+
+            String updateFolderName = "quiz" + "/" + request.category();
+            String updateUrl = s3Uploader.upload(image, updateFolderName);
+            String generatedPath = updateUrl.split("/" + BUCKET_NAME + "/" + updateFolderName + "/")[1];
+            imageInfo = ImageInfo.builder()
+                    .imageUrl(updateUrl)
+                    .fileName(generatedPath)
+                    .folderName("quiz" + "/" + request.category())
+                    .build();
+        }
+
+        imageQuiz.update(request.title(), request.answer(), request.category(), imageInfo);
     }
 }

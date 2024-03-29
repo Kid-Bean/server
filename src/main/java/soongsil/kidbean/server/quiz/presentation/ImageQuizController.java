@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 
@@ -31,6 +32,18 @@ public class ImageQuizController {
                                                 @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
                                                 @RequestPart(value = "image") MultipartFile image) throws IOException {
         imageQuizService.uploadImageQuiz(imageQuizUploadRequest, memberId, image);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @PutMapping("/{memberId}/{quizId}")
+    public ResponseEntity<Void> updateImageQuiz(@PathVariable Long memberId,
+                                                @PathVariable Long quizId,
+                                                @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
+                                                @RequestPart MultipartFile image) throws IOException {
+        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, memberId, quizId, image);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
