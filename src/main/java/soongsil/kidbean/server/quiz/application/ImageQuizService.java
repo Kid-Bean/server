@@ -51,10 +51,12 @@ public class ImageQuizService {
         return ImageQuizResponse.from(imageQuiz);
     }
 
+    //랜덤 카테고리 선택
     private Category selectRandomCategory() {
         return Category.valueOfCode(RandomUtil.getPositiveInt() % 4);
     }
 
+    //랜덤 ImageQuiz를 Page로 감싸서 return
     private Page<ImageQuiz> generateRandomPageWithCategory(Member member, Category category) {
         int divVal = getImageQuizCount(member, category);
         int idx = RandomUtil.getPositiveInt() % divVal;
@@ -75,6 +77,7 @@ public class ImageQuizService {
         return userProblemCount + adminProblemCount;
     }
 
+    //page가 ImageQuiz를 가지고 있는지 확인 후 Optional로 return
     private Optional<ImageQuiz> pageHasImageQuiz(Page<ImageQuiz> imageQuizPage) {
         if (imageQuizPage.hasContent()) {
             return Optional.of(imageQuizPage.getContent().get(0));
