@@ -1,15 +1,15 @@
 package soongsil.kidbean.server.quiz.fixture;
 
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.quiz.domain.type.Category.*;
 
 import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
 
 public class ImageQuizFixture {
 
     public static final ImageQuiz IMAGE_QUIZ_ANIMAL = ImageQuiz.builder()
-            .category(Category.ANIMAL)
+            .category(ANIMAL)
             .member(MEMBER)
             .answer("animalAnswer")
             .title("animalTitle")
@@ -17,7 +17,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_ANIMAL2 = ImageQuiz.builder()
-            .category(Category.ANIMAL)
+            .category(ANIMAL)
             .member(MEMBER)
             .answer("animalAnswer2")
             .title("animalTitle2")
@@ -25,7 +25,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_PLANT = ImageQuiz.builder()
-            .category(Category.PLANT)
+            .category(PLANT)
             .member(MEMBER)
             .answer("plantAnswer")
             .title("planTitle")
@@ -33,7 +33,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_OBJECT = ImageQuiz.builder()
-            .category(Category.OBJECT)
+            .category(OBJECT)
             .member(MEMBER)
             .answer("objectAnswer")
             .title("objectTitle")
@@ -41,7 +41,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_NONE = ImageQuiz.builder()
-            .category(Category.NONE)
+            .category(NONE)
             .member(MEMBER)
             .answer("noneAnswer")
             .title("noneTitle")

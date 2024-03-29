@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
@@ -65,8 +66,8 @@ class ImageQuizRepositoryTest {
         Category category = Category.ANIMAL;
 
         //when
-        Page<ImageQuiz> imageQuizPage =
-                imageQuizRepository.findAllByMemberAndCategory(MEMBER, category, PageRequest.of(0, 1));
+        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findAllImageQuizWithPage(
+                MEMBER, Role.ADMIN, category, PageRequest.of(0, 1));
 
         //then
         assertThat(imageQuizPage.getTotalPages()).isEqualTo(2);

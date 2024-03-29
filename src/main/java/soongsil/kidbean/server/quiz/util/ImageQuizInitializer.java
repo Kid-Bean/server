@@ -1,5 +1,11 @@
 package soongsil.kidbean.server.quiz.util;
 
+import static soongsil.kidbean.server.member.domain.type.Gender.*;
+import static soongsil.kidbean.server.member.domain.type.Role.*;
+import static soongsil.kidbean.server.quiz.domain.type.Category.*;
+import static soongsil.kidbean.server.quiz.domain.type.Level.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +17,6 @@ import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 @Slf4j
@@ -28,25 +33,77 @@ public class ImageQuizInitializer implements ApplicationRunner {
         if (imageQuizRepository.count() > 0) {
             log.info("[ImageQuiz]더미 데이터 존재");
         } else {
+            List<Member> memberList = new ArrayList<>();
+
             Member member = Member.builder()
                     .name("testMember")
+                    .role(USER)
+                    .score(26L)
+                    .gender(MAN)
+                    .email("testEmail")
+                    .build();
+            Member admin = Member.builder()
+                    .name("testMember")
+                    .role(ADMIN)
+                    .gender(WOMAN)
                     .score(26L)
                     .email("testEmail")
                     .build();
 
-            memberRepository.save(member);
+            memberList.add(member);
+            memberList.add(admin);
+            memberRepository.saveAll(memberList);
 
             //더미 데이터 작성
-            List<ImageQuiz> imageQuizList = List.of(
-                    new ImageQuiz(Category.ANIMAL, "answer1", "title1", new ImageInfo("asd1", null, null), null,
-                            member),
-                    new ImageQuiz(Category.NONE, "answer2", "title2", new ImageInfo("asd2", null, null), null, member),
-                    new ImageQuiz(Category.ANIMAL, "answer3", "title3", new ImageInfo("asd3", null, null), null,
-                            member),
-                    new ImageQuiz(Category.OBJECT, "answer4", "title4", new ImageInfo("asd4", null, null), null,
-                            member),
-                    new ImageQuiz(Category.PLANT, "answer5", "title5", new ImageInfo("asd5", null, null), null,
-                            member));
+            List<ImageQuiz> imageQuizList = new ArrayList<>();
+            imageQuizList.add(ImageQuiz.builder()
+                    .category(ANIMAL)
+                    .level(BRONZE)
+                    .title("titleAnimal")
+                    .answer("answerAnimal")
+                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .member(admin)
+                    .build());
+            imageQuizList.add(ImageQuiz.builder()
+                    .category(NONE)
+                    .level(SILVER)
+                    .title("titleNone")
+                    .answer("answerNone")
+                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .member(admin)
+                    .build());
+            imageQuizList.add(ImageQuiz.builder()
+                    .category(OBJECT)
+                    .level(SILVER)
+                    .title("titleObject")
+                    .answer("answerObject")
+                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .member(admin)
+                    .build());
+            imageQuizList.add(ImageQuiz.builder()
+                    .category(OBJECT)
+                    .level(SILVER)
+                    .title("titleObject2")
+                    .answer("answerObject2")
+                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .member(member)
+                    .build());
+            imageQuizList.add(ImageQuiz.builder()
+                    .category(PLANT)
+                    .level(SILVER)
+                    .title("titlePlant")
+                    .answer("answerPlant")
+                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .member(member)
+                    .build());
+            imageQuizList.add(ImageQuiz.builder()
+                    .category(PLANT)
+                    .level(SILVER)
+                    .title("titlePlant2")
+                    .answer("answerPlant2")
+                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .member(admin)
+                    .build());
 
             imageQuizRepository.saveAll(imageQuizList);
         }
