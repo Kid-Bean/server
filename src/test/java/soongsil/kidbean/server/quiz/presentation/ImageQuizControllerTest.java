@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class ImageQuizControllerTest {
     void 랜덤_이미지_생성_요청() throws Exception {
         //given
         ImageQuizResponse imageQuizResponse = ImageQuizResponse.from(IMAGE_QUIZ_ANIMAL);
-        Long memberId = 1L;
+        Long memberId = MEMBER.getMemberId();
         given(imageQuizService.selectRandomProblem(any(Long.class)))
                 .willReturn(imageQuizResponse);
 
