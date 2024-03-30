@@ -2,6 +2,7 @@ package soongsil.kidbean.server.quiz.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.quiz.domain.type.Category.*;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL2;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_NONE;
@@ -36,11 +37,10 @@ class ImageQuizRepositoryTest {
     @BeforeAll
     void setUp() {
         List<ImageQuiz> imageQuizList =
-                List.of(IMAGE_QUIZ_ANIMAL, IMAGE_QUIZ_ANIMAL2, IMAGE_QUIZ_NONE, IMAGE_QUIZ_PLANT, IMAGE_QUIZ_OBJECT);
+                List.of(IMAGE_QUIZ_ANIMAL, IMAGE_QUIZ_ANIMAL2, IMAGE_QUIZ_PLANT, IMAGE_QUIZ_OBJECT, IMAGE_QUIZ_NONE);
 
         memberRepository.save(MEMBER);
         imageQuizRepository.saveAll(imageQuizList);
-
     }
 
     @Test
@@ -48,10 +48,10 @@ class ImageQuizRepositoryTest {
         //given
 
         //when
-        Integer animalCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, Category.ANIMAL);
-        Integer plantCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, Category.PLANT);
-        Integer objectCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, Category.OBJECT);
-        Integer noneCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, Category.NONE);
+        Integer animalCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, ANIMAL);
+        Integer plantCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, PLANT);
+        Integer objectCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, OBJECT);
+        Integer noneCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, NONE);
 
         //then
         assertThat(animalCnt).isEqualTo(2);
@@ -63,7 +63,7 @@ class ImageQuizRepositoryTest {
     @Test
     void findAllByCategory이_제대로_동작하는지_확인() {
         //given
-        Category category = Category.ANIMAL;
+        Category category = ANIMAL;
 
         //when
         Page<ImageQuiz> imageQuizPage = imageQuizRepository.findAllImageQuizWithPage(
