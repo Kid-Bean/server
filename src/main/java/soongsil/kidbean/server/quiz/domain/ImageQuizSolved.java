@@ -1,11 +1,11 @@
 package soongsil.kidbean.server.quiz.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 import soongsil.kidbean.server.member.domain.Member;
 import java.time.LocalDateTime;
 
@@ -19,7 +19,7 @@ public class ImageQuizSolved {
     @Column(name = "solved_id")
     private Long solvedId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    @LastModifiedDate
     private LocalDateTime solvedTime;
 
     @Column(name = "is_correct")
@@ -33,16 +33,18 @@ public class ImageQuizSolved {
     private Member member;
 
     @JoinColumn(name = "image_quiz_id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ImageQuiz imageQuiz;
 
     @Builder
-    public ImageQuizSolved(LocalDateTime solvedTime, Boolean isCorrect, String answer, Member member,
-                           ImageQuiz imageQuiz) {
-        this.solvedTime = solvedTime;
+    public ImageQuizSolved(Boolean isCorrect, String answer, Member member, ImageQuiz imageQuiz) {
         this.isCorrect = isCorrect;
         this.answer = answer;
         this.member = member;
         this.imageQuiz = imageQuiz;
+    }
+
+    public void setAnswerIsCorrect(boolean isCorrect) {
+        this.isCorrect = isCorrect;
     }
 }

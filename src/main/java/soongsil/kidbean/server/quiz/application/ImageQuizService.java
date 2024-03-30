@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
@@ -27,6 +29,7 @@ public class ImageQuizService {
 
     private final ImageQuizRepository imageQuizRepository;
     private final MemberRepository memberRepository;
+    private final ImageQuizSolvedService imageQuizSolvedService;
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         Member member = memberRepository.findById(memberId)
@@ -37,9 +40,29 @@ public class ImageQuizService {
         return ImageQuizMemberDetailResponse.from(imageQuiz);
     }
 
-    //해당 카테고리에서 문제를 랜덤으로 선택
-    public ImageQuizResponse selectRandomProblem(Long userId) {
-        Member member = memberRepository.findById(userId)
+    /**
+     * @param imageQuizSolvedRequestList DTO의 List
+     * @param memberId                   문제를 푼 유저의 id
+     * @return 추가된 점수
+     */
+    @Transactional
+    public Long solveImageQuizzes(
+            List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
+            Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member);
+    }
+
+    /**
+     * 해당 카테고리에서 문제를 랜덤으로 선택
+     *
+     * @param memberId 문제를 풀 멤버의 id
+     * @return 이미지 퀴즈 DTO
+     */
+    public ImageQuizResponse selectRandomProblem(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         Category category = selectRandomCategory();
@@ -51,12 +74,22 @@ public class ImageQuizService {
         return ImageQuizResponse.from(imageQuiz);
     }
 
-    //랜덤 카테고리 선택
+    /**
+     * 랜덤 카테고리 선택
+     *
+     * @return 랜덤 카테고리
+     */
     private Category selectRandomCategory() {
         return Category.valueOfCode(RandomUtil.getPositiveInt() % 4);
     }
 
-    //랜덤 ImageQuiz를 Page로 감싸서 return
+    /**
+     * 랜덤 ImageQuiz를 Page로 감싸서 return
+     *
+     * @param member   멤버
+     * @param category 카테고리
+     * @return 풀 이미지 퀴즈가 있는 Page
+     */
     private Page<ImageQuiz> generateRandomPageWithCategory(Member member, Category category) {
         int divVal = getImageQuizCount(member, category);
         int idx = RandomUtil.getPositiveInt() % divVal;
@@ -67,7 +100,13 @@ public class ImageQuizService {
                 member, Role.ADMIN, category, PageRequest.of(idx, 1));
     }
 
-    // 이미지 퀴즈 총 개수(admin + member가 올린 전체)
+    /**
+     * 이미지 퀴즈 총 개수(admin + member가 올린 전체)
+     *
+     * @param member   멤버
+     * @param category 카테고리
+     * @return 해당 멤버와 관리자가 해당 카테고리에 등록한 이미지 퀴즈의 총 수
+     */
     private int getImageQuizCount(Member member, Category category) {
         int userProblemCount = imageQuizRepository.countByMemberAndCategory(member, category);
         int adminProblemCount = imageQuizRepository.countByMember_RoleAndCategory(Role.ADMIN, category);
@@ -77,7 +116,12 @@ public class ImageQuizService {
         return userProblemCount + adminProblemCount;
     }
 
-    //page가 ImageQuiz를 가지고 있는지 확인 후 Optional로 return
+    /**
+     * page가 ImageQuiz를 가지고 있는지 확인 후 Optional로 return
+     *
+     * @param imageQuizPage 찾는 이미지 퀴즈가 있는 페이지
+     * @return 이미지 퀴즈
+     */
     private Optional<ImageQuiz> pageHasImageQuiz(Page<ImageQuiz> imageQuizPage) {
         if (imageQuizPage.hasContent()) {
             return Optional.of(imageQuizPage.getContent().get(0));

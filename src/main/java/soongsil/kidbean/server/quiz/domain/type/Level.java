@@ -12,4 +12,20 @@ public enum Level {
     Level(Level next) {
         this.next = next;
     }
+
+    /**
+     * level에 맞는 포인트를 reutrn
+     *
+     * @param level
+     * @return Long level에 맞는 점수를 return
+     */
+    public static Long getPoint(Level level) {
+        return switch (level) {
+            case DIAMOND -> 5L;
+            case PLATINUM -> 4L;
+            case GOLD -> 3L;
+            case SILVER -> 2L;
+            case BRONZE -> 1L;
+        };
+    }
 }
