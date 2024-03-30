@@ -8,33 +8,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(ImageQuizController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 class ImageQuizControllerTest {
 
-    @InjectMocks
-    private ImageQuizController imageQuizController;
-
-    @Mock
+    @MockBean
     private ImageQuizService imageQuizService;
 
+    @Autowired
     private MockMvc mockMvc;
-
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(imageQuizController).build();
-    }
 
     @Test
     void 랜덤_이미지_생성_요청() throws Exception {
