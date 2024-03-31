@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
@@ -37,11 +38,8 @@ public class Program {
     @Enumerated(EnumType.STRING)
     private ProgramCategory programCategory;
 
-    @Column(name = "teacher_image_url", length = 50)
-    private String teacherImageUrl;
-
-    @Column(name = "program_image_url", length = 50)
-    private String programImageUrl;
+    @Embedded
+    private ImageInfo imageInfo;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
