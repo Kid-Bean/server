@@ -67,4 +67,14 @@ public class ImageQuizController {
                 .status(HttpStatus.OK)
                 .build();
     }
+
+    @DeleteMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<Void> deleteImageQuiz(@PathVariable Long memberId,
+                                                @PathVariable Long quizId) {
+        imageQuizService.deleteImageQuiz(memberId, quizId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
 }

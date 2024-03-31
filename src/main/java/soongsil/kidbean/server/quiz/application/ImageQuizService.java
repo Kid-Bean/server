@@ -24,6 +24,7 @@ import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.MemberNotFoundException;
+import soongsil.kidbean.server.quiz.exception.MemberNotMatchException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 import java.io.IOException;
@@ -144,7 +145,7 @@ public class ImageQuizService {
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) throws IOException {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         String folderName = QUIZ_NAME +  request.category();
         String uploadUrl = s3Uploader.upload(image, folderName);
@@ -165,9 +166,9 @@ public class ImageQuizService {
     @Transactional
     public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) throws IOException {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemberNotFoundException::new);
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(ImageQuizNotFoundException::new);
 
         // 이미지 수정이 되지 않는 것 default
         ImageInfo imageInfo = imageQuiz.getImageInfo();
@@ -186,5 +187,16 @@ public class ImageQuizService {
         }
 
         imageQuiz.update(request.title(), request.answer(), request.category(), imageInfo);
+    }
+
+    @Transactional
+    public void deleteImageQuiz(Long memberId, Long quizId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
+                .orElseThrow(ImageQuizNotFoundException::new);
+
+        imageQuizRepository.delete(imageQuiz);
+        imageQuizRepository.flush();
     }
 }
