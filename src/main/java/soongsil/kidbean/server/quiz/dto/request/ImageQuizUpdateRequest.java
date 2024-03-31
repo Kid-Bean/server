@@ -12,12 +12,4 @@ public record ImageQuizUpdateRequest (
         String answer,
         Category category
 ) {
-    public ImageQuiz toImageQuiz(Member member) {
-        return ImageQuiz
-                .builder()
-                .title(title)
-                .answer(answer)
-                .category(category)
-                .build();
-    }
 }
