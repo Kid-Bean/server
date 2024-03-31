@@ -56,9 +56,8 @@ public class ImageQuizService {
      * @return 추가된 점수
      */
     @Transactional
-    public Long solveImageQuizzes(
-            List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
-            Long memberId) {
+    public Long solveImageQuizzes(List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
+                                  Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -139,13 +138,13 @@ public class ImageQuizService {
             return Optional.empty();
         }
     }
-  
+
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) throws IOException {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
 
-        String folderName = "quiz" + "/" +  request.category();
+        String folderName = "quiz" + "/" + request.category();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
         String generatedPath = uploadUrl.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
@@ -162,7 +161,8 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) throws IOException {
+    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image)
+            throws IOException {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
