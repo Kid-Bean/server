@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.global.vo.ImageInfo;
-import soongsil.kidbean.server.global.vo.ImageInfo2;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
@@ -41,25 +40,19 @@ public class Program {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="imageUrl",
-            column=@Column(name="teacherImageUrl")),
-            @AttributeOverride(name="fileName",
-            column=@Column(name="fileName")),
-            @AttributeOverride(name="folderName",
-            column=@Column(name="folderName"))
+            @AttributeOverride(name = "image_url", column = @Column(name = "teacher_image_url")),
+            @AttributeOverride(name = "file_name", column = @Column(name = "teacher_file_name")),
+            @AttributeOverride(name = "folder_name", column = @Column(name = "teacher_folder_name"))
     })
-    private ImageInfo2 teacherImageUrl;
+    private ImageInfo teacherImageInfo;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="imageUrl",
-                    column=@Column(name="programImageUrl")),
-            @AttributeOverride(name="fileName",
-                    column=@Column(name="fileName")),
-            @AttributeOverride(name="folderName",
-                    column=@Column(name="folderName"))
-    })
-    private ImageInfo2 programImageURl;
+//    @Embedded
+//    @AttributeOverrides({
+//            @AttributeOverride(name = "image_url", column = @Column(name = "program_image_url")),
+//            @AttributeOverride(name = "file_name", column = @Column(name = "program_file_name")),
+//            @AttributeOverride(name = "folder_name", column = @Column(name = "program_folder_name"))
+//    })
+//    private ImageInfo programImageInfo;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
