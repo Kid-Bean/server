@@ -4,15 +4,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
@@ -28,7 +22,7 @@ public class ImageQuizController {
 
     private final ImageQuizService imageQuizService;
 
-    @GetMapping("/{memberId}/{quizId}")
+    @GetMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ImageQuizMemberDetailResponse> getImageQuizById(@PathVariable Long memberId,
                                                                           @PathVariable Long quizId) {
         return ResponseEntity
@@ -51,7 +45,7 @@ public class ImageQuizController {
                 .body(imageQuizService.solveImageQuizzes(request, userId));
     }
 
-    @PostMapping("/{memberId}")
+    @PostMapping("/member/{memberId}")
     public ResponseEntity<Void> uploadImageQuiz(@PathVariable Long memberId,
                                                 @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
                                                 @RequestPart(value = "image") MultipartFile image) throws IOException {
@@ -62,7 +56,7 @@ public class ImageQuizController {
                 .build();
     }
 
-    @PutMapping("/{memberId}/{quizId}")
+    @PutMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<Void> updateImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId,
                                                 @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
