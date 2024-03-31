@@ -9,11 +9,13 @@ import soongsil.kidbean.server.quiz.domain.type.Category;
 public record ImageQuizUploadRequest(
         String title,
         String answer,
-        Category category
+        Category category,
+        Member member
 ) {
     public ImageQuiz toImageQuiz(Member member) {
         return ImageQuiz
                 .builder()
+                .member(member)
                 .title(title)
                 .answer(answer)
                 .category(category)

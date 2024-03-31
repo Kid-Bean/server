@@ -68,10 +68,7 @@ public class ImageQuizService {
 
         // 이미지 수정이 되지 않는 것 default
         ImageInfo imageInfo = imageQuiz.getImageInfo();
-
-        // 이미지 수정이 된 경우 (이미지 수정이 됐을 때는 filename이 공백("")이 아니므로 file 받아옴)
-        String originalUrl = imageQuiz.getImageInfo().getImageUrl();
-        log.info("original: " + originalUrl);
+        log.info("ImageName : " + image.getOriginalFilename());
 
         if (!image.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getImageInfo());

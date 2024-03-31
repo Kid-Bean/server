@@ -42,7 +42,7 @@ public class ImageQuizController {
     public ResponseEntity<Void> updateImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId,
                                                 @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
-                                                @RequestPart MultipartFile image) throws IOException {
+                                                @RequestPart(value = "image") MultipartFile image) throws IOException {
         imageQuizService.updateImageQuiz(imageQuizUpdateRequest, memberId, quizId, image);
 
         return ResponseEntity
