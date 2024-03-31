@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.ImageInfo2;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
@@ -37,11 +39,27 @@ public class Program {
     @Enumerated(EnumType.STRING)
     private ProgramCategory programCategory;
 
-    @Column(name = "teacher_image_url", length = 50)
-    private String teacherImageUrl;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="imageUrl",
+            column=@Column(name="teacherImageUrl")),
+            @AttributeOverride(name="fileName",
+            column=@Column(name="fileName")),
+            @AttributeOverride(name="folderName",
+            column=@Column(name="folderName"))
+    })
+    private ImageInfo2 teacherImageUrl;
 
-    @Column(name = "program_image_url", length = 50)
-    private String programImageUrl;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="imageUrl",
+                    column=@Column(name="programImageUrl")),
+            @AttributeOverride(name="fileName",
+                    column=@Column(name="fileName")),
+            @AttributeOverride(name="folderName",
+                    column=@Column(name="folderName"))
+    })
+    private ImageInfo2 programImageURl;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)

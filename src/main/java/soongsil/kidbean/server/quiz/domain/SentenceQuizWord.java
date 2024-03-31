@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Word {
+public class SentenceQuizWord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Word {
     private SentenceQuiz quiz;
 
     @Builder
-    public Word(String content, SentenceQuiz quiz) {
+    public SentenceQuizWord(String content, SentenceQuiz quiz) {
         this.content = content;
         this.quiz = quiz;
     }
