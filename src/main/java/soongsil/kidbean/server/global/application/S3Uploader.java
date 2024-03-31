@@ -44,6 +44,7 @@ public class S3Uploader {
     //S3 버킷에 있는 파일을 삭제
     public void deleteFile(ImageInfo imageInfo) {
         String deleteFileName = imageInfo.getFolderName() + "/" + imageInfo.getFileName();
+        log.info("delete fileName: {}", deleteFileName);
         amazonS3Client.deleteObject(bucket, deleteFileName);
     }
 
