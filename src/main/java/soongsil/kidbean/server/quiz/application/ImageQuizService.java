@@ -27,7 +27,8 @@ public class ImageQuizService {
     private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
-    private static final String BUCKET_NAME = "kidbean.s3.ap-northeast-2.amazonaws.com";
+    private static final String COMMON_URL = "kidbean.s3.ap-northeast-2.amazonaws.com";
+    private static final String QUIZ_NAME = "quiz/";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         Member member = memberRepository.findById(memberId)
@@ -43,17 +44,17 @@ public class ImageQuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
 
-        String folderName = "quiz" + "/" +  request.category();
+        String folderName = QUIZ_NAME +  request.category();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
-        String generatedPath = uploadUrl.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
+        String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
 
         ImageQuiz imageQuiz = request.toImageQuiz(member);
         imageQuiz.setImageInfo(
                 ImageInfo.builder()
                         .imageUrl(uploadUrl)
                         .fileName(generatedPath)
-                        .folderName("quiz" + "/" + request.category())
+                        .folderName(QUIZ_NAME + request.category())
                         .build());
 
         imageQuizRepository.save(imageQuiz);
@@ -68,18 +69,17 @@ public class ImageQuizService {
 
         // 이미지 수정이 되지 않는 것 default
         ImageInfo imageInfo = imageQuiz.getImageInfo();
-        log.info("ImageName : " + image.getOriginalFilename());
 
         if (!image.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getImageInfo());
 
-            String updateFolderName = "quiz" + "/" + request.category();
+            String updateFolderName = QUIZ_NAME + request.category();
             String updateUrl = s3Uploader.upload(image, updateFolderName);
-            String generatedPath = updateUrl.split("/" + BUCKET_NAME + "/" + updateFolderName + "/")[1];
+            String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
             imageInfo = ImageInfo.builder()
                     .imageUrl(updateUrl)
                     .fileName(generatedPath)
-                    .folderName("quiz" + "/" + request.category())
+                    .folderName(QUIZ_NAME + request.category())
                     .build();
         }
 
