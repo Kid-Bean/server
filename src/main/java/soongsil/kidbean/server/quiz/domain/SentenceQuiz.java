@@ -1,6 +1,8 @@
 package soongsil.kidbean.server.quiz.domain;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +25,9 @@ public class SentenceQuiz {
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    @OneToMany(mappedBy = "quiz")
+    private List<SentenceQuizWord> words = new ArrayList<>();
 
     @Builder
     public SentenceQuiz(String title, Member member) {
