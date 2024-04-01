@@ -10,6 +10,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
+import java.util.List;
 import java.util.Optional;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 
@@ -24,5 +25,8 @@ public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
     @Query("SELECT iq FROM ImageQuiz iq WHERE iq.category = :category AND (iq.member = :member OR iq.member.role = :role)")
     Page<ImageQuiz> findAllImageQuizWithPage(@Param("member") Member member, @Param("role") Role role,
                                              @Param("category") Category category, Pageable pageable);
+
     Optional<ImageQuiz> findByQuizIdAndMember(Long quizId, Member member);
+
+    List<ImageQuiz> findAllByMember(Member member);
 }

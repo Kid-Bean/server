@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 
 import java.io.IOException;
@@ -28,6 +29,13 @@ public class ImageQuizController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(imageQuizService.getImageQuizById(memberId, quizId));
+    }
+
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<ImageQuizMemberResponse>> getAllImageQuizByMember(@PathVariable Long memberId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(imageQuizService.getAllImageQuizByMember(memberId));
     }
 
     @GetMapping("/{userId}")

@@ -15,12 +15,15 @@ import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.mypage.dto.response.SolvedRecordInfo;
+import soongsil.kidbean.server.mypage.dto.response.SolvedRecordListResponse;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.MemberNotFoundException;
@@ -28,6 +31,7 @@ import soongsil.kidbean.server.quiz.exception.MemberNotMatchException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,6 +54,16 @@ public class ImageQuizService {
                 .orElseThrow(RuntimeException::new);
 
         return ImageQuizMemberDetailResponse.from(imageQuiz);
+    }
+
+    public List<ImageQuizMemberResponse> getAllImageQuizByMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return imageQuizRepository.findAllByMember(member)
+                .stream()
+                .map(ImageQuizMemberResponse::from)
+                .toList();
     }
 
     /**
