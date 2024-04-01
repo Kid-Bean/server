@@ -41,46 +41,44 @@ public class ImageQuizSolvedService {
     /**
      * 기존에 풀었던 문제인지에 따라 다르게 처리
      *
-     * @param imageQuizSolved 이미지 퀴즈(푼 것)
-     * @param member          푼 멤버
+     * @param solvedRequest ImageQuizSolved DTO
+     * @param member        푼 멤버
      * @return Long 점수
      */
-    private Long processImageQuizSolved(ImageQuizSolvedRequest imageQuizSolved, Member member) {
-        ImageQuiz imageQuiz = imageQuizRepository.findById(imageQuizSolved.imageQuizId())
-                .orElseThrow(ImageQuizNotFoundException::new);
+    private Long processImageQuizSolved(ImageQuizSolvedRequest solvedRequest, Member member) {
 
-        if (imageQuizSolvedExists(imageQuizSolved, member)) {
-            return updateExistingSolvedImageQuiz(imageQuizSolved, imageQuiz, member);
+        ImageQuiz imageQuiz = imageQuizRepository.findById(solvedRequest.imageQuizId())
+                .orElseThrow(ImageQuizNotFoundException::new);
+        ImageQuizSolved imageQuizSolved = solvedRequest.toImageQuizSolved(imageQuiz, member);
+
+        if (imageQuizSolvedExists(imageQuiz, member)) {
+            return updateExistingSolvedImageQuiz(imageQuizSolved, imageQuiz);
         } else {
-            return enrollNewSolvedImageQuiz(imageQuizSolved, imageQuiz, member);
+            return enrollNewSolvedImageQuiz(imageQuizSolved, imageQuiz);
         }
     }
 
     /**
      * 기존에 푼 ImageQuiz인지 확인
      *
-     * @param imageQuizSolved 이미지 퀴즈(푼 것)
+     * @param imageQuiz 이미지 퀴즈(푼 것)
+     * @param member    이미지 퀴즈를 푼 멤버
      * @return Boolean
      */
-    private Boolean imageQuizSolvedExists(ImageQuizSolvedRequest imageQuizSolved, Member member) {
-        return imageQuizSolvedRepository.existsImageQuizSolvedByImageQuiz_QuizIdAndMember(
-                imageQuizSolved.imageQuizId(), member);
+    private Boolean imageQuizSolvedExists(ImageQuiz imageQuiz, Member member) {
+        return imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(imageQuiz, member);
     }
 
     /**
      * 기존에 풀지 않은 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X SolvedImageQuiz로 등록
      *
-     * @param imageQuizSolvedRequest 이미지 퀴즈 요청
-     * @param imageQuiz              이미지 퀴즈
-     * @param member                 푼 멤버
+     * @param newImageQuizSolved 이미지 퀴즈 요청
+     * @param imageQuiz          이미지 퀴즈
      * @return Long 점수
      */
-    private Long enrollNewSolvedImageQuiz(ImageQuizSolvedRequest imageQuizSolvedRequest,
-                                          ImageQuiz imageQuiz,
-                                          Member member) {
-        ImageQuizSolved newImageQuizSolved = imageQuizSolvedRequest.toImageQuizSolved(imageQuiz, member);
-        newImageQuizSolved.setAnswerIsCorrect(imageQuiz.getAnswer().equals(imageQuizSolvedRequest.answer()));
+    private Long enrollNewSolvedImageQuiz(ImageQuizSolved newImageQuizSolved, ImageQuiz imageQuiz) {
 
+        newImageQuizSolved.setAnswerIsCorrect(imageQuiz.getAnswer().equals(newImageQuizSolved.getAnswer()));
         imageQuizSolvedRepository.save(newImageQuizSolved);
 
         return getPoint(imageQuiz, newImageQuizSolved);
@@ -89,22 +87,22 @@ public class ImageQuizSolvedService {
     /**
      * 기존에 푼 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X 맞춘 경우만 isCorrect 수정
      *
-     * @param imageQuizSolvedRequest 이미지 퀴즈 요청
-     * @param imageQuiz              이미지 퀴즈
+     * @param imageQuizSolved 이미지 퀴즈 요청
+     * @param imageQuiz       이미지 퀴즈
      * @return Long 점수
      */
-    private Long updateExistingSolvedImageQuiz(ImageQuizSolvedRequest imageQuizSolvedRequest,
-                                               ImageQuiz imageQuiz,
-                                               Member member) {
-        ImageQuizSolved imageQuizSolved =
-                imageQuizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
-                        .orElseThrow(ImageQuizSolvedNotFoundException::new);
-        boolean isCorrect = Objects.equals(imageQuiz.getAnswer(), imageQuizSolvedRequest.answer());
+    private Long updateExistingSolvedImageQuiz(ImageQuizSolved imageQuizSolved, ImageQuiz imageQuiz) {
+
+        Member member = imageQuizSolved.getMember();
+        //이전에 푼 동일한 문제
+        ImageQuizSolved imageQuizSolvedEx = imageQuizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
+                .orElseThrow(ImageQuizSolvedNotFoundException::new);
+        boolean isCorrect = Objects.equals(imageQuiz.getAnswer(), imageQuizSolved.getAnswer());
 
         //이전에 오답이었고 현재 정답인 경우
-        if (!imageQuizSolved.getIsCorrect() && isCorrect) {
-            imageQuizSolved.setAnswerIsCorrect(true);
-            return getPoint(imageQuiz, imageQuizSolved);
+        if (!imageQuizSolvedEx.getIsCorrect() && isCorrect) {
+            imageQuizSolvedEx.setAnswerIsCorrect(true);
+            return getPoint(imageQuiz, imageQuizSolvedEx);
         } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
             return 0L;
         }
@@ -118,10 +116,6 @@ public class ImageQuizSolvedService {
      * @return Long 점수
      */
     private static Long getPoint(ImageQuiz imageQuiz, ImageQuizSolved newImageQuizSolved) {
-        if (newImageQuizSolved.getIsCorrect()) {
-            return Level.getPoint(imageQuiz.getLevel());
-        } else {
-            return 0L;
-        }
+        return newImageQuizSolved.getIsCorrect() ? Level.getPoint(imageQuiz.getLevel()) : 0L;
     }
 }

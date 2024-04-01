@@ -40,8 +40,7 @@ class ImageQuizSolvedServiceTest {
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
         //이전에 풀었던 문제
-        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuiz_QuizIdAndMember(
-                IMAGE_QUIZ_ANIMAL.getQuizId(), MEMBER))
+        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(true);
         given(imageQuizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(Optional.of(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE));
@@ -62,8 +61,8 @@ class ImageQuizSolvedServiceTest {
 
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
-        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuiz_QuizIdAndMember(
-                IMAGE_QUIZ_ANIMAL.getQuizId(), MEMBER)).willReturn(true);
+        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
+                .willReturn(true);
         given(imageQuizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(Optional.of(IMAGE_QUIZ_SOLVED_ANIMAL_FALSE));
 
@@ -83,8 +82,7 @@ class ImageQuizSolvedServiceTest {
 
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
-        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuiz_QuizIdAndMember(
-                IMAGE_QUIZ_ANIMAL.getQuizId(), MEMBER))
+        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(false);
 
         //when
