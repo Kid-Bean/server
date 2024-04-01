@@ -51,7 +51,7 @@ class ImageQuizServiceTest {
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER));
 
         //when
-        ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomProblem(1L);
+        ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(1L);
 
         //then
         assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getCategory().toString());

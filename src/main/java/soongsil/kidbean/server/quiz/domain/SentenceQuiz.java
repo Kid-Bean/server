@@ -30,8 +30,9 @@ public class SentenceQuiz {
     private List<SentenceQuizWord> words = new ArrayList<>();
 
     @Builder
-    public SentenceQuiz(String title, Member member) {
+    public SentenceQuiz(String title, Member member, List<SentenceQuizWord> words) {
         this.title = title;
         this.member = member;
+        this.words = words;
     }
 }

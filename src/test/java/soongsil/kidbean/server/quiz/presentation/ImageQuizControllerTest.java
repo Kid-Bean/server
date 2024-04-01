@@ -43,7 +43,7 @@ class ImageQuizControllerTest {
         //given
         ImageQuizResponse imageQuizResponse = ImageQuizResponse.from(IMAGE_QUIZ_ANIMAL);
         Long memberId = MEMBER.getMemberId();
-        given(imageQuizService.selectRandomProblem(any(Long.class)))
+        given(imageQuizService.selectRandomImageQuiz(any(Long.class)))
                 .willReturn(imageQuizResponse);
 
         //when

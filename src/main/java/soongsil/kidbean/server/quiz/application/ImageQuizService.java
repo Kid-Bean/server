@@ -69,7 +69,7 @@ public class ImageQuizService {
      * @param memberId 문제를 풀 멤버의 id
      * @return 이미지 퀴즈 DTO
      */
-    public ImageQuizResponse selectRandomProblem(Long memberId) {
+    public ImageQuizResponse selectRandomImageQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
@@ -117,8 +117,7 @@ public class ImageQuizService {
      * @param category 카테고리
      * @return 해당 멤버와 관리자가 해당 카테고리에 등록한 이미지 퀴즈의 총 수
      */
-    private int getImageQuizCount(Member member, Category category) {
-
+    private Integer getImageQuizCount(Member member, Category category) {
         return imageQuizRepository.countByMemberAndCategoryOrRole(member, category, Role.ADMIN);
     }
 

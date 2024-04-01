@@ -41,7 +41,7 @@ public class ImageQuizController {
     public ResponseEntity<ImageQuizResponse> getRandomImageQuiz(@PathVariable Long memberId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.selectRandomProblem(memberId));
+                .body(imageQuizService.selectRandomImageQuiz(memberId));
     }
 
     @PostMapping("/{userId}")
