@@ -4,9 +4,12 @@ import lombok.Builder;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
 public record ImageQuizMemberResponse (
-    String title
+    String title,
+    Long quizId
 ) {
     public static ImageQuizMemberResponse from(ImageQuiz imageQuiz) {
-        return new ImageQuizMemberResponse(imageQuiz.getTitle());
+        return new ImageQuizMemberResponse(
+                imageQuiz.getTitle(),
+                imageQuiz.getQuizId());
     }
 }
