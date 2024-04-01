@@ -35,7 +35,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
 
             Member member = Member.builder()
                     .name("testMember")
-                    .role(USER)
+                    .role(MEMBER)
                     .score(26L)
                     .gender(MAN)
                     .email("testEmail")

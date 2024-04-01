@@ -37,11 +37,11 @@ public class ImageQuizController {
                 .body(imageQuizService.getImageQuizById(memberId, quizId));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ImageQuizResponse> getRandomImageQuiz(@PathVariable Long userId) {
+    @GetMapping("/{memberId}")
+    public ResponseEntity<ImageQuizResponse> getRandomImageQuiz(@PathVariable Long memberId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.selectRandomProblem(userId));
+                .body(imageQuizService.selectRandomProblem(memberId));
     }
 
     @PostMapping("/{userId}")

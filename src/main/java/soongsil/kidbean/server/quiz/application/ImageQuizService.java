@@ -26,8 +26,6 @@ import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
-import java.io.IOException;
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -42,6 +40,7 @@ public class ImageQuizService {
     private static final String BUCKET_NAME = "kidbean.s3.ap-northeast-2.amazonaws.com";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember(quizId, member)
@@ -56,9 +55,8 @@ public class ImageQuizService {
      * @return 추가된 점수
      */
     @Transactional
-    public Long solveImageQuizzes(
-            List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
-            Long memberId) {
+    public Long solveImageQuizzes(List<ImageQuizSolvedRequest> imageQuizSolvedRequestList, Long memberId) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -72,6 +70,7 @@ public class ImageQuizService {
      * @return 이미지 퀴즈 DTO
      */
     public ImageQuizResponse selectRandomProblem(Long memberId) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -101,6 +100,7 @@ public class ImageQuizService {
      * @return 풀 이미지 퀴즈가 있는 Page
      */
     private Page<ImageQuiz> generateRandomPageWithCategory(Member member, Category category) {
+
         int divVal = getImageQuizCount(member, category);
         int idx = RandomUtil.getPositiveInt() % divVal;
 
@@ -118,12 +118,8 @@ public class ImageQuizService {
      * @return 해당 멤버와 관리자가 해당 카테고리에 등록한 이미지 퀴즈의 총 수
      */
     private int getImageQuizCount(Member member, Category category) {
-        int userProblemCount = imageQuizRepository.countByMemberAndCategory(member, category);
-        int adminProblemCount = imageQuizRepository.countByMember_RoleAndCategory(Role.ADMIN, category);
 
-        log.info("userCnt: {}, adminCnt: {}", userProblemCount, adminProblemCount);
-
-        return userProblemCount + adminProblemCount;
+        return imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(member, category, Role.ADMIN);
     }
 
     /**
@@ -139,13 +135,14 @@ public class ImageQuizService {
             return Optional.empty();
         }
     }
-  
+
     @Transactional
-    public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) throws IOException {
+    public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
 
-        String folderName = "quiz" + "/" +  request.category();
+        String folderName = "quiz" + "/" + request.category();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
         String generatedPath = uploadUrl.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
@@ -162,7 +159,8 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) throws IOException {
+    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)

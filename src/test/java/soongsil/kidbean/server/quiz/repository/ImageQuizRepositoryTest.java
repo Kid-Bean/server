@@ -48,10 +48,10 @@ class ImageQuizRepositoryTest {
         //given
 
         //when
-        Integer animalCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, ANIMAL);
-        Integer plantCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, PLANT);
-        Integer objectCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, OBJECT);
-        Integer noneCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, NONE);
+        Integer animalCnt = imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(MEMBER, ANIMAL, Role.MEMBER);
+        Integer plantCnt = imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(MEMBER, PLANT, Role.MEMBER);
+        Integer objectCnt = imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(MEMBER, OBJECT, Role.MEMBER);
+        Integer noneCnt = imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(MEMBER, NONE, Role.MEMBER);
 
         //then
         assertThat(animalCnt).isEqualTo(2);

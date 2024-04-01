@@ -46,9 +46,8 @@ class ImageQuizServiceTest {
         given(imageQuizRepository.findAllImageQuizWithPage(
                 any(Member.class), any(Role.class), any(Category.class), any(Pageable.class)))
                 .willReturn(imageQuizPage);
-        given(imageQuizRepository.countByMemberAndCategory(any(Member.class), any(Category.class)))
-                .willReturn(1);
-        given(imageQuizRepository.countByMember_RoleAndCategory(any(Role.class), any(Category.class))).willReturn(0);
+        given(imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(
+                any(Member.class), any(Category.class), any(Role.class))).willReturn(1);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER));
 
         //when
