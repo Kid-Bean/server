@@ -43,10 +43,10 @@ class ImageQuizServiceTest {
         List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL);
         Page<ImageQuiz> imageQuizPage = new PageImpl<>(imageQuizList);
 
-        given(imageQuizRepository.findAllImageQuizWithPage(
+        given(imageQuizRepository.findImageQuizWithPage(
                 any(Member.class), any(Role.class), any(Category.class), any(Pageable.class)))
                 .willReturn(imageQuizPage);
-        given(imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(
+        given(imageQuizRepository.countByMemberAndCategoryOrRole(
                 any(Member.class), any(Category.class), any(Role.class))).willReturn(1);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER));
 

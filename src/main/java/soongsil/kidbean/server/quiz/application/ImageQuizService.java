@@ -106,7 +106,7 @@ public class ImageQuizService {
 
         log.info("divVal: {}, idx: {}", divVal, idx);
 
-        return imageQuizRepository.findAllImageQuizWithPage(
+        return imageQuizRepository.findImageQuizWithPage(
                 member, Role.ADMIN, category, PageRequest.of(idx, 1));
     }
 
@@ -119,7 +119,7 @@ public class ImageQuizService {
      */
     private int getImageQuizCount(Member member, Category category) {
 
-        return imageQuizRepository.countByMemberAndCategoryOrRoleIsAdmin(member, category, Role.ADMIN);
+        return imageQuizRepository.countByMemberAndCategoryOrRole(member, category, Role.ADMIN);
     }
 
     /**

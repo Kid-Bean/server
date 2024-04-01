@@ -18,11 +18,11 @@ public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
 
     //해당 카테고리의 row 개수
     @Query("SELECT count(*) FROM ImageQuiz iq WHERE iq.category = :category AND (iq.member = :member OR iq.member.role = :role)")
-    Integer countByMemberAndCategoryOrRoleIsAdmin(Member member, Category category, Role role);
+    Integer countByMemberAndCategoryOrRole(Member member, Category category, Role role);
 
     @Query("SELECT iq FROM ImageQuiz iq WHERE iq.category = :category AND (iq.member = :member OR iq.member.role = :role)")
-    Page<ImageQuiz> findAllImageQuizWithPage(@Param("member") Member member, @Param("role") Role role,
-                                             @Param("category") Category category, Pageable pageable);
+    Page<ImageQuiz> findImageQuizWithPage(@Param("member") Member member, @Param("role") Role role,
+                                          @Param("category") Category category, Pageable pageable);
 
     Optional<ImageQuiz> findByQuizIdAndMember(Long quizId, Member member);
 }
