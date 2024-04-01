@@ -39,7 +39,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .title("titleAnimal")
                     .answer("answerAnimal")
                     .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_MEMBER)
+                    .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
                     .category(NONE)
