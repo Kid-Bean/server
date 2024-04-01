@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 로컬 환경에서 더미 데이터를 넣을 때 사용하는 annotation
- *
- * @Profile이 dev인 경우 사용
+ * 로컬 환경에서 더미 데이터를 넣을 때 사용하는 annotation Profile이 dev인 경우 사용
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
