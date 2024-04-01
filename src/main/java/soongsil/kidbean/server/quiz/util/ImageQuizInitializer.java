@@ -11,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -21,8 +20,7 @@ import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 @Slf4j
 @RequiredArgsConstructor
-@Profile("dev")
-@Component
+@LocalDummyDataInit
 public class ImageQuizInitializer implements ApplicationRunner {
 
     private final ImageQuizRepository imageQuizRepository;
