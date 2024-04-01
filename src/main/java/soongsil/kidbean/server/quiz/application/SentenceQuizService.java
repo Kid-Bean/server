@@ -58,8 +58,7 @@ public class SentenceQuizService {
         int divVal = getSentenceQuizCount(member);
         int idx = RandomUtil.getPositiveInt() % divVal;
 
-        return sentenceQuizRepository.findByMemberOrMember_Role(
-                member, Role.ADMIN, PageRequest.of(idx, 1));
+        return sentenceQuizRepository.findByMemberOrMember_Role(member, Role.ADMIN, PageRequest.of(idx, 1));
     }
 
     /**

@@ -38,7 +38,7 @@ class SentenceQuizServiceTest {
         //given
         given(memberRepository.findById(MEMBER.getMemberId()))
                 .willReturn(Optional.of(MEMBER));
-        given(sentenceQuizRepository.countByMemberOrMember_Role(MEMBER, MEMBER.getRole()))
+        given(sentenceQuizRepository.countByMemberOrMember_Role(MEMBER, Role.ADMIN))
                 .willReturn(1);
         given(sentenceQuizRepository.findByMemberOrMember_Role(MEMBER, Role.ADMIN, PageRequest.of(0, 1)))
                 .willReturn(new PageImpl<>(List.of(SENTENCE_QUIZ)));
