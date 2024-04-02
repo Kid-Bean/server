@@ -17,10 +17,10 @@ public class S3Config {
     @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secretKey}") // 이 값은 application.yml
+    @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
 
-    @Value("${cloud.aws.region.static}") //비밀값이라서
+    @Value("${cloud.aws.region.static}")
     private String region;
 
     @Bean

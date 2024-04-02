@@ -68,7 +68,7 @@ public class ImageQuizSolvedService {
     }
 
     /**
-     * 기존에 풀지 않은 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X SolvedImageQuiz로 등록
+     * 기존에 풀지 않은 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X SolvedImageQuiz 로 등록
      *
      * @param imageQuizSolvedRequest 이미지 퀴즈 요청
      * @param imageQuiz              이미지 퀴즈

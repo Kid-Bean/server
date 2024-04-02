@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.program.application.ProgramService;
-import soongsil.kidbean.server.program.dto.ProgramRequest;
+import soongsil.kidbean.server.program.dto.request.ProgramRequest;
+import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 
 @Slf4j
 @RestController
@@ -22,6 +23,15 @@ public class ProgramController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(programService.getProgramsList(programId));
+                .body(programService.getProgramList(programId));
+    }
+
+    @GetMapping("/programInfo")
+    public ResponseEntity<ProgramResponse> getProgramInfo(@RequestParam Long programId,@RequestParam String teacherName,
+                                                          @RequestParam String place, @RequestParam String phoneNumber,
+                                                          @RequestParam String title, @RequestParam String content){
+        return ResponseEntity
+                .status((HttpStatus.OK))
+                .body(programService.getProgramInfo(programId,teacherName,title,place,content,phoneNumber));
     }
 }
