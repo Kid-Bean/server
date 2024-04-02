@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.SentenceQuizFixture.SENTENCE_QUIZ;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,7 +30,8 @@ class SentenceQuizControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void 랜덤_SentenceQuiz_생성_요청() throws Exception {
+    @DisplayName("랜덤 SentenceQuiz 생성 요청")
+    void getRandomSentenceQuiz() throws Exception {
 
         //given
         Long memberId = MEMBER.getMemberId();

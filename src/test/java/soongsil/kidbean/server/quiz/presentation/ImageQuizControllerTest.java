@@ -15,6 +15,7 @@ import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_A
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,7 +40,8 @@ class ImageQuizControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void 랜덤_이미지_생성_요청() throws Exception {
+    @DisplayName("랜덤 이미지 생성 요청")
+    void getRandomImageQuiz() throws Exception {
         //given
         ImageQuizResponse imageQuizResponse = ImageQuizResponse.from(IMAGE_QUIZ_ANIMAL);
         Long memberId = MEMBER.getMemberId();
@@ -61,7 +63,8 @@ class ImageQuizControllerTest {
     }
 
     @Test
-    void 문제_풀기_요청() throws Exception {
+    @DisplayName("문제 풀기 요청")
+    void solveImageQuizzes() throws Exception {
         //given
         List<ImageQuizSolvedRequest> request = Collections.singletonList(
                 new ImageQuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer())

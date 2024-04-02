@@ -9,6 +9,7 @@ import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_A
 
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +39,8 @@ class ImageQuizServiceTest {
     private ImageQuizService imageQuizService;
 
     @Test
-    void ImageQuizResponse_생성_테스트() {
+    @DisplayName("ImageQuizResponse 생성 테스트")
+    void selectRandomImageQuiz() {
         //given
         List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL);
         Page<ImageQuiz> imageQuizPage = new PageImpl<>(imageQuizList);

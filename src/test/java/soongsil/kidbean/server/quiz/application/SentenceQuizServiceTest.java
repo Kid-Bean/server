@@ -7,6 +7,7 @@ import static soongsil.kidbean.server.quiz.fixture.SentenceQuizFixture.SENTENCE_
 
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +34,8 @@ class SentenceQuizServiceTest {
     private SentenceQuizService sentenceQuizService;
 
     @Test
-    void 랜덤_SentenceQuiz_선택() {
+    @DisplayName("랜덤 SentenceQuiz 선택")
+    void selectRandomSentenceQuiz() {
 
         //given
         given(memberRepository.findById(MEMBER.getMemberId()))

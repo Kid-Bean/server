@@ -12,6 +12,7 @@ import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_P
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -44,7 +44,8 @@ class ImageQuizRepositoryTest {
     }
 
     @Test
-    void DB에_저장된_row의_수_테스트() {
+    @DisplayName("DB에 저장된 row 수 테스트")
+    void countByMemberAndCategoryOrRole() {
         //given
 
         //when
@@ -61,13 +62,13 @@ class ImageQuizRepositoryTest {
     }
 
     @Test
-    void findAllByCategory이_제대로_동작하는지_확인() {
+    @DisplayName("페이지 생성이 제대로 동작 하는지 확인")
+    void findImageQuizWithPage() {
         //given
-        Category category = ANIMAL;
 
         //when
         Page<ImageQuiz> imageQuizPage = imageQuizRepository.findImageQuizWithPage(
-                MEMBER, Role.ADMIN, category, PageRequest.of(0, 1));
+                MEMBER, Role.ADMIN, ANIMAL, PageRequest.of(0, 1));
 
         //then
         assertThat(imageQuizPage.getTotalPages()).isEqualTo(2);

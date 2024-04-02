@@ -9,6 +9,7 @@ import static soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture.IMAGE_
 
 import java.util.Collections;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,8 @@ class ImageQuizSolvedServiceTest {
     private ImageQuizSolvedService imageQuizSolvedService;
 
     @Test
-    public void 이미_푼_맞은_ImageQuizSolved를_풀었을_때() {
+    @DisplayName("이미 푼 맞은 ImageQuizSolved 풀었을 때")
+    public void solveImageQuizzes1() {
         //given
         ImageQuizSolvedRequest request =
                 new ImageQuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer());
@@ -54,7 +56,8 @@ class ImageQuizSolvedServiceTest {
     }
 
     @Test
-    public void 이미_푼_틀린_ImageQuizSolved를_풀었을_때() {
+    @DisplayName("이미 푼 틀린 ImageQuizSolved 풀었을 때")
+    public void solveImageQuizzes2() {
         //given
         ImageQuizSolvedRequest request =
                 new ImageQuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer());
@@ -75,7 +78,8 @@ class ImageQuizSolvedServiceTest {
     }
 
     @Test
-    public void 풀지_않은_ImageQuizSolved를_풀었을_때() {
+    @DisplayName("풀지 않 ImageQuizSolved 풀었을 때")
+    public void solveImageQuizzes3() {
         //given
         ImageQuizSolvedRequest request =
                 new ImageQuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer());

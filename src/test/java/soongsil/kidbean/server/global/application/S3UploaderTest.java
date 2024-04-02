@@ -9,6 +9,7 @@ import io.findify.s3mock.S3Mock;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,8 @@ class S3UploaderTest {
     }
 
     @Test
-    void S3_업로드_테스트() {
+    @DisplayName("S3_업로드_테스트")
+    void upload() {
         // given
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
@@ -67,7 +69,8 @@ class S3UploaderTest {
     }
 
     @Test
-    void S3_삭제_테스트() {
+    @DisplayName("S3_삭제_테스트")
+    void deleteFile() {
         // given
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
