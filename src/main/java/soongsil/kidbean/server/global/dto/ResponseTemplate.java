@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.global.exception.response;
+package soongsil.kidbean.server.global.dto;
 
 import lombok.Builder;
 

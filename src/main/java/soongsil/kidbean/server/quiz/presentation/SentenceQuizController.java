@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import soongsil.kidbean.server.global.exception.response.ResponseTemplate;
+import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.SentenceQuizService;
 import soongsil.kidbean.server.quiz.dto.response.SentenceQuizResponse;
 
