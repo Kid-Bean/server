@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import soongsil.kidbean.server.global.exception.response.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedListRequest;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -19,6 +20,7 @@ import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,18 +38,25 @@ public class ImageQuizController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<ImageQuizResponse> getRandomImageQuiz(@PathVariable Long memberId) {
+    public ResponseEntity<ResponseTemplate<Object>> getRandomImageQuiz(@PathVariable Long memberId) {
+
+        ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(memberId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.selectRandomImageQuiz(memberId));
+                .body(ResponseTemplate.from(imageQuizResponse));
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<Long> solveImageQuizzes(@PathVariable Long userId,
-                                                  @Valid @RequestBody ImageQuizSolvedListRequest request) {
+    public ResponseEntity<ResponseTemplate<Object>> solveImageQuizzes(@PathVariable Long userId,
+                                                                      @Valid @RequestBody ImageQuizSolvedListRequest request) {
+
+        ImageQuizSolveScoreResponse score = imageQuizService.solveImageQuizzes(request.imageQuizSolvedRequestList(),
+                userId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.solveImageQuizzes(request.imageQuizSolvedRequestList(), userId));
+                .body(ResponseTemplate.from(score));
     }
 
     @PostMapping("/member/{memberId}")

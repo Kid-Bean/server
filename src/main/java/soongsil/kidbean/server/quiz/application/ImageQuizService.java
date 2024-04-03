@@ -24,6 +24,7 @@ import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
@@ -57,12 +58,14 @@ public class ImageQuizService {
      * @return 추가된 점수
      */
     @Transactional
-    public Long solveImageQuizzes(List<ImageQuizSolvedRequest> imageQuizSolvedRequestList, Long memberId) {
+    public ImageQuizSolveScoreResponse solveImageQuizzes(List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
+                                                         Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        return imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member);
+        return ImageQuizSolveScoreResponse.scoreFrom(
+                imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
     }
 
     /**

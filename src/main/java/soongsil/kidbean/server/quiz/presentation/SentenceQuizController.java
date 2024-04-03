@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import soongsil.kidbean.server.global.exception.response.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.SentenceQuizService;
 import soongsil.kidbean.server.quiz.dto.response.SentenceQuizResponse;
 
@@ -18,9 +19,12 @@ public class SentenceQuizController {
     private final SentenceQuizService sentenceQuizService;
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<SentenceQuizResponse> getRandomSentenceQuiz(@PathVariable Long memberId) {
+    public ResponseEntity<ResponseTemplate<Object>> getRandomSentenceQuiz(@PathVariable Long memberId) {
+
+        SentenceQuizResponse sentenceQuizResponse = sentenceQuizService.selectRandomSentenceQuiz(memberId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(sentenceQuizService.selectRandomSentenceQuiz(memberId));
+                .body(ResponseTemplate.from(sentenceQuizResponse));
     }
 }

@@ -46,10 +46,10 @@ class SentenceQuizControllerTest {
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("sentenceQuiz"))
-                .andExpect(jsonPath("$.quizId").doesNotExist()) // 해당 필드가 없는 것으로 가정합니다.
-                .andExpect(jsonPath("$.words[0].content").value("content1"))
-                .andExpect(jsonPath("$.words[1].content").value("content2"))
-                .andExpect(jsonPath("$.words[2].content").value("content3"));
+                .andExpect(jsonPath("$.results.title").value("sentenceQuiz"))
+                .andExpect(jsonPath("$.results.quizId").doesNotExist()) // 해당 필드가 없는 것으로 가정합니다.
+                .andExpect(jsonPath("$.results.words[0].content").value("content1"))
+                .andExpect(jsonPath("$.results.words[1].content").value("content2"))
+                .andExpect(jsonPath("$.results.words[2].content").value("content3"));
     }
 }
