@@ -1,5 +1,8 @@
 package soongsil.kidbean.server.quiz.application;
 
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_SOLVED_NOT_FOUND;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +50,7 @@ public class ImageQuizSolvedService {
     private Long processImageQuizSolved(ImageQuizSolvedRequest solvedRequest, Member member) {
 
         ImageQuiz imageQuiz = imageQuizRepository.findById(solvedRequest.imageQuizId())
-                .orElseThrow(ImageQuizNotFoundException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
         ImageQuizSolved imageQuizSolved = solvedRequest.toImageQuizSolved(imageQuiz, member);
 
         if (imageQuizSolvedExists(imageQuiz, member)) {
@@ -95,7 +98,7 @@ public class ImageQuizSolvedService {
         Member member = imageQuizSolved.getMember();
         //이전에 푼 동일한 문제
         ImageQuizSolved imageQuizSolvedEx = imageQuizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
-                .orElseThrow(ImageQuizSolvedNotFoundException::new);
+                .orElseThrow(() -> new ImageQuizSolvedNotFoundException(IMAGE_QUIZ_SOLVED_NOT_FOUND));
 
         //정답을 포함하고 있는지
         boolean isCorrect = imageQuizSolved.getAnswer().contains(imageQuiz.getAnswer());

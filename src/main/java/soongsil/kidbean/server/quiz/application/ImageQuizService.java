@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
+
 import ch.qos.logback.core.testUtil.RandomUtil;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,7 @@ import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.MemberNotFoundException;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 @Slf4j
@@ -78,7 +80,7 @@ public class ImageQuizService {
         Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, category);
 
         ImageQuiz imageQuiz = pageHasImageQuiz(imageQuizPage)
-                .orElseThrow(ImageQuizNotFoundException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         return ImageQuizResponse.from(imageQuiz);
     }
