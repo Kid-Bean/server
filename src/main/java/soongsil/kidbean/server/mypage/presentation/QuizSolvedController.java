@@ -10,6 +10,8 @@ import soongsil.kidbean.server.mypage.application.QuizSolvedService;
 import soongsil.kidbean.server.mypage.dto.response.SolvedRecordListResponse;
 import soongsil.kidbean.server.mypage.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.mypage.dto.response.SolvedImageListResponse;
+import soongsil.kidbean.server.mypage.dto.response.SolvedSentenceDetailResponse;
+import soongsil.kidbean.server.mypage.dto.response.SolvedVoiceDetailResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,5 +36,24 @@ public class QuizSolvedController {
     public ResponseEntity<SolvedRecordListResponse> findSolvedSentenceList(
             @PathVariable(name = "memberId") Long memberId) {
         return ResponseEntity.ok(quizSolvedService.findSolvedSentence(memberId));
+    }
+
+    @GetMapping("/sentence/{solvedId}")
+    public ResponseEntity<SolvedSentenceDetailResponse> findSolvedSentenceDetail(
+            @PathVariable(name = "solvedId") Long solvedId) {
+        return ResponseEntity.ok(quizSolvedService.solvedSentenceDetail(solvedId));
+    }
+
+    @GetMapping("/mypage/solved/voice/list/{memberId}")
+    public ResponseEntity<SolvedRecordListResponse> findSolvedVoiceList(
+            @PathVariable(name = "memberId") Long memberId
+    ) {
+        return ResponseEntity.ok(quizSolvedService.findSolvedVoice(memberId));
+    }
+
+    @GetMapping("/voice/{solvedId}")
+    public ResponseEntity<SolvedVoiceDetailResponse> findSolvedVoiceDetail(
+            @PathVariable(name = "solvedId") Long solvedId) {
+        return ResponseEntity.ok(quizSolvedService.solvedVoiceDetail(solvedId));
     }
 }
