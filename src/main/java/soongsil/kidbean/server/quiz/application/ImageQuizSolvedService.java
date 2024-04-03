@@ -1,7 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -78,7 +77,7 @@ public class ImageQuizSolvedService {
      */
     private Long enrollNewSolvedImageQuiz(ImageQuizSolved newImageQuizSolved, ImageQuiz imageQuiz) {
 
-        newImageQuizSolved.setAnswerIsCorrect(imageQuiz.getAnswer().equals(newImageQuizSolved.getAnswer()));
+        newImageQuizSolved.setAnswerIsCorrect(newImageQuizSolved.getAnswer().contains(imageQuiz.getAnswer()));
         imageQuizSolvedRepository.save(newImageQuizSolved);
 
         return getPoint(imageQuiz, newImageQuizSolved);
@@ -97,7 +96,9 @@ public class ImageQuizSolvedService {
         //이전에 푼 동일한 문제
         ImageQuizSolved imageQuizSolvedEx = imageQuizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
                 .orElseThrow(ImageQuizSolvedNotFoundException::new);
-        boolean isCorrect = Objects.equals(imageQuiz.getAnswer(), imageQuizSolved.getAnswer());
+
+        //정답을 포함하고 있는지
+        boolean isCorrect = imageQuizSolved.getAnswer().contains(imageQuiz.getAnswer());
 
         //이전에 오답이었고 현재 정답인 경우
         if (!imageQuizSolvedEx.getIsCorrect() && isCorrect) {
