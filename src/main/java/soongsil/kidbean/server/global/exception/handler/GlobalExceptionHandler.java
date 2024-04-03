@@ -16,6 +16,7 @@ import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
 import soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationError;
+import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationErrors;
 
 @Slf4j
 @RestControllerAdvice
@@ -66,8 +67,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorResponse makeErrorResponse(final ErrorCode errorCode) {
         return ErrorResponse.builder()
+                .isSuccess(false)
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
+                .results(new ValidationErrors(null))
                 .build();
     }
 
@@ -78,8 +81,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorResponse makeErrorResponse(final ErrorCode errorCode, final String message) {
         return ErrorResponse.builder()
+                .isSuccess(false)
                 .code(errorCode.name())
                 .message(message)
+                .results(new ValidationErrors(null))
                 .build();
     }
 
@@ -96,9 +101,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .toList();
 
         return ErrorResponse.builder()
+                .isSuccess(false)
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
-                .errors(validationErrorList)
+                .results(new ValidationErrors(validationErrorList))
                 .build();
     }
 }
