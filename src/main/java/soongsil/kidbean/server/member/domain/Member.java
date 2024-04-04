@@ -41,8 +41,7 @@ public class Member {
     private Long score;
 
     @Builder
-    public Member(Long memberId, String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
-        this.memberId = memberId;
+    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
         this.email = email;
         this.name = name;
         this.gender = gender;

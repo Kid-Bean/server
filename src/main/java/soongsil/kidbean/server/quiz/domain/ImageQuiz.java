@@ -43,9 +43,7 @@ public class ImageQuiz {
     private Member member;
 
     @Builder
-    public ImageQuiz(Long quizId, Category category, String answer, String title, ImageInfo imageInfo, Level level,
-                     Member member) {
-        this.quizId = quizId;
+    public ImageQuiz(Category category, String answer, String title, ImageInfo imageInfo, Level level, Member member) {
         this.category = category;
         this.answer = answer;
         this.title = title;

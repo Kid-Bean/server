@@ -6,14 +6,18 @@ import static soongsil.kidbean.server.quiz.fixture.SentenceQuizWordFixture.SENTE
 import static soongsil.kidbean.server.quiz.fixture.SentenceQuizWordFixture.SENTENCE_QUIZ_WORD3;
 
 import java.util.List;
+import org.springframework.test.util.ReflectionTestUtils;
 import soongsil.kidbean.server.quiz.domain.SentenceQuiz;
 
 public class SentenceQuizFixture {
 
-    public static final SentenceQuiz SENTENCE_QUIZ =
-            SentenceQuiz.builder()
-                    .title("sentenceQuiz")
-                    .member(MEMBER)
-                    .words(List.of(SENTENCE_QUIZ_WORD1, SENTENCE_QUIZ_WORD2, SENTENCE_QUIZ_WORD3))
-                    .build();
+    public static final SentenceQuiz SENTENCE_QUIZ = SentenceQuiz.builder()
+            .title("sentenceQuiz")
+            .member(MEMBER)
+            .words(List.of(SENTENCE_QUIZ_WORD1, SENTENCE_QUIZ_WORD2, SENTENCE_QUIZ_WORD3))
+            .build();
+
+    static {
+        ReflectionTestUtils.setField(SENTENCE_QUIZ, "quizId", 1L);
+    }
 }
