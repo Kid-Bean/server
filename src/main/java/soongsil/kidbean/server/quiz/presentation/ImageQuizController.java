@@ -1,5 +1,8 @@
 package soongsil.kidbean.server.quiz.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 
+@Tag(name = "ImageQuiz", description = "ImageQuiz 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/quiz/image")
@@ -37,6 +41,8 @@ public class ImageQuizController {
                 .body(imageQuizService.getImageQuizById(memberId, quizId));
     }
 
+
+    @Operation(summary = "ImageQuiz 문제 가져오기", description = "랜덤 ImageQuiz 가져오기")
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> getRandomImageQuiz(@PathVariable Long memberId) {
 
@@ -47,6 +53,7 @@ public class ImageQuizController {
                 .body(ResponseTemplate.from(imageQuizResponse));
     }
 
+    @Operation(summary = "ImageQuiz 문제 풀기", description = "푼 ImageQuiz 문제를 제출")
     @PostMapping("/{userId}")
     public ResponseEntity<ResponseTemplate<Object>> solveImageQuizzes(@PathVariable Long userId,
                                                                       @Valid @RequestBody ImageQuizSolvedListRequest request) {
