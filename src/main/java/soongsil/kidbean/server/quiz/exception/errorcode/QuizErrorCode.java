@@ -11,6 +11,7 @@ public enum QuizErrorCode implements ErrorCode {
     IMAGE_QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND, "ImageQuiz not found"),
     IMAGE_QUIZ_SOLVED_NOT_FOUND(HttpStatus.NOT_FOUND, "ImageQuizSolved not found"),
     SENTENCE_QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND, "SentenceQuiz not found"),
+    ANSWER_QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND, "AnswerQuiz not found"),
     ;
 
     private final HttpStatus httpStatus;

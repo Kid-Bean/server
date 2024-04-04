@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import soongsil.kidbean.server.global.vo.ImageInfo;
 import soongsil.kidbean.server.member.domain.Member;
 
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ public class RecordQuizSolved {
     @Column(name = "solved_id")
     private Long solvedId;
 
-    @Column(name = "record_answer", length = 255)
-    private String recordAnswer;
+    @Embedded
+    private ImageInfo recordAnswer;
 
     @Column(name = "sentence_answer", length = 80)
     private String sentenceAnswer;
@@ -42,7 +43,7 @@ public class RecordQuizSolved {
     private AnswerQuiz answerQuiz;
 
     @Builder
-    public RecordQuizSolved(String recordAnswer, String sentenceAnswer, LocalDateTime solvedTime, Member member,
+    public RecordQuizSolved(ImageInfo recordAnswer, String sentenceAnswer, LocalDateTime solvedTime, Member member,
                             SentenceQuiz sentenceQuiz, AnswerQuiz answerQuiz) {
         this.recordAnswer = recordAnswer;
         this.sentenceAnswer = sentenceAnswer;

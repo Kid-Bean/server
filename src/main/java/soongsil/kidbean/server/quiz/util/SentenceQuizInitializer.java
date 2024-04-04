@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.quiz.domain.SentenceQuiz;
 import soongsil.kidbean.server.quiz.domain.SentenceQuizWord;
@@ -18,7 +17,6 @@ import soongsil.kidbean.server.quiz.repository.SentenceQuizWordRepository;
 
 @Slf4j
 @RequiredArgsConstructor
-@Order(2)
 @LocalDummyDataInit
 public class SentenceQuizInitializer implements ApplicationRunner {
 

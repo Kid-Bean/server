@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.SentenceQuizFixture.SENTENCE_QUIZ;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.quiz.application.SentenceQuizService;
+import soongsil.kidbean.server.quiz.domain.SentenceQuizWord;
 import soongsil.kidbean.server.quiz.dto.response.SentenceQuizResponse;
 
 @WebMvcTest(SentenceQuizController.class)
@@ -36,6 +38,8 @@ class SentenceQuizControllerTest {
         //given
         Long memberId = MEMBER.getMemberId();
         SentenceQuizResponse sentenceQuizResponse = SentenceQuizResponse.from(SENTENCE_QUIZ);
+        List<SentenceQuizWord> wordList = SENTENCE_QUIZ.getWords();
+
         given(sentenceQuizService.selectRandomSentenceQuiz(memberId))
                 .willReturn(sentenceQuizResponse);
 
@@ -47,9 +51,9 @@ class SentenceQuizControllerTest {
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.title").value("sentenceQuiz"))
-                .andExpect(jsonPath("$.results.quizId").doesNotExist()) // 해당 필드가 없는 것으로 가정합니다.
-                .andExpect(jsonPath("$.results.words[0].content").value("content1"))
-                .andExpect(jsonPath("$.results.words[1].content").value("content2"))
-                .andExpect(jsonPath("$.results.words[2].content").value("content3"));
+                .andExpect(jsonPath("$.results.quizId").value(SENTENCE_QUIZ.getQuizId()))
+                .andExpect(jsonPath("$.results.words[0].content").value(wordList.get(0).getContent()))
+                .andExpect(jsonPath("$.results.words[1].content").value(wordList.get(1).getContent()))
+                .andExpect(jsonPath("$.results.words[2].content").value(wordList.get(2).getContent()));
     }
 }
