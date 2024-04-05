@@ -17,13 +17,17 @@ import soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationError;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationErrors;
+import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
+import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
+import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
+import soongsil.kidbean.server.quiz.exception.SentenceQuizNotFoundException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FileConvertFailException.class)
-    public ResponseEntity<Object> handleQuizException(final FileConvertFailException e) {
+    public ResponseEntity<Object> handleFileConvertFail(final FileConvertFailException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
@@ -35,6 +39,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
+    @ExceptionHandler(AnswerQuizNotFoundException.class)
+    public ResponseEntity<Object> handleAnswerQuizNotFound(final AnswerQuizNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(ImageQuizNotFoundException.class)
+    public ResponseEntity<Object> handleImageQuizNotFound(final ImageQuizNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(ImageQuizSolvedNotFoundException.class)
+    public ResponseEntity<Object> handleImageQuizSolvedNotFound(final ImageQuizSolvedNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(SentenceQuizNotFoundException.class)
+    public ResponseEntity<Object> handleSentenceQuizNotFound(final SentenceQuizNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
 
     /**
      * DTO @Valid 관련 exception 처리
@@ -53,7 +80,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, errorCode);
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(final Exception ex) {
         log.warn("handleAllException", ex);
         final ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;

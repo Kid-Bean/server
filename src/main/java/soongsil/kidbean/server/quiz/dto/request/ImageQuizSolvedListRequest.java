@@ -8,7 +8,7 @@ import lombok.Builder;
 @Builder
 public record ImageQuizSolvedListRequest(
         @Valid
-        @Size(max = 5)
+        @Size(min = 1, max = 5)
         List<ImageQuizSolvedRequest> imageQuizSolvedRequestList
 ) {
 }
