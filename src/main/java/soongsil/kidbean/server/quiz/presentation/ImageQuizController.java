@@ -38,18 +38,24 @@ public class ImageQuizController {
     private final ImageQuizService imageQuizService;
 
     @GetMapping("/member/{memberId}/{quizId}")
-    public ResponseEntity<ImageQuizMemberDetailResponse> getImageQuizById(@PathVariable Long memberId,
+    public ResponseEntity<ResponseTemplate<Object>> getImageQuizById(@PathVariable Long memberId,
                                                                           @PathVariable Long quizId) {
+
+        ImageQuizMemberDetailResponse response = imageQuizService.getImageQuizById(memberId, quizId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.getImageQuizById(memberId, quizId));
+                .body(ResponseTemplate.from(response));
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<ImageQuizMemberResponse>> getAllImageQuizByMember(@PathVariable Long memberId) {
+    public ResponseEntity<ResponseTemplate<Object>> getAllImageQuizByMember(@PathVariable Long memberId) {
+
+        List<ImageQuizMemberResponse> response = imageQuizService.getAllImageQuizByMember(memberId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(imageQuizService.getAllImageQuizByMember(memberId));
+                .body(ResponseTemplate.from(response));
     }
 
     @Operation(summary = "ImageQuiz 문제 가져오기", description = "랜덤 ImageQuiz 가져오기")

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
@@ -39,7 +40,7 @@ public class WordQuizService {
     public WordQuizResponse selectRandomWordQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));;
         Page<WordQuiz> WordQuizPage = generateRandomWordQuizPage(member);
 
         WordQuiz WordQuiz = pageHasWordQuiz(WordQuizPage)
@@ -88,7 +89,7 @@ public class WordQuizService {
 
     public WordQuizMemberDetailResponse getWordQuizById(Long memberId, Long quizId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));;
         WordQuiz WordQuiz = wordQuizRepository.findByQuizIdAndMember(quizId, member)
                 .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
 

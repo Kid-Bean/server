@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
+import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
@@ -37,7 +38,7 @@ public class AnswerQuizService {
     public AnswerQuizResponse selectRandomAnswerQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));
         Page<AnswerQuiz> answerQuizPage = generateRandomAnswerQuizPage(member);
 
         AnswerQuiz answerQuiz = pageHasAnswerQuiz(answerQuizPage)

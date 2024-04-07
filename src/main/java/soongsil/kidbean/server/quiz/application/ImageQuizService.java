@@ -16,6 +16,7 @@ import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
@@ -47,16 +48,16 @@ public class ImageQuizService {
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember(quizId, member)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         return ImageQuizMemberDetailResponse.from(imageQuiz);
     }
 
     public List<ImageQuizMemberResponse> getAllImageQuizByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return imageQuizRepository.findAllByMember(member)
                 .stream()
@@ -74,7 +75,7 @@ public class ImageQuizService {
                                                          Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(
                 imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
@@ -89,7 +90,7 @@ public class ImageQuizService {
     public ImageQuizResponse selectRandomImageQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));;
 
         QuizCategory quizCategory = selectRandomCategory();
         Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, quizCategory);
@@ -155,7 +156,7 @@ public class ImageQuizService {
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));;
 
         String folderName = QUIZ_NAME + request.quizCategory();
         String uploadUrl = s3Uploader.upload(image, folderName);
