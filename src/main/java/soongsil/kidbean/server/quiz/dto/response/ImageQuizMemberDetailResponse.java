@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.dto.response;
 
 import lombok.Builder;
+import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
 

@@ -3,12 +3,15 @@ package soongsil.kidbean.server.quiz.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +25,8 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
@@ -56,5 +61,21 @@ class ImageQuizServiceTest {
 
         //then
         assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getCategory().toString());
+    }
+
+    @Test
+    @DisplayName("quizId에 해당하는 ImageQuiz 반환")
+    void getImageQuiz() {
+        // given
+        given(memberRepository.findById(MEMBER.getMemberId()))
+                .willReturn(Optional.of(MEMBER));
+        given(imageQuizRepository.findByQuizIdAndMember(any(Long.class), eq(MEMBER)))
+                .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
+
+        // when
+        ImageQuizMemberDetailResponse response = imageQuizService.getImageQuizById(MEMBER.getMemberId(), 1L);
+
+        // then
+        assertThat(response.answer()).isEqualTo(IMAGE_QUIZ_ANIMAL.getAnswer());
     }
 }
