@@ -80,8 +80,8 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 등록하기", description = "ImageQuiz 등록하기")
     @PostMapping("/member/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> uploadImageQuiz(@PathVariable Long memberId,
-                                                @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
-                                                @RequestPart(value = "image") MultipartFile image) {
+                                                @Valid @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
+                                                @RequestPart MultipartFile image) {
 
         imageQuizService.uploadImageQuiz(imageQuizUploadRequest, memberId, image);
 
@@ -94,8 +94,9 @@ public class ImageQuizController {
     @PutMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId,
-                                                @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
+                                                @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
                                                 @RequestPart MultipartFile image) {
+
         imageQuizService.updateImageQuiz(imageQuizUpdateRequest, memberId, quizId, image);
 
         return ResponseEntity
@@ -107,6 +108,7 @@ public class ImageQuizController {
     @DeleteMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId) {
+
         imageQuizService.deleteImageQuiz(memberId, quizId);
 
         return ResponseEntity
