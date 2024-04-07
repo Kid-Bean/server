@@ -10,10 +10,12 @@ import lombok.Getter;
 @Getter
 public enum QuizCategory {
 
-    ANIMAL("동물", 0),
-    PLANT("식물", 1),
-    OBJECT("사물", 2),
-    NONE("없음", 3);
+
+    NONE("없음", 0),
+    ANIMAL("동물", 1),
+    PLANT("식물", 2),
+    OBJECT("사물", 3),
+    ;
 
     private final String categoryName;
     private final int categoryCode;
