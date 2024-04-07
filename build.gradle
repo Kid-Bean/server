@@ -35,6 +35,11 @@ dependencies {
     //s3 테스트를 위한 mock 라이브러리
     testImplementation 'io.findify:s3mock_2.13:0.2.6'
 
+    // JSON
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.1'
+    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
+    implementation 'com.google.code.gson:gson:2.9.0'
+
     //swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'

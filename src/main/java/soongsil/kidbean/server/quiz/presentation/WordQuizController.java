@@ -14,7 +14,7 @@ import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/quiz/Word")
+@RequestMapping("/quiz/word")
 public class WordQuizController {
 
     private final WordQuizService wordQuizService;
