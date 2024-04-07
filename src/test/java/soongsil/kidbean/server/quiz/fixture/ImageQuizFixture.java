@@ -15,7 +15,7 @@ import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 public class ImageQuizFixture {
 
     public static final ImageQuiz IMAGE_QUIZ_ANIMAL = ImageQuiz.builder()
-            .category(ANIMAL)
+            .quizCategory(ANIMAL)
             .member(MEMBER)
             .level(BRONZE)
             .answer("animalAnswer")
@@ -24,7 +24,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_ANIMAL2 = ImageQuiz.builder()
-            .category(ANIMAL)
+            .quizCategory(ANIMAL)
             .member(MEMBER)
             .level(SILVER)
             .answer("animalAnswer2")
@@ -33,7 +33,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_PLANT = ImageQuiz.builder()
-            .category(PLANT)
+            .quizCategory(PLANT)
             .member(MEMBER)
             .level(GOLD)
             .answer("plantAnswer")
@@ -42,7 +42,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_OBJECT = ImageQuiz.builder()
-            .category(OBJECT)
+            .quizCategory(OBJECT)
             .member(MEMBER)
             .level(PLATINUM)
             .answer("objectAnswer")
@@ -51,7 +51,7 @@ public class ImageQuizFixture {
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_NONE = ImageQuiz.builder()
-            .category(NONE)
+            .quizCategory(NONE)
             .member(MEMBER)
             .level(DIAMOND)
             .answer("noneAnswer")
