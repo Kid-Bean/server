@@ -8,6 +8,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,6 @@ public interface WordQuizRepository extends JpaRepository<WordQuiz, Long> {
     Page<WordQuiz> findByMemberOrMember_Role(Member member, Role role, Pageable pageable);
 
     Optional<WordQuiz> findByQuizIdAndMember(Long quizId, Member member);
+
+    List<WordQuiz> findAllByMember(Member member);
 }

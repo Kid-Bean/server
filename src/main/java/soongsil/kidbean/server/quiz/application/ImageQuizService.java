@@ -91,7 +91,7 @@ public class ImageQuizService {
     public ImageQuizResponse selectRandomImageQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));;
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         QuizCategory quizCategory = selectRandomCategory();
         Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, quizCategory);
@@ -157,7 +157,7 @@ public class ImageQuizService {
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));;
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         String folderName = QUIZ_NAME + request.quizCategory();
         String uploadUrl = s3Uploader.upload(image, folderName);
