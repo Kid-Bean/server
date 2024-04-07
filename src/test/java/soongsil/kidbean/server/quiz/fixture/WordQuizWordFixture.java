@@ -3,19 +3,19 @@ package soongsil.kidbean.server.quiz.fixture;
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import org.springframework.test.util.ReflectionTestUtils;
-import soongsil.kidbean.server.quiz.domain.WordQuizWord;
+import soongsil.kidbean.server.quiz.domain.Word;
 
 public class WordQuizWordFixture {
 
-    public static final WordQuizWord WORD_QUIZ_WORD1 = WordQuizWord.builder()
+    public static final Word WORD_QUIZ_WORD1 = Word.builder()
             .quiz(WORD_QUIZ)
             .content("content1")
             .build();
-    public static final WordQuizWord WORD_QUIZ_WORD2 = WordQuizWord.builder()
+    public static final Word WORD_QUIZ_WORD2 = Word.builder()
             .quiz(WORD_QUIZ)
             .content("content2")
             .build();
-    public static final WordQuizWord WORD_QUIZ_WORD3 = WordQuizWord.builder()
+    public static final Word WORD_QUIZ_WORD3 = Word.builder()
             .quiz(WORD_QUIZ)
             .content("content3")
             .build();

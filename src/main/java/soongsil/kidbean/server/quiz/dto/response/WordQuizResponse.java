@@ -8,14 +8,14 @@ import soongsil.kidbean.server.quiz.domain.WordQuiz;
 public record WordQuizResponse(
         Long quizId,
         String title,
-        List<WordQuizWordResponse> words
+        List<WordResponse> words
 ) {
     public static WordQuizResponse from(WordQuiz WordQuiz) {
         return WordQuizResponse.builder()
                 .quizId(WordQuiz.getQuizId())
                 .title(WordQuiz.getTitle())
                 .words(WordQuiz.getWords().stream()
-                        .map(WordQuizWordResponse::from)
+                        .map(WordResponse::from)
                         .toList())
                 .build();
     }

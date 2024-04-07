@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 public record WordQuizMemberDetailResponse(
         String title,
-        List<WordQuizWordResponse> words
+        List<WordResponse> words
 ) {
     public static WordQuizMemberDetailResponse from(WordQuiz WordQuiz) {
         return WordQuizMemberDetailResponse
@@ -16,7 +16,7 @@ public record WordQuizMemberDetailResponse(
                 .title(WordQuiz.getTitle())
                 .words(WordQuiz.getWords()
                         .stream()
-                        .map(WordQuizWordResponse::from)
+                        .map(WordResponse::from)
                         .toList())
                 .build();
     }

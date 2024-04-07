@@ -22,16 +22,20 @@ public class WordQuiz {
     @Column(name = "title", length = 30)
     private String title;
 
+    @Column(name = "answer", length = 20)
+    private String answer;
+
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "quiz")
-    private List<WordQuizWord> words = new ArrayList<>();
+    @OneToMany(mappedBy = "quiz", orphanRemoval = true)
+    private List<Word> words = new ArrayList<>();
 
     @Builder
-    public WordQuiz(String title, Member member, List<WordQuizWord> words) {
+    public WordQuiz(String title, String answer, Member member, List<Word> words) {
         this.title = title;
+        this.answer = answer;
         this.member = member;
         this.words = words;
     }

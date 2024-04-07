@@ -18,7 +18,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.quiz.application.WordQuizService;
-import soongsil.kidbean.server.quiz.domain.WordQuizWord;
+import soongsil.kidbean.server.quiz.domain.Word;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
 
 @WebMvcTest(WordQuizController.class)
@@ -38,7 +38,7 @@ class WordQuizControllerTest {
         //given
         Long memberId = MEMBER.getMemberId();
         WordQuizResponse wordQuizResponse = WordQuizResponse.from(WORD_QUIZ);
-        List<WordQuizWord> wordList = WORD_QUIZ.getWords();
+        List<Word> wordList = WORD_QUIZ.getWords();
 
         given(wordQuizService.selectRandomWordQuiz(memberId))
                 .willReturn(wordQuizResponse);
