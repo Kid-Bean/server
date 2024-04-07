@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
 @Getter
-public class ImageInfo {
+public class S3Info {
 
-    @Column(name = "image_url", length = 200)
-    private String imageUrl;
+    @Column(name = "s3_url", length = 200)
+    private String s3Url;
 
     @Column(name = "file_name", length = 200)
     private String fileName;
@@ -24,8 +24,8 @@ public class ImageInfo {
     private String folderName;
 
     @Builder
-    public ImageInfo(String imageUrl, String fileName, String folderName) {
-        this.imageUrl = imageUrl;
+    public S3Info(String s3Url, String fileName, String folderName) {
+        this.s3Url = s3Url;
         this.fileName = fileName;
         this.folderName = folderName;
     }

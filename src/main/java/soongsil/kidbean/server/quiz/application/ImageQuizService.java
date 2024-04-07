@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -23,6 +23,7 @@ import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
@@ -40,7 +41,8 @@ public class ImageQuizService {
     private final ImageQuizSolvedService imageQuizSolvedService;
     private final S3Uploader s3Uploader;
 
-    private static final String BUCKET_NAME = "kidbean.s3.ap-northeast-2.amazonaws.com";
+    private static final String COMMON_URL = "kidbean.s3.ap-northeast-2.amazonaws.com";
+    private static final String QUIZ_NAME = "quiz/";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
 
@@ -50,6 +52,16 @@ public class ImageQuizService {
                 .orElseThrow(RuntimeException::new);
 
         return ImageQuizMemberDetailResponse.from(imageQuiz);
+    }
+
+    public List<ImageQuizMemberResponse> getAllImageQuizByMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return imageQuizRepository.findAllByMember(member)
+                .stream()
+                .map(ImageQuizMemberResponse::from)
+                .toList();
     }
 
     /**
@@ -142,21 +154,20 @@ public class ImageQuizService {
 
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
-
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
-        String folderName = "quiz" + "/" + request.category();
+        String folderName = QUIZ_NAME + request.category();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
-        String generatedPath = uploadUrl.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
+        String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
 
         ImageQuiz imageQuiz = request.toImageQuiz(member);
-        imageQuiz.setImageInfo(
-                ImageInfo.builder()
-                        .imageUrl(uploadUrl)
+        imageQuiz.setS3Info(
+                S3Info.builder()
+                        .s3Url(uploadUrl)
                         .fileName(generatedPath)
-                        .folderName("quiz" + "/" + request.category())
+                        .folderName(QUIZ_NAME + request.category())
                         .build());
 
         imageQuizRepository.save(imageQuiz);
@@ -164,32 +175,38 @@ public class ImageQuizService {
 
     @Transactional
     public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         // 이미지 수정이 되지 않는 것 default
-        ImageInfo imageInfo = imageQuiz.getImageInfo();
+        S3Info s3Info = imageQuiz.getS3Info();
 
         // 이미지 수정이 된 경우 (이미지 수정이 됐을 때는 filename이 공백("")이 아니므로 file 받아옴)
-        String originalUrl = imageQuiz.getImageInfo().getImageUrl();
+        String originalUrl = imageQuiz.getS3Info().getS3Url();
         log.info("original: " + originalUrl);
 
         if (!image.getOriginalFilename().isEmpty()) {
-            s3Uploader.deleteFile(imageQuiz.getImageInfo());
+            s3Uploader.deleteFile(imageQuiz.getS3Info());
 
-            String updateFolderName = "quiz" + "/" + request.category();
+            String updateFolderName = QUIZ_NAME + request.category();
             String updateUrl = s3Uploader.upload(image, updateFolderName);
-            String generatedPath = updateUrl.split("/" + BUCKET_NAME + "/" + updateFolderName + "/")[1];
-            imageInfo = ImageInfo.builder()
-                    .imageUrl(updateUrl)
+            String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
+            s3Info = S3Info.builder()
+                    .s3Url(updateUrl)
                     .fileName(generatedPath)
-                    .folderName("quiz" + "/" + request.category())
+                    .folderName(QUIZ_NAME + request.category())
                     .build();
         }
 
-        imageQuiz.update(request.title(), request.answer(), request.category(), imageInfo);
+        imageQuiz.update(request.title(), request.answer(), request.category(), s3Info);
+    }
+
+    @Transactional
+    public void deleteImageQuiz(Long memberId, Long quizId) {
+        ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
+
+        imageQuizRepository.delete(imageQuiz);
+        imageQuizRepository.flush();
     }
 }

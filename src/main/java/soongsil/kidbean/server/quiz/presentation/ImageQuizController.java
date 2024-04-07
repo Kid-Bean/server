@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedListRequest;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 
@@ -33,7 +37,7 @@ public class ImageQuizController {
 
     private final ImageQuizService imageQuizService;
 
-    @GetMapping("/{memberId}/{quizId}")
+    @GetMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ImageQuizMemberDetailResponse> getImageQuizById(@PathVariable Long memberId,
                                                                           @PathVariable Long quizId) {
         return ResponseEntity
@@ -41,6 +45,12 @@ public class ImageQuizController {
                 .body(imageQuizService.getImageQuizById(memberId, quizId));
     }
 
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<ImageQuizMemberResponse>> getAllImageQuizByMember(@PathVariable Long memberId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(imageQuizService.getAllImageQuizByMember(memberId));
+    }
 
     @Operation(summary = "ImageQuiz 문제 가져오기", description = "랜덤 ImageQuiz 가져오기")
     @GetMapping("/{memberId}")
@@ -77,12 +87,22 @@ public class ImageQuizController {
                 .build();
     }
 
-    @PutMapping("/{memberId}/{quizId}")
+    @PutMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<Void> updateImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId,
                                                 @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
                                                 @RequestPart MultipartFile image) {
         imageQuizService.updateImageQuiz(imageQuizUpdateRequest, memberId, quizId, image);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @DeleteMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<Void> deleteImageQuiz(@PathVariable Long memberId,
+                                                @PathVariable Long quizId) {
+        imageQuizService.deleteImageQuiz(memberId, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

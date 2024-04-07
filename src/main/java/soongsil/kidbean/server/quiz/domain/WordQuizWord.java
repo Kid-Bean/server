@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SentenceQuizWord {
+public class WordQuizWord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +21,10 @@ public class SentenceQuizWord {
 
     @JoinColumn(name = "quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private SentenceQuiz quiz;
+    private WordQuiz quiz;
 
     @Builder
-    public SentenceQuizWord(String content, SentenceQuiz quiz) {
+    public WordQuizWord(String content, WordQuiz quiz) {
         this.content = content;
         this.quiz = quiz;
     }

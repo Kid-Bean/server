@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 
 @Slf4j
 @Import(AwsS3MockConfig.class)
@@ -83,8 +83,8 @@ class S3UploaderTest {
                 .isInstanceOf(AmazonS3Exception.class);
     }
 
-    private ImageInfo generateImageInfo(String urlPath) {
+    private S3Info generateImageInfo(String urlPath) {
         String generatedPath = urlPath.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
-        return new ImageInfo(urlPath, generatedPath, folderName);
+        return new S3Info(urlPath, generatedPath, folderName);
     }
 }

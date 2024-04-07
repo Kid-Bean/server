@@ -6,7 +6,7 @@ import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
 
 @Getter
 @RequiredArgsConstructor
-public class SentenceQuizNotFoundException extends RuntimeException {
+public class WordQuizNotFoundException extends RuntimeException {
 
     private final ErrorCode errorCode;
 }

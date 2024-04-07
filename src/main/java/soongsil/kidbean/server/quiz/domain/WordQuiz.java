@@ -12,7 +12,7 @@ import soongsil.kidbean.server.member.domain.Member;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SentenceQuiz {
+public class WordQuiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,10 @@ public class SentenceQuiz {
     private Member member;
 
     @OneToMany(mappedBy = "quiz")
-    private List<SentenceQuizWord> words = new ArrayList<>();
+    private List<WordQuizWord> words = new ArrayList<>();
 
     @Builder
-    public SentenceQuiz(String title, Member member, List<SentenceQuizWord> words) {
+    public WordQuiz(String title, Member member, List<WordQuizWord> words) {
         this.title = title;
         this.member = member;
         this.words = words;

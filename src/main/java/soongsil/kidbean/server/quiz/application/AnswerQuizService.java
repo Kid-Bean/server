@@ -1,6 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.SENTENCE_QUIZ_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
-import soongsil.kidbean.server.quiz.exception.SentenceQuizNotFoundException;
+import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
 
 @Slf4j
@@ -41,7 +41,7 @@ public class AnswerQuizService {
         Page<AnswerQuiz> answerQuizPage = generateRandomAnswerQuizPage(member);
 
         AnswerQuiz answerQuiz = pageHasAnswerQuiz(answerQuizPage)
-                .orElseThrow(() -> new SentenceQuizNotFoundException(SENTENCE_QUIZ_NOT_FOUND));
+                .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
 
         return AnswerQuizResponse.from(answerQuiz);
     }

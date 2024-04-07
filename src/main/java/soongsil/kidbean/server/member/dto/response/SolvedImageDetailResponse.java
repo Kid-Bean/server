@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.mypage.dto.response;
+package soongsil.kidbean.server.member.dto.response;
 
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
@@ -14,7 +14,7 @@ public record SolvedImageDetailResponse(
 
         return new SolvedImageDetailResponse(
                 imageQuizSolved.getSolvedId(),
-                imageQuiz.getImageInfo().getImageUrl(),
+                imageQuiz.getS3Info().getS3Url(),
                 imageQuiz.getAnswer(),
                 imageQuizSolved.getAnswer()
         );

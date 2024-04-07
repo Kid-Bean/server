@@ -13,7 +13,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
@@ -38,7 +38,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .level(BRONZE)
                     .title("titleAnimal")
                     .answer("answerAnimal")
-                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
                     .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
@@ -46,7 +46,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .level(SILVER)
                     .title("titleNone")
                     .answer("answerNone")
-                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
                     .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
@@ -54,7 +54,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .level(SILVER)
                     .title("titleObject")
                     .answer("answerObject")
-                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
                     .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
@@ -62,7 +62,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .level(SILVER)
                     .title("titleObject2")
                     .answer("answerObject2")
-                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
                     .member(DUMMY_MEMBER)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
@@ -70,7 +70,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .level(SILVER)
                     .title("titlePlant")
                     .answer("answerPlant")
-                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
                     .member(DUMMY_MEMBER)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
@@ -78,7 +78,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .level(SILVER)
                     .title("titlePlant2")
                     .answer("answerPlant2")
-                    .imageInfo(new ImageInfo("imageUrl", "filename", "folderName"))
+                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
                     .member(DUMMY_ADMIN)
                     .build());
 

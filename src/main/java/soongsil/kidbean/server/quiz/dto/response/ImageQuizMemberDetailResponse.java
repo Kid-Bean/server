@@ -15,7 +15,7 @@ public record ImageQuizMemberDetailResponse(
         return ImageQuizMemberDetailResponse
                 .builder()
                 .title(imageQuiz.getTitle())
-                .imageUrl(imageQuiz.getImageInfo().getImageUrl())
+                .imageUrl(imageQuiz.getS3Info().getS3Url())
                 .answer(imageQuiz.getAnswer())
                 .category(imageQuiz.getCategory())
                 .build();

@@ -13,7 +13,7 @@ public record ImageQuizResponse(
         return new ImageQuizResponse(imageQuiz.getQuizId(),
                 imageQuiz.getCategory().toString(),
                 imageQuiz.getAnswer(),
-                imageQuiz.getImageInfo().getImageUrl(),
+                imageQuiz.getS3Info().getS3Url(),
                 imageQuiz.getTitle());
     }
 }

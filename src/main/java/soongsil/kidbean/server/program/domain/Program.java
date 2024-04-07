@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
@@ -40,19 +40,19 @@ public class Program {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "image_url", column = @Column(name = "teacher_image_url")),
-            @AttributeOverride(name = "file_name", column = @Column(name = "teacher_file_name")),
-            @AttributeOverride(name = "folder_name", column = @Column(name = "teacher_folder_name"))
+            @AttributeOverride(name = "s3Url", column = @Column(name = "teacher_s3_url", length = 200)),
+            @AttributeOverride(name = "fileName", column = @Column(name = "teacher_file_name", length = 200)),
+            @AttributeOverride(name = "folderName", column = @Column(name = "teacher_folder_name", length = 100))
     })
-    private ImageInfo teacherImageInfo;
+    private S3Info teacherS3Info;
 
-//    @Embedded
-//    @AttributeOverrides({
-//            @AttributeOverride(name = "image_url", column = @Column(name = "program_image_url")),
-//            @AttributeOverride(name = "file_name", column = @Column(name = "program_file_name")),
-//            @AttributeOverride(name = "folder_name", column = @Column(name = "program_folder_name"))
-//    })
-//    private ImageInfo programImageInfo;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "s3Url", column = @Column(name = "program_s3_url", length = 200)),
+            @AttributeOverride(name = "fileName", column = @Column(name = "program_file_name", length = 200)),
+            @AttributeOverride(name = "folderName", column = @Column(name = "program_folder_name", length = 100))
+    })
+    private S3Info programS3Info;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)

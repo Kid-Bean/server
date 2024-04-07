@@ -20,7 +20,7 @@ import soongsil.kidbean.server.global.exception.response.ErrorResponse.Validatio
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
-import soongsil.kidbean.server.quiz.exception.SentenceQuizNotFoundException;
+import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -57,8 +57,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode);
     }
 
-    @ExceptionHandler(SentenceQuizNotFoundException.class)
-    public ResponseEntity<Object> handleSentenceQuizNotFound(final SentenceQuizNotFoundException e) {
+    @ExceptionHandler(WordQuizNotFoundException.class)
+    public ResponseEntity<Object> handleWordQuizNotFound(final WordQuizNotFoundException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }

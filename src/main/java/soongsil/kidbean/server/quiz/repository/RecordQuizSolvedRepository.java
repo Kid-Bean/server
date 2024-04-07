@@ -3,12 +3,12 @@ package soongsil.kidbean.server.quiz.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.RecordQuizSolved;
+import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 
 
-public interface RecordQuizSolvedRepository extends JpaRepository<RecordQuizSolved, Long> {
+public interface RecordQuizSolvedRepository extends JpaRepository<AnswerQuizSolved, Long> {
 
-    List<RecordQuizSolved> findAllByMemberAndSentenceQuizIsNotNull(Member member);
+    List<AnswerQuizSolved> findAllByMemberAndWordQuizIsNotNull(Member member);
 
-    List<RecordQuizSolved> findAllByMemberAndAnswerQuizIsNotNull(Member member);
+    List<AnswerQuizSolved> findAllByMemberAndAnswerQuizIsNotNull(Member member);
 }

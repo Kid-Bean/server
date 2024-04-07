@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.global.exception.FileConvertFailException;
 
 @Slf4j
@@ -44,8 +44,8 @@ public class S3Uploader {
     }
 
     //S3 버킷에 있는 파일을 삭제
-    public void deleteFile(ImageInfo imageInfo) {
-        String deleteFileName = imageInfo.getFolderName() + "/" + imageInfo.getFileName();
+    public void deleteFile(S3Info s3Info) {
+        String deleteFileName = s3Info.getFolderName() + "/" + s3Info.getFileName();
         log.info("delete fileName: {}", deleteFileName);
         amazonS3Client.deleteObject(bucket, deleteFileName);
     }

@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.mypage.dto.response;
+package soongsil.kidbean.server.member.dto.response;
 
 import java.util.List;
 

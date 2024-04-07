@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecordQuizSolved {
+public class AnswerQuizSolved {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +22,10 @@ public class RecordQuizSolved {
     private Long solvedId;
 
     @Embedded
-    private ImageInfo recordAnswer;
+    private S3Info recordAnswer;
 
-    @Column(name = "sentence_answer", length = 80)
-    private String sentenceAnswer;
+    @Column(name = "word_answer", length = 80)
+    private String wordAnswer;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime solvedTime;
@@ -34,22 +34,22 @@ public class RecordQuizSolved {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @JoinColumn(name = "sentence_quiz_id")
+    @JoinColumn(name = "word_quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private SentenceQuiz sentenceQuiz;
+    private WordQuiz wordQuiz;
 
     @JoinColumn(name = "answer_quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private AnswerQuiz answerQuiz;
 
     @Builder
-    public RecordQuizSolved(ImageInfo recordAnswer, String sentenceAnswer, LocalDateTime solvedTime, Member member,
-                            SentenceQuiz sentenceQuiz, AnswerQuiz answerQuiz) {
+    public AnswerQuizSolved(S3Info recordAnswer, String wordAnswer, LocalDateTime solvedTime, Member member,
+                            WordQuiz wordQuiz, AnswerQuiz answerQuiz) {
         this.recordAnswer = recordAnswer;
-        this.sentenceAnswer = sentenceAnswer;
+        this.wordAnswer = wordAnswer;
         this.solvedTime = solvedTime;
         this.member = member;
-        this.sentenceQuiz = sentenceQuiz;
+        this.wordQuiz = wordQuiz;
         this.answerQuiz = answerQuiz;
     }
 }

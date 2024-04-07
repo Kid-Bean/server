@@ -9,7 +9,7 @@ import static soongsil.kidbean.server.quiz.domain.type.Level.PLATINUM;
 import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;
 
 import org.springframework.test.util.ReflectionTestUtils;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
 public class ImageQuizFixture {
@@ -20,7 +20,7 @@ public class ImageQuizFixture {
             .level(BRONZE)
             .answer("animalAnswer")
             .title("animalTitle")
-            .imageInfo(new ImageInfo("animal", null, null))
+            .s3Info(new S3Info("animal", null, null))
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_ANIMAL2 = ImageQuiz.builder()
@@ -29,7 +29,7 @@ public class ImageQuizFixture {
             .level(SILVER)
             .answer("animalAnswer2")
             .title("animalTitle2")
-            .imageInfo(new ImageInfo("animal2", null, null))
+            .s3Info(new S3Info("animal2", null, null))
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_PLANT = ImageQuiz.builder()
@@ -38,7 +38,7 @@ public class ImageQuizFixture {
             .level(GOLD)
             .answer("plantAnswer")
             .title("planTitle")
-            .imageInfo(new ImageInfo("plan", null, null))
+            .s3Info(new S3Info("plan", null, null))
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_OBJECT = ImageQuiz.builder()
@@ -47,7 +47,7 @@ public class ImageQuizFixture {
             .level(PLATINUM)
             .answer("objectAnswer")
             .title("objectTitle")
-            .imageInfo(new ImageInfo("object", null, null))
+            .s3Info(new S3Info("object", null, null))
             .build();
 
     public static final ImageQuiz IMAGE_QUIZ_NONE = ImageQuiz.builder()
@@ -56,7 +56,7 @@ public class ImageQuizFixture {
             .level(DIAMOND)
             .answer("noneAnswer")
             .title("noneTitle")
-            .imageInfo(new ImageInfo("none", null, null))
+            .s3Info(new S3Info("none", null, null))
             .build();
 
     static {
