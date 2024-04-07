@@ -24,8 +24,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
-import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
@@ -43,24 +42,24 @@ class ImageQuizServiceTest {
     private ImageQuizService imageQuizService;
 
     @Test
-    void ImageQuizResponse_생성_테스트() {
+    @DisplayName("ImageQuizResponse 생성 테스트")
+    void selectRandomImageQuiz() {
         //given
         List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL);
         Page<ImageQuiz> imageQuizPage = new PageImpl<>(imageQuizList);
 
-        given(imageQuizRepository.findAllImageQuizWithPage(
-                any(Member.class), any(Role.class), any(Category.class), any(Pageable.class)))
+        given(imageQuizRepository.findImageQuizWithPage(
+                any(Member.class), any(Role.class), any(QuizCategory.class), any(Pageable.class)))
                 .willReturn(imageQuizPage);
-        given(imageQuizRepository.countByMemberAndCategory(any(Member.class), any(Category.class)))
-                .willReturn(1);
-        given(imageQuizRepository.countByMember_RoleAndCategory(any(Role.class), any(Category.class))).willReturn(0);
+        given(imageQuizRepository.countByMemberAndCategoryOrRole(
+                any(Member.class), any(QuizCategory.class), any(Role.class))).willReturn(1);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER));
 
         //when
-        ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomProblem(1L);
+        ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(1L);
 
         //then
-        assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getCategory().toString());
+        assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getQuizCategory().toString());
     }
 
     @Test

@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
+
 import ch.qos.logback.core.testUtil.RandomUtil;
 import java.util.List;
 import java.util.Optional;
@@ -11,20 +13,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.MemberNotFoundException;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 @Slf4j
@@ -42,6 +45,7 @@ public class ImageQuizService {
     private static final String QUIZ_NAME = "quiz/";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember(quizId, member)
@@ -66,13 +70,14 @@ public class ImageQuizService {
      * @return 추가된 점수
      */
     @Transactional
-    public Long solveImageQuizzes(
-            List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
-            Long memberId) {
+    public ImageQuizSolveScoreResponse solveImageQuizzes(List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
+                                                         Long memberId) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        return imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member);
+        return ImageQuizSolveScoreResponse.scoreFrom(
+                imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
     }
 
     /**
@@ -81,15 +86,16 @@ public class ImageQuizService {
      * @param memberId 문제를 풀 멤버의 id
      * @return 이미지 퀴즈 DTO
      */
-    public ImageQuizResponse selectRandomProblem(Long memberId) {
+    public ImageQuizResponse selectRandomImageQuiz(Long memberId) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Category category = selectRandomCategory();
-        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, category);
+        QuizCategory quizCategory = selectRandomCategory();
+        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, quizCategory);
 
         ImageQuiz imageQuiz = pageHasImageQuiz(imageQuizPage)
-                .orElseThrow(ImageQuizNotFoundException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         return ImageQuizResponse.from(imageQuiz);
     }
@@ -99,41 +105,37 @@ public class ImageQuizService {
      *
      * @return 랜덤 카테고리
      */
-    private Category selectRandomCategory() {
-        return Category.valueOfCode(RandomUtil.getPositiveInt() % 4);
+    private QuizCategory selectRandomCategory() {
+        return QuizCategory.valueOfCode(RandomUtil.getPositiveInt() % 4);
     }
 
     /**
      * 랜덤 ImageQuiz를 Page로 감싸서 return
      *
-     * @param member   멤버
-     * @param category 카테고리
+     * @param member       멤버
+     * @param quizCategory 카테고리
      * @return 풀 이미지 퀴즈가 있는 Page
      */
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, Category category) {
-        int divVal = getImageQuizCount(member, category);
+    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, QuizCategory quizCategory) {
+
+        int divVal = getImageQuizCount(member, quizCategory);
         int idx = RandomUtil.getPositiveInt() % divVal;
 
         log.info("divVal: {}, idx: {}", divVal, idx);
 
-        return imageQuizRepository.findAllImageQuizWithPage(
-                member, Role.ADMIN, category, PageRequest.of(idx, 1));
+        return imageQuizRepository.findImageQuizWithPage(
+                member, Role.ADMIN, quizCategory, PageRequest.of(idx, 1));
     }
 
     /**
      * 이미지 퀴즈 총 개수(admin + member가 올린 전체)
      *
-     * @param member   멤버
-     * @param category 카테고리
+     * @param member       멤버
+     * @param quizCategory 카테고리
      * @return 해당 멤버와 관리자가 해당 카테고리에 등록한 이미지 퀴즈의 총 수
      */
-    private int getImageQuizCount(Member member, Category category) {
-        int userProblemCount = imageQuizRepository.countByMemberAndCategory(member, category);
-        int adminProblemCount = imageQuizRepository.countByMember_RoleAndCategory(Role.ADMIN, category);
-
-        log.info("userCnt: {}, adminCnt: {}", userProblemCount, adminProblemCount);
-
-        return userProblemCount + adminProblemCount;
+    private Integer getImageQuizCount(Member member, QuizCategory quizCategory) {
+        return imageQuizRepository.countByMemberAndCategoryOrRole(member, quizCategory, Role.ADMIN);
     }
 
     /**
@@ -149,23 +151,23 @@ public class ImageQuizService {
             return Optional.empty();
         }
     }
-  
+
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        String folderName = QUIZ_NAME +  request.category();
+        String folderName = QUIZ_NAME + request.quizCategory();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
         String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
 
         ImageQuiz imageQuiz = request.toImageQuiz(member);
-        imageQuiz.setImageInfo(
-                ImageInfo.builder()
-                        .imageUrl(uploadUrl)
+        imageQuiz.setS3Info(
+                S3Info.builder()
+                        .s3Url(uploadUrl)
                         .fileName(generatedPath)
-                        .folderName(QUIZ_NAME + request.category())
+                        .folderName(QUIZ_NAME + request.quizCategory())
                         .build());
 
         imageQuizRepository.save(imageQuiz);
@@ -174,31 +176,35 @@ public class ImageQuizService {
     @Transactional
     public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
-                .orElseThrow(ImageQuizNotFoundException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         // 이미지 수정이 되지 않는 것 default
-        ImageInfo imageInfo = imageQuiz.getImageInfo();
+        S3Info s3Info = imageQuiz.getS3Info();
+
+        // 이미지 수정이 된 경우 (이미지 수정이 됐을 때는 filename이 공백("")이 아니므로 file 받아옴)
+        String originalUrl = imageQuiz.getS3Info().getS3Url();
+        log.info("original: " + originalUrl);
 
         if (!image.getOriginalFilename().isEmpty()) {
-            s3Uploader.deleteFile(imageQuiz.getImageInfo());
+            s3Uploader.deleteFile(imageQuiz.getS3Info());
 
-            String updateFolderName = QUIZ_NAME + request.category();
+            String updateFolderName = QUIZ_NAME + request.quizCategory();
             String updateUrl = s3Uploader.upload(image, updateFolderName);
             String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
-            imageInfo = ImageInfo.builder()
-                    .imageUrl(updateUrl)
+            s3Info = S3Info.builder()
+                    .s3Url(updateUrl)
                     .fileName(generatedPath)
-                    .folderName(QUIZ_NAME + request.category())
+                    .folderName(QUIZ_NAME + request.quizCategory())
                     .build();
         }
 
-        imageQuiz.update(request.title(), request.answer(), request.category(), imageInfo);
+        imageQuiz.update(request.title(), request.answer(), request.quizCategory(), s3Info);
     }
 
     @Transactional
     public void deleteImageQuiz(Long memberId, Long quizId) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
-                .orElseThrow(ImageQuizNotFoundException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         imageQuizRepository.delete(imageQuiz);
         imageQuizRepository.flush();

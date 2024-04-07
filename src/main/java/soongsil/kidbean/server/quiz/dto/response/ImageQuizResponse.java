@@ -11,9 +11,9 @@ public record ImageQuizResponse(
 ) {
     public static ImageQuizResponse from(ImageQuiz imageQuiz) {
         return new ImageQuizResponse(imageQuiz.getQuizId(),
-                imageQuiz.getCategory().toString(),
+                imageQuiz.getQuizCategory().toString(),
                 imageQuiz.getAnswer(),
-                imageQuiz.getImageInfo().getImageUrl(),
+                imageQuiz.getS3Info().getS3Url(),
                 imageQuiz.getTitle());
     }
 }
