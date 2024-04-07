@@ -1,10 +1,5 @@
 package soongsil.kidbean.server.quiz.util;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
-
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -13,6 +8,12 @@ import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
+import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class AnswerQuizInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (answerQuizRepository.count() > 0) {
-            log.info("[WordQuiz]더미 데이터 존재");
+            log.info("[AnswerQuiz]더미 데이터 존재");
         } else {
             List<AnswerQuiz> answerQuizList = new ArrayList<>();
 
