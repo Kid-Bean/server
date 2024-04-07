@@ -1,10 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
 
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
-
 import ch.qos.logback.core.testUtil.RandomUtil;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,14 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
-import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
+import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
+
+import java.util.Optional;
+
+import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -40,7 +41,7 @@ public class WordQuizService {
     public WordQuizResponse selectRandomWordQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));;
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));;
         Page<WordQuiz> WordQuizPage = generateRandomWordQuizPage(member);
 
         WordQuiz WordQuiz = pageHasWordQuiz(WordQuizPage)
@@ -89,7 +90,7 @@ public class WordQuizService {
 
     public WordQuizMemberDetailResponse getWordQuizById(Long memberId, Long quizId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));;
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));;
         WordQuiz WordQuiz = wordQuizRepository.findByQuizIdAndMember(quizId, member)
                 .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
 

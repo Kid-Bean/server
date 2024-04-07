@@ -29,7 +29,7 @@ public class WordQuiz {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "quiz", orphanRemoval = true)
+    @OneToMany(mappedBy = "wordQuiz", orphanRemoval = true)
     private List<Word> words = new ArrayList<>();
 
     @Builder

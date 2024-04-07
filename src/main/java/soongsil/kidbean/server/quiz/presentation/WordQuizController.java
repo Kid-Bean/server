@@ -30,10 +30,13 @@ public class WordQuizController {
     }
 
     @GetMapping("/member/{memberId}/{quizId}")
-    public ResponseEntity<WordQuizMemberDetailResponse> getWordQuizById(@PathVariable Long memberId,
+    public ResponseEntity<ResponseTemplate<Object>> getWordQuizById(@PathVariable Long memberId,
                                                                         @PathVariable Long quizId) {
+
+        WordQuizMemberDetailResponse response = wordQuizService.getWordQuizById(memberId, quizId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(wordQuizService.getWordQuizById(memberId, quizId));
+                .body(ResponseTemplate.from(response));
     }
 }
