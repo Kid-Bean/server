@@ -10,6 +10,9 @@ import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.global.vo.S3Info;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "image_quiz")
 @Getter
 @Entity
@@ -41,6 +44,9 @@ public class ImageQuiz {
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    @OneToMany(mappedBy = "imageQuiz", orphanRemoval = true)
+    private List<ImageQuizSolved> imageQuizSolvedList = new ArrayList<>();
 
     @Builder
     public ImageQuiz(QuizCategory quizCategory, String answer, String title, S3Info s3Info, Level level,
