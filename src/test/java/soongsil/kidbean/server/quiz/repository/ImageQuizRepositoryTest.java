@@ -2,7 +2,7 @@ package soongsil.kidbean.server.quiz.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.Category.*;
+import static soongsil.kidbean.server.quiz.domain.type.QuizCategory.*;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL2;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_NONE;

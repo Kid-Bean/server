@@ -1,7 +1,7 @@
 package soongsil.kidbean.server.quiz.fixture;
 
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.Category.*;
+import static soongsil.kidbean.server.quiz.domain.type.QuizCategory.*;
 import static soongsil.kidbean.server.quiz.domain.type.Level.BRONZE;
 import static soongsil.kidbean.server.quiz.domain.type.Level.DIAMOND;
 import static soongsil.kidbean.server.quiz.domain.type.Level.GOLD;

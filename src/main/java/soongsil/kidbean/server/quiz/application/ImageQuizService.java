@@ -18,7 +18,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
@@ -91,8 +91,8 @@ public class ImageQuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Category category = selectRandomCategory();
-        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, category);
+        QuizCategory quizCategory = selectRandomCategory();
+        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, quizCategory);
 
         ImageQuiz imageQuiz = pageHasImageQuiz(imageQuizPage)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
@@ -105,37 +105,37 @@ public class ImageQuizService {
      *
      * @return 랜덤 카테고리
      */
-    private Category selectRandomCategory() {
-        return Category.valueOfCode(RandomUtil.getPositiveInt() % 4);
+    private QuizCategory selectRandomCategory() {
+        return QuizCategory.valueOfCode(RandomUtil.getPositiveInt() % 4);
     }
 
     /**
      * 랜덤 ImageQuiz를 Page로 감싸서 return
      *
-     * @param member   멤버
-     * @param category 카테고리
+     * @param member       멤버
+     * @param quizCategory 카테고리
      * @return 풀 이미지 퀴즈가 있는 Page
      */
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, Category category) {
+    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, QuizCategory quizCategory) {
 
-        int divVal = getImageQuizCount(member, category);
+        int divVal = getImageQuizCount(member, quizCategory);
         int idx = RandomUtil.getPositiveInt() % divVal;
 
         log.info("divVal: {}, idx: {}", divVal, idx);
 
         return imageQuizRepository.findImageQuizWithPage(
-                member, Role.ADMIN, category, PageRequest.of(idx, 1));
+                member, Role.ADMIN, quizCategory, PageRequest.of(idx, 1));
     }
 
     /**
      * 이미지 퀴즈 총 개수(admin + member가 올린 전체)
      *
-     * @param member   멤버
-     * @param category 카테고리
+     * @param member       멤버
+     * @param quizCategory 카테고리
      * @return 해당 멤버와 관리자가 해당 카테고리에 등록한 이미지 퀴즈의 총 수
      */
-    private Integer getImageQuizCount(Member member, Category category) {
-        return imageQuizRepository.countByMemberAndCategoryOrRole(member, category, Role.ADMIN);
+    private Integer getImageQuizCount(Member member, QuizCategory quizCategory) {
+        return imageQuizRepository.countByMemberAndCategoryOrRole(member, quizCategory, Role.ADMIN);
     }
 
     /**
@@ -157,7 +157,7 @@ public class ImageQuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        String folderName = QUIZ_NAME + request.category();
+        String folderName = QUIZ_NAME + request.quizCategory();
         String uploadUrl = s3Uploader.upload(image, folderName);
 
         String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
@@ -167,7 +167,7 @@ public class ImageQuizService {
                 S3Info.builder()
                         .s3Url(uploadUrl)
                         .fileName(generatedPath)
-                        .folderName(QUIZ_NAME + request.category())
+                        .folderName(QUIZ_NAME + request.quizCategory())
                         .build());
 
         imageQuizRepository.save(imageQuiz);
@@ -188,17 +188,17 @@ public class ImageQuizService {
         if (!image.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
 
-            String updateFolderName = QUIZ_NAME + request.category();
+            String updateFolderName = QUIZ_NAME + request.quizCategory();
             String updateUrl = s3Uploader.upload(image, updateFolderName);
             String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
             s3Info = S3Info.builder()
                     .s3Url(updateUrl)
                     .fileName(generatedPath)
-                    .folderName(QUIZ_NAME + request.category())
+                    .folderName(QUIZ_NAME + request.quizCategory())
                     .build();
         }
 
-        imageQuiz.update(request.title(), request.answer(), request.category(), s3Info);
+        imageQuiz.update(request.title(), request.answer(), request.quizCategory(), s3Info);
     }
 
     @Transactional

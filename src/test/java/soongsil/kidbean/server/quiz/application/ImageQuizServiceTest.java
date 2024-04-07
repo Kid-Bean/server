@@ -24,7 +24,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
@@ -49,17 +49,17 @@ class ImageQuizServiceTest {
         Page<ImageQuiz> imageQuizPage = new PageImpl<>(imageQuizList);
 
         given(imageQuizRepository.findImageQuizWithPage(
-                any(Member.class), any(Role.class), any(Category.class), any(Pageable.class)))
+                any(Member.class), any(Role.class), any(QuizCategory.class), any(Pageable.class)))
                 .willReturn(imageQuizPage);
         given(imageQuizRepository.countByMemberAndCategoryOrRole(
-                any(Member.class), any(Category.class), any(Role.class))).willReturn(1);
+                any(Member.class), any(QuizCategory.class), any(Role.class))).willReturn(1);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER));
 
         //when
         ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(1L);
 
         //then
-        assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getCategory().toString());
+        assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getQuizCategory().toString());
     }
 
     @Test

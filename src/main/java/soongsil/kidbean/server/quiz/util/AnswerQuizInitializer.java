@@ -9,12 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
 
 @Slf4j
 @RequiredArgsConstructor
+@Order(2)
 @LocalDummyDataInit
 public class AnswerQuizInitializer implements ApplicationRunner {
 

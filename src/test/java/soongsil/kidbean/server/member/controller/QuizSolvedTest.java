@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.mypage.controller;
+package soongsil.kidbean.server.member.controller;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

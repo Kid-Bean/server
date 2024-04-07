@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.global.vo.S3Info;
 
@@ -23,7 +23,7 @@ public class ImageQuiz {
 
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private QuizCategory quizCategory;
 
     @Column(name = "answer", length = 20)
     private String answer;
@@ -43,8 +43,9 @@ public class ImageQuiz {
     private Member member;
 
     @Builder
-    public ImageQuiz(Category category, String answer, String title, S3Info s3Info, Level level, Member member) {
-        this.category = category;
+    public ImageQuiz(QuizCategory quizCategory, String answer, String title, S3Info s3Info, Level level,
+                     Member member) {
+        this.quizCategory = quizCategory;
         this.answer = answer;
         this.title = title;
         this.s3Info = s3Info;
@@ -56,10 +57,10 @@ public class ImageQuiz {
         this.s3Info = s3Info;
     }
 
-    public void update(String title, String answer, Category category, S3Info s3Info) {
+    public void update(String title, String answer, QuizCategory quizCategory, S3Info s3Info) {
         this.title = title;
         this.answer = answer;
-        this.category = category;
+        this.quizCategory = quizCategory;
         this.s3Info = s3Info;
     }
 }

@@ -2,7 +2,7 @@ package soongsil.kidbean.server.quiz.util;
 
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.Category.*;
+import static soongsil.kidbean.server.quiz.domain.type.QuizCategory.*;
 import static soongsil.kidbean.server.quiz.domain.type.Level.*;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             List<ImageQuiz> imageQuizList = new ArrayList<>();
 
             imageQuizList.add(ImageQuiz.builder()
-                    .category(ANIMAL)
+                    .quizCategory(ANIMAL)
                     .level(BRONZE)
                     .title("titleAnimal")
                     .answer("answerAnimal")
@@ -42,7 +42,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
-                    .category(NONE)
+                    .quizCategory(NONE)
                     .level(SILVER)
                     .title("titleNone")
                     .answer("answerNone")
@@ -50,7 +50,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
-                    .category(OBJECT)
+                    .quizCategory(OBJECT)
                     .level(SILVER)
                     .title("titleObject")
                     .answer("answerObject")
@@ -58,7 +58,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_ADMIN)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
-                    .category(OBJECT)
+                    .quizCategory(OBJECT)
                     .level(SILVER)
                     .title("titleObject2")
                     .answer("answerObject2")
@@ -66,7 +66,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_MEMBER)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
-                    .category(PLANT)
+                    .quizCategory(PLANT)
                     .level(SILVER)
                     .title("titlePlant")
                     .answer("answerPlant")
@@ -74,7 +74,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_MEMBER)
                     .build());
             imageQuizList.add(ImageQuiz.builder()
-                    .category(PLANT)
+                    .quizCategory(PLANT)
                     .level(SILVER)
                     .title("titlePlant2")
                     .answer("answerPlant2")

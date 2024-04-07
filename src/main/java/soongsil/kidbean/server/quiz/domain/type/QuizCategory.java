@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import lombok.Getter;
 
 @Getter
-public enum Category {
+public enum QuizCategory {
 
     ANIMAL("동물", 0),
     PLANT("식물", 1),
@@ -18,16 +18,16 @@ public enum Category {
     private final String categoryName;
     private final int categoryCode;
 
-    Category(String categoryName, int categoryCode) {
+    QuizCategory(String categoryName, int categoryCode) {
         this.categoryName = categoryName;
         this.categoryCode = categoryCode;
     }
 
     //categoryCode와 이에 해당하는 Category의 Map
-    private static final Map<Integer, Category> BY_CODE = Collections.unmodifiableMap(
-            Stream.of(values()).collect(Collectors.toMap(Category::getCategoryCode, Function.identity())));
+    private static final Map<Integer, QuizCategory> BY_CODE = Collections.unmodifiableMap(
+            Stream.of(values()).collect(Collectors.toMap(QuizCategory::getCategoryCode, Function.identity())));
 
-    public static Category valueOfCode(int categoryCode) {
+    public static QuizCategory valueOfCode(int categoryCode) {
         return BY_CODE.get(categoryCode);
     }
 }
