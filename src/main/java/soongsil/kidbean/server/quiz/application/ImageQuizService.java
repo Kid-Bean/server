@@ -183,16 +183,14 @@ public class ImageQuizService {
         // 이미지 수정이 되지 않는 것 default
         S3Info s3Info = imageQuiz.getS3Info();
 
-        // 이미지 수정이 된 경우 (이미지 수정이 됐을 때는 filename이 공백("")이 아니므로 file 받아옴)
-        String originalUrl = imageQuiz.getS3Info().getS3Url();
-        log.info("original: " + originalUrl);
-
         if (!image.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
 
             String updateFolderName = QUIZ_NAME + request.quizCategory();
             String updateUrl = s3Uploader.upload(image, updateFolderName);
+
             String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
+
             s3Info = S3Info.builder()
                     .s3Url(updateUrl)
                     .fileName(generatedPath)
