@@ -30,6 +30,7 @@ public class ImageQuizController {
 
     private final ImageQuizService imageQuizService;
 
+    @Operation(summary = "추가한 ImageQuiz 문제 상세 정보 가져오기", description = "ImageQuiz 상세 정보 가져오기")
     @GetMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> getImageQuizById(@PathVariable Long memberId,
                                                                           @PathVariable Long quizId) {
@@ -41,6 +42,7 @@ public class ImageQuizController {
                 .body(ResponseTemplate.from(response));
     }
 
+    @Operation(summary = "추가한 ImageQuiz 문제 리스트 가져오기", description = "ImageQuiz 리스트 가져오기")
     @GetMapping("/member/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> getAllImageQuizByMember(@PathVariable Long memberId) {
 
@@ -75,6 +77,7 @@ public class ImageQuizController {
                 .body(ResponseTemplate.from(score));
     }
 
+    @Operation(summary = "ImageQuiz 문제 등록하기", description = "ImageQuiz 등록하기")
     @PostMapping("/member/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> uploadImageQuiz(@PathVariable Long memberId,
                                                 @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
@@ -87,6 +90,7 @@ public class ImageQuizController {
                 .body(EMPTY_RESPONSE);
     }
 
+    @Operation(summary = "ImageQuiz 문제 수정하기", description = "ImageQuiz 수정하기")
     @PutMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId,
@@ -99,6 +103,7 @@ public class ImageQuizController {
                 .body(EMPTY_RESPONSE);
     }
 
+    @Operation(summary = "ImageQuiz 문제 삭제하기", description = "ImageQuiz 삭제하기")
     @DeleteMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(@PathVariable Long memberId,
                                                 @PathVariable Long quizId) {
