@@ -22,10 +22,9 @@ import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
 import soongsil.kidbean.server.global.vo.S3Info;
 
 @Slf4j
-@Import(AwsS3MockConfig.class)
-@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@Import(AwsS3MockConfig.class)
+@SpringBootTest(classes = {S3Uploader.class})
 class S3UploaderTest {
 
     @Autowired

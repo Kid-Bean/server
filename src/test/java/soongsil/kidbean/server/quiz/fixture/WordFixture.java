@@ -5,7 +5,7 @@ import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 import org.springframework.test.util.ReflectionTestUtils;
 import soongsil.kidbean.server.quiz.domain.Word;
 
-public class WordQuizWordFixture {
+public class WordFixture {
 
     public static final Word WORD1 = Word.builder()
             .wordQuiz(WORD_QUIZ)
