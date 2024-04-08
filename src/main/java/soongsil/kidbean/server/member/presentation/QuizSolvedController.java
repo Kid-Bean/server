@@ -32,19 +32,19 @@ public class QuizSolvedController {
         return ResponseEntity.ok(quizSolvedService.solvedImageDetail(solvedId));
     }
 
-    @GetMapping("/mypage/solved/Word/list/{memberId}")
+    @GetMapping("/word/list/{memberId}")
     public ResponseEntity<SolvedRecordListResponse> findSolvedWordList(
             @PathVariable(name = "memberId") Long memberId) {
         return ResponseEntity.ok(quizSolvedService.findSolvedWord(memberId));
     }
 
-    @GetMapping("/Word/{solvedId}")
+    @GetMapping("/word/{solvedId}")
     public ResponseEntity<SolvedWordDetailResponse> findSolvedWordDetail(
             @PathVariable(name = "solvedId") Long solvedId) {
         return ResponseEntity.ok(quizSolvedService.solvedWordDetail(solvedId));
     }
 
-    @GetMapping("/mypage/solved/voice/list/{memberId}")
+    @GetMapping("/voice/list/{memberId}")
     public ResponseEntity<SolvedRecordListResponse> findSolvedVoiceList(
             @PathVariable(name = "memberId") Long memberId
     ) {

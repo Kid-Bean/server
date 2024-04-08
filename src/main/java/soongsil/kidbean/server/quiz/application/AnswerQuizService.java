@@ -1,8 +1,10 @@
 package soongsil.kidbean.server.quiz.application;
 
+import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +12,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quiz.application.vo.Morpheme;
+import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
+import soongsil.kidbean.server.quiz.application.vo.UseWord;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
+import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
@@ -28,6 +35,7 @@ public class AnswerQuizService {
 
     private final AnswerQuizRepository answerQuizRepository;
     private final MemberRepository memberRepository;
+    private final OpenApiService openApiService;
 
     /**
      * 랜덤 문제를 생성 후 멤버에게 전달
@@ -38,13 +46,35 @@ public class AnswerQuizService {
     public AnswerQuizResponse selectRandomAnswerQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
         Page<AnswerQuiz> answerQuizPage = generateRandomAnswerQuizPage(member);
 
         AnswerQuiz answerQuiz = pageHasAnswerQuiz(answerQuizPage)
                 .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
 
         return AnswerQuizResponse.from(answerQuiz);
+    }
+
+    public void submitAnswerQuiz(AnswerQuizSolvedRequest answerQuizSolvedRequest,
+                                 MultipartFile multipartFile,
+                                 Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        log.info("{}", answerQuizSolvedRequest.answer());
+
+        OpenApiResponse openApiResponse = openApiService.analyzeAnswer(answerQuizSolvedRequest.answer());
+
+        List<Morpheme> morphemeList = openApiResponse.morphemeList();
+        List<UseWord> useWordList = openApiResponse.useWordList();
+
+        for (Morpheme morpheme : morphemeList) {
+            log.info("morpheme: {}, type: {}", morpheme.morpheme(), morpheme.type());
+        }
+        for (UseWord useWord : useWordList) {
+            log.info("word: {}, count: {}", useWord.word(), useWord.count());
+        }
     }
 
     /**

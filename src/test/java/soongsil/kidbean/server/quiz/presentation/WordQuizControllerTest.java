@@ -44,7 +44,7 @@ class WordQuizControllerTest {
                 .willReturn(wordQuizResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/quiz/Word/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(get("/quiz/word/{memberId}", memberId)
                         .param("memberId", memberId.toString()))
                 .andDo(print());
 
