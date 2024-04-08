@@ -6,6 +6,6 @@ import lombok.Builder;
 @Builder
 public record OpenApiResponse(
         List<Morpheme> morphemeList,
-        List<WordCount> wordCountList
+        List<UseWord> useWordList
 ) {
 }

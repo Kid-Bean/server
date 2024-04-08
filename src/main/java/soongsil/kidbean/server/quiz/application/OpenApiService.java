@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import soongsil.kidbean.server.quiz.application.vo.Morpheme;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
-import soongsil.kidbean.server.quiz.application.vo.WordCount;
+import soongsil.kidbean.server.quiz.application.vo.UseWord;
 
 @Slf4j
 @Service
@@ -33,11 +33,11 @@ public class OpenApiService {
         List<Map<String, Object>> responseBody = useWebClient(answerText);
 
         List<Morpheme> morphemeList = parseMorphemeAnalysis(responseBody);
-        List<WordCount> wordCountList = parseWordAnalysis(morphemeList);
+        List<UseWord> useWordList = parseWordAnalysis(morphemeList);
 
         return OpenApiResponse.builder()
                 .morphemeList(morphemeList)
-                .wordCountList(wordCountList)
+                .useWordList(useWordList)
                 .build();
     }
 
@@ -92,9 +92,9 @@ public class OpenApiService {
         return result;
     }
 
-    private List<WordCount> parseWordAnalysis(List<Morpheme> morphemeList) {
+    private List<UseWord> parseWordAnalysis(List<Morpheme> morphemeList) {
 
-        List<WordCount> result = new ArrayList<>();
+        List<UseWord> result = new ArrayList<>();
         Map<String, Integer> wordCountMap = new HashMap<>();
 
         for (Morpheme morpheme : morphemeList) {
@@ -110,7 +110,7 @@ public class OpenApiService {
 
         // 카운트된 단어들을 결과 리스트에 추가
         for (Map.Entry<String, Integer> entry : wordCountMap.entrySet()) {
-            result.add(WordCount.builder()
+            result.add(UseWord.builder()
                     .word(entry.getKey())
                     .count(entry.getValue())
                     .build());

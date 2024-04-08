@@ -78,13 +78,13 @@ public class OpenApiServiceTest {
         assertThat(response.morphemeList().size()).isEqualTo(2);
         assertThat(response.morphemeList().get(0).morpheme()).isEqualTo("테스트");
         assertThat(response.morphemeList().get(1).morpheme()).isEqualTo("코드");
-        assertThat(response.wordCountList().size()).isEqualTo(2);
-        assertThat(response.wordCountList().stream()
+        assertThat(response.useWordList().size()).isEqualTo(2);
+        assertThat(response.useWordList().stream()
                 .filter(wc -> "테스트".equals(wc.word()))
                 .findFirst()
                 .get().count())
                 .isEqualTo(1);
-        assertThat(response.wordCountList().stream()
+        assertThat(response.useWordList().stream()
                 .filter(wc -> "코드".equals(wc.word()))
                 .findFirst()
                 .get().count())

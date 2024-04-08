@@ -18,7 +18,7 @@ import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.application.vo.Morpheme;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
-import soongsil.kidbean.server.quiz.application.vo.WordCount;
+import soongsil.kidbean.server.quiz.application.vo.UseWord;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
@@ -65,13 +65,13 @@ public class AnswerQuizService {
         OpenApiResponse openApiResponse = openApiService.analyzeAnswer(answerQuizSolvedRequest.answer());
 
         List<Morpheme> morphemeList = openApiResponse.morphemeList();
-        List<WordCount> wordCountList = openApiResponse.wordCountList();
+        List<UseWord> useWordList = openApiResponse.useWordList();
 
         for (Morpheme morpheme : morphemeList) {
             log.info("morpheme: {}, type: {}", morpheme.morpheme(), morpheme.type());
         }
-        for (WordCount wordCount : wordCountList) {
-            log.info("word: {}, count: {}", wordCount.word(), wordCount.count());
+        for (UseWord useWord : useWordList) {
+            log.info("word: {}, count: {}", useWord.word(), useWord.count());
         }
     }
 
