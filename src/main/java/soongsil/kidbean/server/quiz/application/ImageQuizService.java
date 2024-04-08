@@ -1,10 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
-
 import ch.qos.logback.core.testUtil.RandomUtil;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +12,7 @@ import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
@@ -27,8 +24,13 @@ import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -47,16 +49,16 @@ public class ImageQuizService {
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember(quizId, member)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         return ImageQuizMemberDetailResponse.from(imageQuiz);
     }
 
     public List<ImageQuizMemberResponse> getAllImageQuizByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return imageQuizRepository.findAllByMember(member)
                 .stream()
@@ -74,7 +76,7 @@ public class ImageQuizService {
                                                          Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(
                 imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
@@ -89,7 +91,7 @@ public class ImageQuizService {
     public ImageQuizResponse selectRandomImageQuiz(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         QuizCategory quizCategory = selectRandomCategory();
         Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, quizCategory);
@@ -155,7 +157,7 @@ public class ImageQuizService {
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         String folderName = QUIZ_NAME + request.quizCategory();
         String uploadUrl = s3Uploader.upload(image, folderName);
@@ -181,16 +183,14 @@ public class ImageQuizService {
         // 이미지 수정이 되지 않는 것 default
         S3Info s3Info = imageQuiz.getS3Info();
 
-        // 이미지 수정이 된 경우 (이미지 수정이 됐을 때는 filename이 공백("")이 아니므로 file 받아옴)
-        String originalUrl = imageQuiz.getS3Info().getS3Url();
-        log.info("original: " + originalUrl);
-
         if (!image.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
 
             String updateFolderName = QUIZ_NAME + request.quizCategory();
             String updateUrl = s3Uploader.upload(image, updateFolderName);
+
             String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
+
             s3Info = S3Info.builder()
                     .s3Url(updateUrl)
                     .fileName(generatedPath)

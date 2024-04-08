@@ -8,15 +8,17 @@ import java.util.List;
 @Builder
 public record WordQuizMemberDetailResponse(
         String title,
-        List<WordQuizWordResponse> words
+        String answer,
+        List<WordResponse> words
 ) {
     public static WordQuizMemberDetailResponse from(WordQuiz WordQuiz) {
         return WordQuizMemberDetailResponse
                 .builder()
                 .title(WordQuiz.getTitle())
+                .answer(WordQuiz.getAnswer())
                 .words(WordQuiz.getWords()
                         .stream()
-                        .map(WordQuizWordResponse::from)
+                        .map(WordResponse::from)
                         .toList())
                 .build();
     }

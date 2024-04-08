@@ -18,7 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizWordResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordResponse;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +51,7 @@ class WordQuizServiceTest {
         //then
         assertThat(WordQuizResponse.title()).isEqualTo(WORD_QUIZ.getTitle());
         assertThat(WordQuizResponse.words()).isEqualTo(WORD_QUIZ.getWords().stream()
-                .map(WordQuizWordResponse::from)
+                .map(WordResponse::from)
                 .toList());
     }
 }

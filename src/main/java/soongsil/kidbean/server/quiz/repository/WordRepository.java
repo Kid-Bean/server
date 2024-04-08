@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.quiz.domain.Word;
 
 @Repository
-public interface WordQuizWordRepository extends JpaRepository<Word, Long> {
+public interface WordRepository extends JpaRepository<Word, Long> {
 }

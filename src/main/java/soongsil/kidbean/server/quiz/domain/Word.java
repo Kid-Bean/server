@@ -21,11 +21,11 @@ public class Word {
 
     @JoinColumn(name = "quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private WordQuiz quiz;
+    private WordQuiz wordQuiz;
 
     @Builder
-    public Word(String content, WordQuiz quiz) {
+    public Word(String content, WordQuiz wordQuiz) {
         this.content = content;
-        this.quiz = quiz;
+        this.wordQuiz = wordQuiz;
     }
 }

@@ -7,22 +7,22 @@ import soongsil.kidbean.server.quiz.domain.Word;
 
 public class WordQuizWordFixture {
 
-    public static final Word WORD_QUIZ_WORD1 = Word.builder()
-            .quiz(WORD_QUIZ)
+    public static final Word WORD1 = Word.builder()
+            .wordQuiz(WORD_QUIZ)
             .content("content1")
             .build();
-    public static final Word WORD_QUIZ_WORD2 = Word.builder()
-            .quiz(WORD_QUIZ)
+    public static final Word WORD2 = Word.builder()
+            .wordQuiz(WORD_QUIZ)
             .content("content2")
             .build();
-    public static final Word WORD_QUIZ_WORD3 = Word.builder()
-            .quiz(WORD_QUIZ)
+    public static final Word WORD3 = Word.builder()
+            .wordQuiz(WORD_QUIZ)
             .content("content3")
             .build();
 
     static {
-        ReflectionTestUtils.setField(WORD_QUIZ_WORD1, "wordId", 1L);
-        ReflectionTestUtils.setField(WORD_QUIZ_WORD2, "wordId", 2L);
-        ReflectionTestUtils.setField(WORD_QUIZ_WORD3, "wordId", 3L);
+        ReflectionTestUtils.setField(WORD1, "wordId", 1L);
+        ReflectionTestUtils.setField(WORD2, "wordId", 2L);
+        ReflectionTestUtils.setField(WORD3, "wordId", 3L);
     }
 }
