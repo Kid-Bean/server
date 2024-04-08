@@ -25,7 +25,7 @@ public class AnswerQuizInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (answerQuizRepository.count() > 0) {
-            log.info("[WordQuiz]더미 데이터 존재");
+            log.info("[AnswerQuiz]더미 데이터 존재");
         } else {
             List<AnswerQuiz> answerQuizList = new ArrayList<>();
 

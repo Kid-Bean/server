@@ -27,10 +27,10 @@ public class WordQuiz {
     private Member member;
 
     @OneToMany(mappedBy = "quiz")
-    private List<WordQuizWord> words = new ArrayList<>();
+    private List<Word> words = new ArrayList<>();
 
     @Builder
-    public WordQuiz(String title, Member member, List<WordQuizWord> words) {
+    public WordQuiz(String title, Member member, List<Word> words) {
         this.title = title;
         this.member = member;
         this.words = words;
