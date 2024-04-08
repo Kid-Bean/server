@@ -26,7 +26,6 @@ import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.application.vo.WordCount;
 import soongsil.kidbean.server.quiz.exception.OpenApiIOException;
 
-@SuppressWarnings(value = "unchecked")
 @Slf4j
 @Service
 @Transactional
@@ -45,13 +44,14 @@ public class OpenApiService {
 
         List<Morpheme> morphemeList = parseMorphemeAnalysis(responseBody);
         List<WordCount> wordCountList = parseWordAnalysis(morphemeList);
-        
+
         return OpenApiResponse.builder()
                 .morphemeList(morphemeList)
                 .wordCountList(wordCountList)
                 .build();
     }
 
+    @SuppressWarnings(value = "unchecked")
     private List<Map<String, Object>> analysisRequest(String answerText) {
 
         String analysisCode = "morp";        // 언어 분석 코드 - 형태소 분석
@@ -122,6 +122,7 @@ public class OpenApiService {
         return con.getInputStream();
     }
 
+    @SuppressWarnings(value = "unchecked")
     private List<Morpheme> parseMorphemeAnalysis(List<Map<String, Object>> sentences) {
 
         List<Morpheme> result = new ArrayList<>();
