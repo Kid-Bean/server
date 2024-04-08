@@ -1,17 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.OPEN_API_IO_EXCEPTION;
 
-import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,16 +10,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 import soongsil.kidbean.server.quiz.application.vo.Morpheme;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.application.vo.WordCount;
-import soongsil.kidbean.server.quiz.exception.OpenApiIOException;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class OpenApiService {
+
+    private final WebClient.Builder webClientBuilder;
 
     @Value("${openApi.accessKey}")
     private String accessKey;
@@ -40,7 +31,7 @@ public class OpenApiService {
 
     public OpenApiResponse analyzeAnswer(String answerText) {
 
-        List<Map<String, Object>> responseBody = analysisRequest(answerText);
+        List<Map<String, Object>> responseBody = useWebClient(answerText);
 
         List<Morpheme> morphemeList = parseMorphemeAnalysis(responseBody);
         List<WordCount> wordCountList = parseWordAnalysis(morphemeList);
@@ -52,35 +43,23 @@ public class OpenApiService {
     }
 
     @SuppressWarnings(value = "unchecked")
-    private List<Map<String, Object>> analysisRequest(String answerText) {
-
-        String analysisCode = "morp";        // 언어 분석 코드 - 형태소 분석
-        Gson gson = new Gson();
-
-        List<Map<String, Object>> sentences;
+    private List<Map<String, Object>> useWebClient(String answerText) {
+        String analysisCode = "morp"; // 언어 분석 코드 - 형태소 분석
         Map<String, Object> request = makeBaseRequest(analysisCode, answerText);
 
-        try {
-            InputStream is = getInputStream(gson, request);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-
-            String inputLine;
-            while ((inputLine = br.readLine()) != null) {
-                sb.append(inputLine);
-            }
-
-            String responseBodyJson = sb.toString();
-            Map<Object, Object> responseBody = gson.fromJson(responseBodyJson, Map.class);
-
-            Map<Object, Object> returnObject = (Map<Object, Object>) responseBody.get("return_object");
-            sentences = (List<Map<String, Object>>) returnObject.get("sentence");
-
-        } catch (IOException e) {
-            throw new OpenApiIOException(OPEN_API_IO_EXCEPTION);
-        }
-        return sentences;
+        //Blocking 방식으로 처리
+        return webClientBuilder.build().post()
+                .uri(openApiURL)
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .header("Authorization", accessKey)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .map(responseBody -> {
+                    Map<Object, Object> returnObject = (Map<Object, Object>) responseBody.get("return_object");
+                    return (List<Map<String, Object>>) returnObject.get("sentence");
+                })
+                .block();
     }
 
     private static Map<String, Object> makeBaseRequest(String analysisCode, String text) {
@@ -93,33 +72,6 @@ public class OpenApiService {
 
         request.put("argument", argument);
         return request;
-    }
-
-    private InputStream getInputStream(Gson gson, Map<String, Object> request) throws IOException {
-
-        URL url = new URL(openApiURL);
-
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        con.setRequestProperty("Authorization", accessKey);
-
-        //request 내용을 서버로 전송
-        try (OutputStream os = con.getOutputStream();
-             DataOutputStream wr = new DataOutputStream(os)) {
-            wr.write(gson.toJson(request).getBytes(StandardCharsets.UTF_8));
-            wr.flush();
-        }
-
-        int responseCode = con.getResponseCode();
-        // http 요청 오류 시 처리
-        if (responseCode != 200) {
-            throw new IOException();
-        }
-
-        //서버의 InputStream 반환
-        return con.getInputStream();
     }
 
     @SuppressWarnings(value = "unchecked")

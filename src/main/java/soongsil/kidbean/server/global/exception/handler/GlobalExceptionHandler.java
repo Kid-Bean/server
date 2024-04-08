@@ -20,7 +20,6 @@ import soongsil.kidbean.server.global.exception.response.ErrorResponse.Validatio
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
-import soongsil.kidbean.server.quiz.exception.OpenApiIOException;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 
 @Slf4j
@@ -60,12 +59,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(WordQuizNotFoundException.class)
     public ResponseEntity<Object> handleWordQuizNotFound(final WordQuizNotFoundException e) {
-        final ErrorCode errorCode = e.getErrorCode();
-        return handleExceptionInternal(errorCode);
-    }
-
-    @ExceptionHandler(OpenApiIOException.class)
-    public ResponseEntity<Object> handleOpenApiIOException(final OpenApiIOException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
