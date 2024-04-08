@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizListResponse;
@@ -22,39 +23,39 @@ public class MypageController {
     private final MypageService mypageService;
 
     @GetMapping("/image/list/{memberId}")
-    public ResponseEntity<SolvedImageListResponse> findSolvedImageList(
+    public ResponseEntity<ResponseTemplate<Object>> findSolvedImageList(
             @PathVariable(name = "memberId") Long memberId) {
-        return ResponseEntity.ok(mypageService.findSolvedImage(memberId));
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findSolvedImage(memberId)));
     }
 
     @GetMapping("/image/{solvedId}")
-    public ResponseEntity<SolvedImageDetailResponse> findSolvedImageDetail(
+    public ResponseEntity<ResponseTemplate<Object>> findSolvedImageDetail(
             @PathVariable(name = "solvedId") Long solvedId) {
-        return ResponseEntity.ok(mypageService.solvedImageDetail(solvedId));
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.solvedImageDetail(solvedId)));
     }
 
     @GetMapping("/word/list/{memberId}")
-    public ResponseEntity<SolvedWordQuizListResponse> findSolvedWordList(
+    public ResponseEntity<ResponseTemplate<Object>> findSolvedWordList(
             @PathVariable(name = "memberId") Long memberId) {
-        return ResponseEntity.ok(mypageService.findSolvedWord(memberId));
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findSolvedWord(memberId)));
     }
 
     @GetMapping("/word/{solvedId}")
-    public ResponseEntity<SolvedWordDetailResponse> findSolvedWordDetail(
+    public ResponseEntity<ResponseTemplate<Object>> findSolvedWordDetail(
             @PathVariable(name = "solvedId") Long solvedId) {
-        return ResponseEntity.ok(mypageService.solvedWordDetail(solvedId));
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.solvedWordDetail(solvedId)));
     }
 
     @GetMapping("/voice/list/{memberId}")
-    public ResponseEntity<SolvedAnswerQuizListResponse> findSolvedVoiceList(
+    public ResponseEntity<ResponseTemplate<Object>> findSolvedVoiceList(
             @PathVariable(name = "memberId") Long memberId
     ) {
-        return ResponseEntity.ok(mypageService.findSolvedAnswerQuiz(memberId));
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findSolvedAnswerQuiz(memberId)));
     }
 
     @GetMapping("/voice/{solvedId}")
-    public ResponseEntity<SolvedAnswerDetailResponse> findSolvedVoiceDetail(
+    public ResponseEntity<ResponseTemplate<Object>> findSolvedVoiceDetail(
             @PathVariable(name = "solvedId") Long solvedId) {
-        return ResponseEntity.ok(mypageService.solvedAnswerQuizDetail(solvedId));
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.solvedAnswerQuizDetail(solvedId)));
     }
 }
