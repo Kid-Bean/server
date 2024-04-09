@@ -1,7 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
 import java.util.List;
@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.application.vo.Morpheme;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
@@ -50,7 +49,7 @@ public class AnswerQuizService {
         Page<AnswerQuiz> answerQuizPage = generateRandomAnswerQuizPage(member);
 
         AnswerQuiz answerQuiz = pageHasAnswerQuiz(answerQuizPage)
-                .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         return AnswerQuizResponse.from(answerQuiz);
     }
