@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,6 +41,7 @@ class AnswerQuizSolvedServiceTest {
     private AnswerQuizSolvedService answerQuizSolvedService;
 
     @Test
+    @DisplayName("AnswerQuizSolved 등록")
     void testEnrollNewAnswerQuizSolved() {
         //given
         String submitAnswer = "제출된 정답";
