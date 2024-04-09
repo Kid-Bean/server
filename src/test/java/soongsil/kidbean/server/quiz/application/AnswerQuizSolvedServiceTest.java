@@ -64,7 +64,7 @@ class AnswerQuizSolvedServiceTest {
 
         //then
         verify(answerQuizSolvedRepository).save(any(AnswerQuizSolved.class));
-        verify(morphemeRepository, atLeastOnce()).save(any(Morpheme.class));
-        verify(useWordRepository, atLeastOnce()).save(any(UseWord.class));
+        verify(morphemeRepository, atLeastOnce()).saveAll(anyList());
+        verify(useWordRepository, atLeastOnce()).saveAll(anyList());
     }
 }

@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_FALSE;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_TRUE;
+import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_FALSE;
+import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_TRUE;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -18,19 +18,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
-import soongsil.kidbean.server.quiz.repository.ImageQuizSolvedRepository;
+import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 
 @ExtendWith(MockitoExtension.class)
-class ImageQuizSolvedServiceTest {
+class QuizSolvedServiceTest {
 
     @Mock
-    private ImageQuizSolvedRepository imageQuizSolvedRepository;
+    private QuizSolvedRepository quizSolvedRepository;
 
     @Mock
     private ImageQuizRepository imageQuizRepository;
 
     @InjectMocks
-    private ImageQuizSolvedService imageQuizSolvedService;
+    private QuizSolvedService quizSolvedService;
 
     @Test
     @DisplayName("이미 푼 맞은 ImageQuizSolved 풀었을 때")
@@ -42,13 +42,13 @@ class ImageQuizSolvedServiceTest {
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
         //이전에 풀었던 문제
-        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
+        given(quizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(true);
-        given(imageQuizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
+        given(quizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(Optional.of(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE));
 
         //when
-        Long totalScore = imageQuizSolvedService.solveImageQuizzes(
+        Long totalScore = quizSolvedService.solveImageQuizzes(
                 Collections.singletonList(request), MEMBER);
 
         //then
@@ -64,13 +64,13 @@ class ImageQuizSolvedServiceTest {
 
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
-        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
+        given(quizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(true);
-        given(imageQuizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
+        given(quizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(Optional.of(IMAGE_QUIZ_SOLVED_ANIMAL_FALSE));
 
         //when
-        Long totalScore = imageQuizSolvedService.solveImageQuizzes(
+        Long totalScore = quizSolvedService.solveImageQuizzes(
                 Collections.singletonList(request), MEMBER);
 
         //then
@@ -86,11 +86,11 @@ class ImageQuizSolvedServiceTest {
 
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
-        given(imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
+        given(quizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
                 .willReturn(false);
 
         //when
-        Long totalScore = imageQuizSolvedService.solveImageQuizzes(
+        Long totalScore = quizSolvedService.solveImageQuizzes(
                 Collections.singletonList(request), MEMBER);
 
         //then

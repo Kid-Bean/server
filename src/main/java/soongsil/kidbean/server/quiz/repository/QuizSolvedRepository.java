@@ -6,15 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
+import soongsil.kidbean.server.quiz.domain.QuizSolved;
 
 
 @Repository
-public interface ImageQuizSolvedRepository extends JpaRepository<ImageQuizSolved, Long> {
+public interface QuizSolvedRepository extends JpaRepository<QuizSolved, Long> {
 
     boolean existsImageQuizSolvedByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
 
-    Optional<ImageQuizSolved> findByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
+    Optional<QuizSolved> findByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
 
-    List<ImageQuizSolved> findAllByMember(Member member);
+    List<QuizSolved> findAllByMember(Member member);
 }
