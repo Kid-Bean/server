@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.program.domain.Program;
-import soongsil.kidbean.server.program.dto.request.ProgramRequest;
-import soongsil.kidbean.server.program.dto.response.ProgramResponse;
+import soongsil.kidbean.server.program.domain.type.ProgramCategory;
+import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
+import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
-import soongsil.kidbean.server.quiz.exception.MemberNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,32 +20,24 @@ public class ProgramService {
 
     private final ProgramRepository programRepository;
 
+    /**
+     * 프로그램 상세 조회
+     * @param programId 프로그램 id
+     * @return response
+     */
     @Transactional
-    public ProgramRequest getProgramList(Long programId) {
+    public ProgramDetailResponse getProgramInfo(Long programId) {
+
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
-        ProgramRequest a = ProgramRequest.from(program);
-        log.info("조회 기본 test value = {}", a);
-
-       return ProgramRequest.from(program);
+        return ProgramDetailResponse.from(program);
     }
 
-    /* 프로그램 상세 조회 */
+    /* 카테고리에 따른 프로그램 목록 조회 */
     @Transactional
-    public ProgramResponse getProgramInfo(Long programId, String teacherName, String title,
-                                          String place , String content, String phoneNumber) {
-        Program program = programRepository.findById(programId).orElseThrow(RuntimeException::new);
-
-        String programTeacherName = program.getTeacherName();
-        String programTitle = program.getTitle();
-        String programPlace = program.getPlace();
-        String programContent = program.getContent();
-        String programPhoneNumber = program.getPhoneNumber();
-
-
-        log.info("프로그램 상세 조회 테스트 log = ", program);
-
-        return ProgramResponse.from(program);
+    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory){
+        List<Program> programList = programRepository.findAllByProgramCategory(programCategory);
+        return ProgramListResponse.from(programList);
     }
 }

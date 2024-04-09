@@ -15,4 +15,5 @@ public class SentenceQuizService {
 
     private final SentenceQuizRepository sentenceQuizRepository;
     private final SentenceQuizWordRepository sentenceQuizWordRepository;
+
 }
