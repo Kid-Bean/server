@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.quiz.application.quizsolver;
 
-import java.util.List;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 

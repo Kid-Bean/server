@@ -20,7 +20,7 @@ public class QuizSolvedService {
     private final QuizSolverFactory quizSolverFactory;
 
     /**
-     * 문제를 풀어서 얻은 점수를 return 각각의 문제들은 ImageQuizSolved에 정답을 표기하여 저장
+     * 문제를 풀어서 얻은 점수를 return 각각의 문제들은 QuizSolved에 정답을 표기하여 저장
      *
      * @param quizSolvedRequestList 이미지 퀴즈 풀기 요청 목록
      * @param member                푼 멤버
