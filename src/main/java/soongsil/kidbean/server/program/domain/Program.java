@@ -3,6 +3,7 @@ package soongsil.kidbean.server.program.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.global.vo.ImageInfo;
@@ -57,4 +58,25 @@ public class Program {
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    @Builder
+    public Program(String teacherName,
+                   String title,
+                   String place,
+                   String phoneNumber,
+                   String content,
+                   ProgramCategory programCategory,
+                   ImageInfo teacherImageInfo,
+                   ImageInfo programImageInfo,
+                   Member member) {
+        this.teacherName = teacherName;
+        this.title = title;
+        this.place = place;
+        this.phoneNumber = phoneNumber;
+        this.content = content;
+        this.programCategory = programCategory;
+        this.teacherImageInfo = teacherImageInfo;
+        this.programImageInfo = programImageInfo;
+        this.member = member;
+    }
 }
