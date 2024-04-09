@@ -7,7 +7,6 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 
 @Repository
-
 public interface AnswerQuizSolvedRepository extends JpaRepository<AnswerQuizSolved, Long> {
 
     List<AnswerQuizSolved> findAllByMember(Member member);

@@ -2,7 +2,7 @@ package soongsil.kidbean.server.quiz.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.ANSWER_QUIZ_NOT_FOUND;
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public class AnswerQuizService {
         Page<AnswerQuiz> answerQuizPage = generateRandomAnswerQuizPage(member);
 
         AnswerQuiz answerQuiz = pageHasAnswerQuiz(answerQuizPage)
-                .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         return AnswerQuizResponse.from(answerQuiz);
     }

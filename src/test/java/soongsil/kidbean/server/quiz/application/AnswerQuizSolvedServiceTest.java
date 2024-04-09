@@ -14,8 +14,6 @@ import soongsil.kidbean.server.quiz.application.vo.MorphemeVO;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
-import soongsil.kidbean.server.quiz.domain.Morpheme;
-import soongsil.kidbean.server.quiz.domain.UseWord;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;

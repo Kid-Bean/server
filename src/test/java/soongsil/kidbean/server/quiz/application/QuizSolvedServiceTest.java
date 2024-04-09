@@ -78,7 +78,7 @@ class QuizSolvedServiceTest {
     }
 
     @Test
-    @DisplayName("풀지 않 ImageQuizSolved 풀었을 때")
+    @DisplayName("풀지 않은 ImageQuizSolved 풀었을 때")
     public void solveImageQuizzes3() {
         //given
         ImageQuizSolvedRequest request =
