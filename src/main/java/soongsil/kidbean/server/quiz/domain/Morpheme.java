@@ -1,5 +1,6 @@
 package soongsil.kidbean.server.quiz.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,7 @@ public class Morpheme {
     private String type;
 
     @JoinColumn(name = "solved_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     AnswerQuizSolved answerQuizSolved;
 
     @Builder

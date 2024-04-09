@@ -1,5 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,26 +53,33 @@ public class AnswerQuizSolvedService {
 
         answerQuizSolvedRepository.save(answerQuizSolved);
 
+        //아래에 있는 부분들 refactoring 시 bulk insertion 찾아보기
         enrollMorphemes(openApiResponse, answerQuizSolved);
         enrollUseWords(openApiResponse, answerQuizSolved);
     }
 
     private void enrollMorphemes(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
-        openApiResponse.morphemeVOList()
-                .forEach(morphemeVO -> morphemeRepository.save(Morpheme.builder()
+        List<Morpheme> morphemeList = openApiResponse.morphemeVOList().stream()
+                .map(morphemeVO -> Morpheme.builder()
                         .morpheme(morphemeVO.morpheme())
                         .type(morphemeVO.type())
                         .answerQuizSolved(answerQuizSolved)
-                        .build()));
+                        .build())
+                .toList();
+
+        morphemeRepository.saveAll(morphemeList);
     }
 
     private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
-        openApiResponse.useWordVOList()
-                .forEach(useWordVO -> useWordRepository.save(UseWord.builder()
+        List<UseWord> useWordList = openApiResponse.useWordVOList().stream()
+                .map(useWordVO -> UseWord.builder()
                         .wordName(useWordVO.word())
                         .count(useWordVO.count())
                         .answerQuizSolved(answerQuizSolved)
-                        .build()));
+                        .build())
+                .toList();
+
+        useWordRepository.saveAll(useWordList);
     }
 
     private S3Info uploadRecordFile(long memberId, MultipartFile multipartFile) {
