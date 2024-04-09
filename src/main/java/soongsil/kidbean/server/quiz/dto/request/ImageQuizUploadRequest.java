@@ -1,22 +1,27 @@
 package soongsil.kidbean.server.quiz.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Builder
 public record ImageQuizUploadRequest(
+        @NotNull(message = "제목을 입력해주세요.")
         String title,
+        @NotNull(message = "정답을 입력해주세요.")
         String answer,
-        Category category
+        QuizCategory quizCategory,
+        Member member
 ) {
     public ImageQuiz toImageQuiz(Member member) {
         return ImageQuiz
                 .builder()
+                .member(member)
                 .title(title)
                 .answer(answer)
-                .category(category)
+                .quizCategory(quizCategory)
                 .build();
     }
 }

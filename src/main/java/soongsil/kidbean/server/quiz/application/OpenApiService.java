@@ -1,0 +1,121 @@
+package soongsil.kidbean.server.quiz.application;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import soongsil.kidbean.server.quiz.application.vo.Morpheme;
+import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
+import soongsil.kidbean.server.quiz.application.vo.UseWord;
+
+@Slf4j
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class OpenApiService {
+
+    private final WebClient.Builder webClientBuilder;
+
+    @Value("${openApi.accessKey}")
+    private String accessKey;
+
+    @Value("${openApi.url}")
+    private String openApiURL;
+
+    public OpenApiResponse analyzeAnswer(String answerText) {
+
+        List<Map<String, Object>> responseBody = useWebClient(answerText);
+
+        List<Morpheme> morphemeList = parseMorphemeAnalysis(responseBody);
+        List<UseWord> useWordList = parseWordAnalysis(morphemeList);
+
+        return OpenApiResponse.builder()
+                .morphemeList(morphemeList)
+                .useWordList(useWordList)
+                .build();
+    }
+
+    @SuppressWarnings(value = "unchecked")
+    private List<Map<String, Object>> useWebClient(String answerText) {
+        String analysisCode = "morp"; // 언어 분석 코드 - 형태소 분석
+        Map<String, Object> request = makeBaseRequest(analysisCode, answerText);
+
+        //Blocking 방식으로 처리
+        return webClientBuilder.build().post()
+                .uri(openApiURL)
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .header("Authorization", accessKey)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .map(responseBody -> {
+                    Map<Object, Object> returnObject = (Map<Object, Object>) responseBody.get("return_object");
+                    return (List<Map<String, Object>>) returnObject.get("sentence");
+                })
+                .block();
+    }
+
+    private static Map<String, Object> makeBaseRequest(String analysisCode, String text) {
+
+        Map<String, Object> request = new HashMap<>();
+        Map<String, String> argument = new HashMap<>();
+
+        argument.put("analysis_code", analysisCode);
+        argument.put("text", text);
+
+        request.put("argument", argument);
+        return request;
+    }
+
+    @SuppressWarnings(value = "unchecked")
+    private List<Morpheme> parseMorphemeAnalysis(List<Map<String, Object>> sentences) {
+
+        List<Morpheme> result = new ArrayList<>();
+
+        for (Map<String, Object> sentence : sentences) {
+            List<Map<String, Object>> morphemeList = (List<Map<String, Object>>) sentence.get("morp");
+
+            for (Map<String, Object> morpheme : morphemeList) {
+                result.add(Morpheme.builder()
+                        .morpheme(morpheme.get("lemma").toString())
+                        .type(morpheme.get("type").toString())
+                        .build());
+            }
+        }
+
+        return result;
+    }
+
+    private List<UseWord> parseWordAnalysis(List<Morpheme> morphemeList) {
+
+        List<UseWord> result = new ArrayList<>();
+        Map<String, Integer> wordCountMap = new HashMap<>();
+
+        for (Morpheme morpheme : morphemeList) {
+            String type = morpheme.type();
+
+            // 명사 형태소만 필터링
+            if (type.equals("NNG") || type.equals("NNP") || type.equals("NNB")) {
+                // 단어별로 등장 횟수 카운트
+                String word = morpheme.morpheme();
+                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+            }
+        }
+
+        // 카운트된 단어들을 결과 리스트에 추가
+        for (Map.Entry<String, Integer> entry : wordCountMap.entrySet()) {
+            result.add(UseWord.builder()
+                    .word(entry.getKey())
+                    .count(entry.getValue())
+                    .build());
+        }
+
+        return result;
+    }
+}

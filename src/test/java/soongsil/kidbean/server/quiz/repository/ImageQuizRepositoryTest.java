@@ -2,7 +2,7 @@ package soongsil.kidbean.server.quiz.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.Category.*;
+import static soongsil.kidbean.server.quiz.domain.type.QuizCategory.*;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL2;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_NONE;
@@ -12,6 +12,7 @@ import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_P
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Category;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -44,14 +44,15 @@ class ImageQuizRepositoryTest {
     }
 
     @Test
-    void DB에_저장된_row의_수_테스트() {
+    @DisplayName("DB에 저장된 row 수 테스트")
+    void countByMemberAndCategoryOrRole() {
         //given
 
         //when
-        Integer animalCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, ANIMAL);
-        Integer plantCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, PLANT);
-        Integer objectCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, OBJECT);
-        Integer noneCnt = imageQuizRepository.countByMemberAndCategory(MEMBER, NONE);
+        Integer animalCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, ANIMAL, Role.MEMBER);
+        Integer plantCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, PLANT, Role.MEMBER);
+        Integer objectCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, OBJECT, Role.MEMBER);
+        Integer noneCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, NONE, Role.MEMBER);
 
         //then
         assertThat(animalCnt).isEqualTo(2);
@@ -61,13 +62,13 @@ class ImageQuizRepositoryTest {
     }
 
     @Test
-    void findAllByCategory이_제대로_동작하는지_확인() {
+    @DisplayName("페이지 생성이 제대로 동작 하는지 확인")
+    void findImageQuizWithPage() {
         //given
-        Category category = ANIMAL;
 
         //when
-        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findAllImageQuizWithPage(
-                MEMBER, Role.ADMIN, category, PageRequest.of(0, 1));
+        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findImageQuizWithPage(
+                MEMBER, Role.ADMIN, ANIMAL, PageRequest.of(0, 1));
 
         //then
         assertThat(imageQuizPage.getTotalPages()).isEqualTo(2);

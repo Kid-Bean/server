@@ -12,7 +12,7 @@ import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
 @Repository
 public interface ImageQuizSolvedRepository extends JpaRepository<ImageQuizSolved, Long> {
 
-    boolean existsImageQuizSolvedByImageQuiz_QuizIdAndMember(Long quizId, Member member);
+    boolean existsImageQuizSolvedByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
 
     Optional<ImageQuizSolved> findByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
 

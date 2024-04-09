@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.global.application;
 
+import static soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode.*;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -14,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import soongsil.kidbean.server.global.vo.ImageInfo;
-import soongsil.kidbean.server.quiz.exception.FileConvertFailException;
+import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.global.exception.FileConvertFailException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,17 +35,17 @@ public class S3Uploader {
 
         try {
             uploadFile = convert(multipartFile)
-                    .orElseThrow(FileConvertFailException::new);
+                    .orElseThrow(() -> new FileConvertFailException(FILE_CONVERT_FAIL));
         } catch (IOException e) {
-            throw new FileConvertFailException();
+            throw new FileConvertFailException(FILE_CONVERT_FAIL);
         }
 
         return upload(uploadFile, folderName);
     }
 
     //S3 버킷에 있는 파일을 삭제
-    public void deleteFile(ImageInfo imageInfo) {
-        String deleteFileName = imageInfo.getFolderName() + "/" + imageInfo.getFileName();
+    public void deleteFile(S3Info s3Info) {
+        String deleteFileName = s3Info.getFolderName() + "/" + s3Info.getFileName();
         log.info("delete fileName: {}", deleteFileName);
         amazonS3Client.deleteObject(bucket, deleteFileName);
     }

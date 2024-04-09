@@ -17,20 +17,16 @@ public class AnswerQuiz {
     @Column(name = "quiz_id")
     private Long quizId;
 
-    @Column(name = "title", length = 30)
-    private String title;
-
-    @Column(name = "content", length = 40)
-    private String content;
+    @Column(name = "question", length = 40)
+    private String question;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @Builder
-    public AnswerQuiz(String title, String content, Member member) {
-        this.title = title;
-        this.content = content;
+    public AnswerQuiz(String question, Member member) {
+        this.question = question;
         this.member = member;
     }
 }
