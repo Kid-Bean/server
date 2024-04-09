@@ -39,8 +39,8 @@ public class AnswerQuizController {
     public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
                                                                     @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
                                                                     @RequestPart MultipartFile record) {
-        AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(answerQuizSolvedRequest, record,
-                memberId);
+        AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(
+                answerQuizSolvedRequest, record, memberId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
