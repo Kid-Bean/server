@@ -160,6 +160,7 @@ public class ImageQuizService {
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         String folderName = QUIZ_NAME + request.quizCategory();
+      
         String uploadUrl = s3Uploader.upload(image, folderName);
 
         String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
@@ -176,6 +177,7 @@ public class ImageQuizService {
     }
 
     @Transactional
+
     public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));

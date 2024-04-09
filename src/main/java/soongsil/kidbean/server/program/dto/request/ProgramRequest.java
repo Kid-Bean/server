@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.program.dto;
+package soongsil.kidbean.server.program.dto.request;
 
 import lombok.Builder;
 import soongsil.kidbean.server.program.domain.Program;
