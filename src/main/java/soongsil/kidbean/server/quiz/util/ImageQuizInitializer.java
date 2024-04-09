@@ -25,6 +25,49 @@ public class ImageQuizInitializer implements ApplicationRunner {
 
     private final ImageQuizRepository imageQuizRepository;
 
+    public static final ImageQuiz IMAGE_QUIZ_1 = ImageQuiz.builder()
+            .quizCategory(ANIMAL)
+            .level(BRONZE)
+            .title("titleAnimal")
+            .answer("answerAnimal")
+            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .member(DUMMY_ADMIN)
+            .build();
+
+    public static final ImageQuiz IMAGE_QUIZ_2 = ImageQuiz.builder()
+            .quizCategory(NONE)
+            .level(SILVER)
+            .title("titleNone")
+            .answer("answerNone")
+            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .member(DUMMY_ADMIN)
+            .build();
+
+    public static final ImageQuiz IMAGE_QUIZ_3 = ImageQuiz.builder()
+            .quizCategory(NONE)
+            .level(SILVER)
+            .title("titleNone")
+            .answer("answerNone")
+            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .member(DUMMY_ADMIN)
+            .build();
+    public static final ImageQuiz IMAGE_QUIZ_4 = ImageQuiz.builder()
+            .quizCategory(OBJECT)
+            .level(SILVER)
+            .title("titleObject2")
+            .answer("answerObject2")
+            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .member(DUMMY_MEMBER)
+            .build();
+    public static final ImageQuiz IMAGE_QUIZ_5 = ImageQuiz.builder()
+            .quizCategory(PLANT)
+            .level(SILVER)
+            .title("titlePlant2")
+            .answer("answerPlant2")
+            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .member(DUMMY_ADMIN)
+            .build();
+
     @Override
     public void run(ApplicationArguments args) {
         if (imageQuizRepository.count() > 0) {
@@ -33,54 +76,11 @@ public class ImageQuizInitializer implements ApplicationRunner {
             //더미 데이터 작성
             List<ImageQuiz> imageQuizList = new ArrayList<>();
 
-            imageQuizList.add(ImageQuiz.builder()
-                    .quizCategory(ANIMAL)
-                    .level(BRONZE)
-                    .title("titleAnimal")
-                    .answer("answerAnimal")
-                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_ADMIN)
-                    .build());
-            imageQuizList.add(ImageQuiz.builder()
-                    .quizCategory(NONE)
-                    .level(SILVER)
-                    .title("titleNone")
-                    .answer("answerNone")
-                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_ADMIN)
-                    .build());
-            imageQuizList.add(ImageQuiz.builder()
-                    .quizCategory(OBJECT)
-                    .level(SILVER)
-                    .title("titleObject")
-                    .answer("answerObject")
-                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_ADMIN)
-                    .build());
-            imageQuizList.add(ImageQuiz.builder()
-                    .quizCategory(OBJECT)
-                    .level(SILVER)
-                    .title("titleObject2")
-                    .answer("answerObject2")
-                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_MEMBER)
-                    .build());
-            imageQuizList.add(ImageQuiz.builder()
-                    .quizCategory(PLANT)
-                    .level(SILVER)
-                    .title("titlePlant")
-                    .answer("answerPlant")
-                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_MEMBER)
-                    .build());
-            imageQuizList.add(ImageQuiz.builder()
-                    .quizCategory(PLANT)
-                    .level(SILVER)
-                    .title("titlePlant2")
-                    .answer("answerPlant2")
-                    .s3Info(new S3Info("imageUrl", "filename", "folderName"))
-                    .member(DUMMY_ADMIN)
-                    .build());
+            imageQuizList.add(IMAGE_QUIZ_1);
+            imageQuizList.add(IMAGE_QUIZ_2);
+            imageQuizList.add(IMAGE_QUIZ_3);
+            imageQuizList.add(IMAGE_QUIZ_4);
+            imageQuizList.add(IMAGE_QUIZ_5);
 
             imageQuizRepository.saveAll(imageQuizList);
         }

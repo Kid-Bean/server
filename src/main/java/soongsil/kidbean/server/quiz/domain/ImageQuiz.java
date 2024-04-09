@@ -46,7 +46,7 @@ public class ImageQuiz {
     private Member member;
 
     @OneToMany(mappedBy = "imageQuiz", orphanRemoval = true)
-    private List<ImageQuizSolved> imageQuizSolvedList = new ArrayList<>();
+    private List<QuizSolved> quizSolvedList = new ArrayList<>();
 
     @Builder
     public ImageQuiz(QuizCategory quizCategory, String answer, String title, S3Info s3Info, Level level,

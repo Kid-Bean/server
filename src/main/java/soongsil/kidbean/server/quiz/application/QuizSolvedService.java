@@ -10,21 +10,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
+import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
-import soongsil.kidbean.server.quiz.repository.ImageQuizSolvedRepository;
+import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ImageQuizSolvedService {
+public class QuizSolvedService {
 
-    private final ImageQuizSolvedRepository imageQuizSolvedRepository;
+    private final QuizSolvedRepository quizSolvedRepository;
     private final ImageQuizRepository imageQuizRepository;
 
     /**
@@ -51,7 +51,7 @@ public class ImageQuizSolvedService {
 
         ImageQuiz imageQuiz = imageQuizRepository.findById(solvedRequest.imageQuizId())
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
-        ImageQuizSolved imageQuizSolved = solvedRequest.toImageQuizSolved(imageQuiz, member);
+        QuizSolved imageQuizSolved = solvedRequest.toQuizSolved(imageQuiz, member);
 
         if (imageQuizSolvedExists(imageQuiz, member)) {
             return updateExistingSolvedImageQuiz(imageQuizSolved, imageQuiz);
@@ -68,40 +68,40 @@ public class ImageQuizSolvedService {
      * @return Boolean
      */
     private Boolean imageQuizSolvedExists(ImageQuiz imageQuiz, Member member) {
-        return imageQuizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(imageQuiz, member);
+        return quizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(imageQuiz, member);
     }
 
     /**
-     * 기존에 풀지 않은 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X SolvedImageQuiz로 등록
+     * 기존에 풀지 않은 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X SolvedImageQuiz 로 등록
      *
-     * @param newImageQuizSolved 이미지 퀴즈 요청
-     * @param imageQuiz          이미지 퀴즈
+     * @param newQuizSolved 이미지 퀴즈 요청
+     * @param imageQuiz     이미지 퀴즈
      * @return Long 점수
      */
-    private Long enrollNewSolvedImageQuiz(ImageQuizSolved newImageQuizSolved, ImageQuiz imageQuiz) {
+    private Long enrollNewSolvedImageQuiz(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
 
-        newImageQuizSolved.setAnswerIsCorrect(newImageQuizSolved.getAnswer().contains(imageQuiz.getAnswer()));
-        imageQuizSolvedRepository.save(newImageQuizSolved);
+        newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(imageQuiz.getAnswer()));
+        quizSolvedRepository.save(newQuizSolved);
 
-        return getPoint(imageQuiz, newImageQuizSolved);
+        return getPoint(imageQuiz, newQuizSolved);
     }
 
     /**
      * 기존에 푼 문제의 경우 맞춘 경우 점수 +, 틀린 경우 X 맞춘 경우만 isCorrect 수정
      *
-     * @param imageQuizSolved 이미지 퀴즈 요청
-     * @param imageQuiz       이미지 퀴즈
+     * @param quizSolved 이미지 퀴즈 요청
+     * @param imageQuiz  이미지 퀴즈
      * @return Long 점수
      */
-    private Long updateExistingSolvedImageQuiz(ImageQuizSolved imageQuizSolved, ImageQuiz imageQuiz) {
+    private Long updateExistingSolvedImageQuiz(QuizSolved quizSolved, ImageQuiz imageQuiz) {
 
-        Member member = imageQuizSolved.getMember();
+        Member member = quizSolved.getMember();
         //이전에 푼 동일한 문제
-        ImageQuizSolved imageQuizSolvedEx = imageQuizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
+        QuizSolved imageQuizSolvedEx = quizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
                 .orElseThrow(() -> new ImageQuizSolvedNotFoundException(IMAGE_QUIZ_SOLVED_NOT_FOUND));
 
         //정답을 포함하고 있는지
-        boolean isCorrect = imageQuizSolved.getAnswer().contains(imageQuiz.getAnswer());
+        boolean isCorrect = quizSolved.getReply().contains(imageQuiz.getAnswer());
 
         //이전에 오답이었고 현재 정답인 경우
         if (!imageQuizSolvedEx.getIsCorrect() && isCorrect) {
@@ -115,11 +115,11 @@ public class ImageQuizSolvedService {
     /**
      * 문제의 정답, 난이도에 따른 점수 return
      *
-     * @param imageQuiz          이미지 퀴즈
-     * @param newImageQuizSolved 새로운 이미지 퀴즈(푼 것)
+     * @param imageQuiz     이미지 퀴즈
+     * @param newQuizSolved 새로운 이미지 퀴즈(푼 것)
      * @return Long 점수
      */
-    private static Long getPoint(ImageQuiz imageQuiz, ImageQuizSolved newImageQuizSolved) {
-        return newImageQuizSolved.getIsCorrect() ? Level.getPoint(imageQuiz.getLevel()) : 0L;
+    private static Long getPoint(ImageQuiz imageQuiz, QuizSolved newQuizSolved) {
+        return newQuizSolved.getIsCorrect() ? Level.getPoint(imageQuiz.getLevel()) : 0L;
     }
 }

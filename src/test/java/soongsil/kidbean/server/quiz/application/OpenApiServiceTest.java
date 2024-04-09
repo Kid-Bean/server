@@ -75,16 +75,16 @@ public class OpenApiServiceTest {
         OpenApiResponse response = openApiService.analyzeAnswer("테스트 코드");
 
         //then
-        assertThat(response.morphemeList().size()).isEqualTo(2);
-        assertThat(response.morphemeList().get(0).morpheme()).isEqualTo("테스트");
-        assertThat(response.morphemeList().get(1).morpheme()).isEqualTo("코드");
-        assertThat(response.useWordList().size()).isEqualTo(2);
-        assertThat(response.useWordList().stream()
+        assertThat(response.morphemeVOList().size()).isEqualTo(2);
+        assertThat(response.morphemeVOList().get(0).morpheme()).isEqualTo("테스트");
+        assertThat(response.morphemeVOList().get(1).morpheme()).isEqualTo("코드");
+        assertThat(response.useWordVOList().size()).isEqualTo(2);
+        assertThat(response.useWordVOList().stream()
                 .filter(wc -> "테스트".equals(wc.word()))
                 .findFirst()
                 .get().count())
                 .isEqualTo(1);
-        assertThat(response.useWordList().stream()
+        assertThat(response.useWordVOList().stream()
                 .filter(wc -> "코드".equals(wc.word()))
                 .findFirst()
                 .get().count())

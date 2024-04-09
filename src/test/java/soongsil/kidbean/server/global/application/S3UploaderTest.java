@@ -17,15 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
 import soongsil.kidbean.server.global.vo.S3Info;
 
 @Slf4j
-@Import(AwsS3MockConfig.class)
-@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@Import(AwsS3MockConfig.class)
+@SpringBootTest(classes = {S3Uploader.class})
 class S3UploaderTest {
 
     @Autowired

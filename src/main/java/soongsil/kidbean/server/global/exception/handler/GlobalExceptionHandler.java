@@ -19,6 +19,7 @@ import soongsil.kidbean.server.global.exception.response.ErrorResponse.Validatio
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationErrors;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
+import soongsil.kidbean.server.quiz.exception.AnswerQuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
@@ -60,6 +61,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(WordQuizNotFoundException.class)
     public ResponseEntity<Object> handleWordQuizNotFound(final WordQuizNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(AnswerQuizSolvedNotFoundException.class)
+    public ResponseEntity<Object> handleAnswerQuizSolvedNotFound(final AnswerQuizSolvedNotFoundException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }

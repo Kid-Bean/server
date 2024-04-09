@@ -2,7 +2,6 @@ package soongsil.kidbean.server.member.controller;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_TRUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -17,32 +16,28 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import soongsil.kidbean.server.member.application.QuizSolvedService;
+import soongsil.kidbean.server.member.application.MypageService;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
-import soongsil.kidbean.server.member.presentation.QuizSolvedController;
-import soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture;
+import soongsil.kidbean.server.member.presentation.MypageController;
 
-@WebMvcTest({QuizSolvedController.class})
+@WebMvcTest({MypageController.class})
 @MockBean(JpaMetamodelMappingContext.class)
-public class QuizSolvedTest {
+public class MypageControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    QuizSolvedService quizSolvedService;
+    MypageService mypageService;
 
     @Test
     public void findSolvedImageTest() throws Exception {
         //given
         List<SolvedImageInfo> list = new ArrayList<>();
-        list.add(SolvedImageInfo.from(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE));
-        System.out.println(SolvedImageInfo.from(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE));
-        list.add(SolvedImageInfo.from(ImageQuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_FALSE));
         SolvedImageListResponse response = new SolvedImageListResponse(list);
         System.out.println(response);
-        given(quizSolvedService.findSolvedImage(any(Long.class)))
+        given(mypageService.findSolvedImage(any(Long.class)))
                 .willReturn(response);
         System.out.println(response);
 

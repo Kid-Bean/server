@@ -15,6 +15,7 @@ import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
 
 @Slf4j
 @RestController
@@ -35,10 +36,14 @@ public class AnswerQuizController {
     }
 
     @PostMapping("/{memberId}")
-    public void solveAnswerQuiz(@PathVariable Long memberId,
-                                @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
-                                @RequestPart MultipartFile record) {
-        log.info("{}", answerQuizSolvedRequest.answer());
-        answerQuizService.submitAnswerQuiz(answerQuizSolvedRequest, record, memberId);
+    public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
+                                                                    @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
+                                                                    @RequestPart MultipartFile record) {
+        AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(
+                answerQuizSolvedRequest, record, memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(score));
     }
 }

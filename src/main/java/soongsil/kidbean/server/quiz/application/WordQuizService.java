@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -47,7 +47,7 @@ public class WordQuizService {
         Page<WordQuiz> WordQuizPage = generateRandomWordQuizPage(member);
 
         WordQuiz WordQuiz = pageHasWordQuiz(WordQuizPage)
-                .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         return WordQuizResponse.from(WordQuiz);
     }
@@ -94,7 +94,7 @@ public class WordQuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
         WordQuiz WordQuiz = wordQuizRepository.findByQuizIdAndMember(quizId, member)
-                .orElseThrow(() -> new WordQuizNotFoundException(Word_QUIZ_NOT_FOUND));
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         return WordQuizMemberDetailResponse.from(WordQuiz);
     }
