@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.domain.type.Level;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "image_quiz")
 @Getter
@@ -23,7 +26,7 @@ public class ImageQuiz {
 
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private QuizCategory quizCategory;
 
     @Column(name = "answer", length = 20)
     private String answer;
@@ -32,7 +35,7 @@ public class ImageQuiz {
     private String title;
 
     @Embedded
-    private ImageInfo imageInfo;
+    private S3Info s3Info;
 
     @Column(name = "quiz_level")
     @Enumerated(EnumType.STRING)
@@ -42,26 +45,28 @@ public class ImageQuiz {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @OneToMany(mappedBy = "imageQuiz", orphanRemoval = true)
+    private List<QuizSolved> quizSolvedList = new ArrayList<>();
+
     @Builder
-    public ImageQuiz(Long quizId, Category category, String answer, String title, ImageInfo imageInfo, Level level,
+    public ImageQuiz(QuizCategory quizCategory, String answer, String title, S3Info s3Info, Level level,
                      Member member) {
-        this.quizId = quizId;
-        this.category = category;
+        this.quizCategory = quizCategory;
         this.answer = answer;
         this.title = title;
-        this.imageInfo = imageInfo;
+        this.s3Info = s3Info;
         this.level = level;
         this.member = member;
     }
 
-    public void setImageInfo(ImageInfo imageInfo) {
-        this.imageInfo = imageInfo;
+    public void setS3Info(S3Info s3Info) {
+        this.s3Info = s3Info;
     }
 
-    public void update(String title, String answer, Category category, ImageInfo imageInfo) {
+    public void update(String title, String answer, QuizCategory quizCategory, S3Info s3Info) {
         this.title = title;
         this.answer = answer;
-        this.category = category;
-        this.imageInfo = imageInfo;
+        this.quizCategory = quizCategory;
+        this.s3Info = s3Info;
     }
 }

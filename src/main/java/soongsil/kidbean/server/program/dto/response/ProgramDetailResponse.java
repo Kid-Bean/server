@@ -6,16 +6,16 @@ import soongsil.kidbean.server.program.domain.Program;
 
 @Builder
 public record ProgramDetailResponse(
-    Long programId,
-    String teacherName,
-    String title,
-    String place,
-    String phoneNumber,
-    String content,
-    String programImageUrl,
-    String teacherImageUrl
-){
-    public static ProgramDetailResponse from(Program program){
+        Long programId,
+        String teacherName,
+        String title,
+        String place,
+        String phoneNumber,
+        String content,
+        String programImageUrl,
+        String teacherImageUrl
+) {
+    public static ProgramDetailResponse from(Program program) {
 
         return ProgramDetailResponse
                 .builder()
@@ -25,8 +25,8 @@ public record ProgramDetailResponse(
                 .phoneNumber(program.getPhoneNumber())
                 .title(program.getTitle())
                 .content(program.getContent())
-                .programImageUrl(program.getProgramImageInfo().getImageUrl())
-                .teacherImageUrl(program.getTeacherImageInfo().getImageUrl())
+                .programImageUrl(program.getProgramS3Info().getS3Url())
+                .teacherImageUrl(program.getTeacherS3Info().getS3Url())
                 .build();
     }
 }

@@ -9,6 +9,7 @@ import io.findify.s3mock.S3Mock;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 
 @Slf4j
-@Import(AwsS3MockConfig.class)
-@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@Import(AwsS3MockConfig.class)
+@SpringBootTest(classes = {S3Uploader.class})
 class S3UploaderTest {
 
     @Autowired
@@ -54,7 +53,8 @@ class S3UploaderTest {
     }
 
     @Test
-    void S3_업로드_테스트() {
+    @DisplayName("S3_업로드_테스트")
+    void upload() {
         // given
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
@@ -67,7 +67,8 @@ class S3UploaderTest {
     }
 
     @Test
-    void S3_삭제_테스트() {
+    @DisplayName("S3_삭제_테스트")
+    void deleteFile() {
         // given
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
@@ -80,8 +81,8 @@ class S3UploaderTest {
                 .isInstanceOf(AmazonS3Exception.class);
     }
 
-    private ImageInfo generateImageInfo(String urlPath) {
+    private S3Info generateImageInfo(String urlPath) {
         String generatedPath = urlPath.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
-        return new ImageInfo(urlPath, generatedPath, folderName);
+        return new S3Info(urlPath, generatedPath, folderName);
     }
 }

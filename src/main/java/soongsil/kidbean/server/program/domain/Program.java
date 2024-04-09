@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.global.vo.ImageInfo;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
@@ -49,11 +49,11 @@ public class Program {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "imageUrl", column = @Column(name = "program_image_url", length = 200)),
+            @AttributeOverride(name = "s3Url", column = @Column(name = "program_s3_url", length = 200)),
             @AttributeOverride(name = "fileName", column = @Column(name = "program_file_name", length = 200)),
             @AttributeOverride(name = "folderName", column = @Column(name = "program_folder_name", length = 100))
     })
-    private ImageInfo programImageInfo;
+    private S3Info programS3Info;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,8 +66,8 @@ public class Program {
                    String phoneNumber,
                    String content,
                    ProgramCategory programCategory,
-                   ImageInfo teacherImageInfo,
-                   ImageInfo programImageInfo,
+                   S3Info teacherImageInfo,
+                   S3Info programImageInfo,
                    Member member) {
         this.teacherName = teacherName;
         this.title = title;
@@ -75,8 +75,8 @@ public class Program {
         this.phoneNumber = phoneNumber;
         this.content = content;
         this.programCategory = programCategory;
-        this.teacherImageInfo = teacherImageInfo;
-        this.programImageInfo = programImageInfo;
+        this.teacherS3Info = teacherImageInfo;
+        this.programS3Info = programImageInfo;
         this.member = member;
     }
 }

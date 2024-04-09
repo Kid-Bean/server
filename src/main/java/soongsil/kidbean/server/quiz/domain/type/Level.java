@@ -16,7 +16,7 @@ public enum Level {
     /**
      * level에 맞는 포인트를 reutrn
      *
-     * @param level
+     * @param level 문제의 Level
      * @return Long level에 맞는 점수를 return
      */
     public static Long getPoint(Level level) {

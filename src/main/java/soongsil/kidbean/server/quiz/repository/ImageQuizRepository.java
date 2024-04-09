@@ -10,19 +10,22 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
+import java.util.List;
 import java.util.Optional;
-import soongsil.kidbean.server.quiz.domain.type.Category;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Repository
 public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
 
     //해당 카테고리의 row 개수
-    Integer countByMemberAndCategory(Member member, Category category);
+    @Query("SELECT count(*) FROM ImageQuiz iq WHERE iq.quizCategory = :category AND (iq.member = :member OR iq.member.role = :role)")
+    Integer countByMemberAndCategoryOrRole(Member member, QuizCategory category, Role role);
 
-    Integer countByMember_RoleAndCategory(Role role, Category category);
+    @Query("SELECT iq FROM ImageQuiz iq WHERE iq.quizCategory = :category AND (iq.member = :member OR iq.member.role = :role)")
+    Page<ImageQuiz> findImageQuizWithPage(@Param("member") Member member, @Param("role") Role role,
+                                          @Param("category") QuizCategory category, Pageable pageable);
 
-    @Query("SELECT iq FROM ImageQuiz iq WHERE iq.category = :category AND (iq.member = :member OR iq.member.role = :role)")
-    Page<ImageQuiz> findAllImageQuizWithPage(@Param("member") Member member, @Param("role") Role role,
-                                             @Param("category") Category category, Pageable pageable);
     Optional<ImageQuiz> findByQuizIdAndMember(Long quizId, Member member);
+
+    List<ImageQuiz> findAllByMember(Member member);
 }

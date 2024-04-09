@@ -6,9 +6,9 @@ import soongsil.kidbean.server.program.domain.Program;
 import java.util.List;
 
 @Builder
-public record ProgramListResponse (
+public record ProgramListResponse(
         List<ProgramResponse> programResponseList
-){
+) {
 
     public static ProgramListResponse from(List<Program> programList) {
 
