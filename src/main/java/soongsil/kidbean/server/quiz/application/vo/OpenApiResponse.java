@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record OpenApiResponse(
-        List<Morpheme> morphemeList,
-        List<UseWord> useWordList
+        List<MorphemeVO> morphemeVOList,
+        List<UseWordVO> useWordVOList
 ) {
 }

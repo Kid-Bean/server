@@ -1,17 +1,20 @@
 package soongsil.kidbean.server.quiz.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 
 import java.time.LocalDateTime;
 
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AnswerQuizSolved {
@@ -24,32 +27,26 @@ public class AnswerQuizSolved {
     @Embedded
     private S3Info recordAnswer;
 
-    @Column(name = "word_answer", length = 80)
-    private String wordAnswer;
+    @Column(name = "sentence_answer", length = 80)
+    private String sentenceAnswer;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime solvedTime;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @JoinColumn(name = "word_quiz_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WordQuiz wordQuiz;
-
     @JoinColumn(name = "answer_quiz_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private AnswerQuiz answerQuiz;
 
     @Builder
-    public AnswerQuizSolved(S3Info recordAnswer, String wordAnswer, LocalDateTime solvedTime, Member member,
-                            WordQuiz wordQuiz, AnswerQuiz answerQuiz) {
+    public AnswerQuizSolved(S3Info recordAnswer, String sentenceAnswer, Member member, AnswerQuiz answerQuiz) {
         this.recordAnswer = recordAnswer;
-        this.wordAnswer = wordAnswer;
-        this.solvedTime = solvedTime;
+        this.sentenceAnswer = sentenceAnswer;
         this.member = member;
-        this.wordQuiz = wordQuiz;
         this.answerQuiz = answerQuiz;
     }
 }

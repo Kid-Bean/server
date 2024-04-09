@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import soongsil.kidbean.server.quiz.application.vo.Morpheme;
+import soongsil.kidbean.server.quiz.application.vo.MorphemeVO;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
-import soongsil.kidbean.server.quiz.application.vo.UseWord;
+import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 
 @Slf4j
 @Service
@@ -28,16 +28,22 @@ public class OpenApiService {
     @Value("${openApi.url}")
     private String openApiURL;
 
+    /**
+     * 제출된 정답 String을 분석
+     *
+     * @param answerText 사용자가 제출한 답변
+     * @return 분석 결과를 OpenApiResponse에 담아 전달
+     */
     public OpenApiResponse analyzeAnswer(String answerText) {
 
         List<Map<String, Object>> responseBody = useWebClient(answerText);
 
-        List<Morpheme> morphemeList = parseMorphemeAnalysis(responseBody);
-        List<UseWord> useWordList = parseWordAnalysis(morphemeList);
+        List<MorphemeVO> morphemeVOList = parseMorphemeAnalysis(responseBody);
+        List<UseWordVO> useWordVOList = parseWordAnalysis(morphemeVOList);
 
         return OpenApiResponse.builder()
-                .morphemeList(morphemeList)
-                .useWordList(useWordList)
+                .morphemeVOList(morphemeVOList)
+                .useWordVOList(useWordVOList)
                 .build();
     }
 
@@ -74,15 +80,15 @@ public class OpenApiService {
     }
 
     @SuppressWarnings(value = "unchecked")
-    private List<Morpheme> parseMorphemeAnalysis(List<Map<String, Object>> sentences) {
+    private List<MorphemeVO> parseMorphemeAnalysis(List<Map<String, Object>> sentences) {
 
-        List<Morpheme> result = new ArrayList<>();
+        List<MorphemeVO> result = new ArrayList<>();
 
         for (Map<String, Object> sentence : sentences) {
             List<Map<String, Object>> morphemeList = (List<Map<String, Object>>) sentence.get("morp");
 
             for (Map<String, Object> morpheme : morphemeList) {
-                result.add(Morpheme.builder()
+                result.add(MorphemeVO.builder()
                         .morpheme(morpheme.get("lemma").toString())
                         .type(morpheme.get("type").toString())
                         .build());
@@ -92,25 +98,25 @@ public class OpenApiService {
         return result;
     }
 
-    private List<UseWord> parseWordAnalysis(List<Morpheme> morphemeList) {
+    private List<UseWordVO> parseWordAnalysis(List<MorphemeVO> morphemeVOList) {
 
-        List<UseWord> result = new ArrayList<>();
-        Map<String, Integer> wordCountMap = new HashMap<>();
+        List<UseWordVO> result = new ArrayList<>();
+        Map<String, Long> wordCountMap = new HashMap<>();
 
-        for (Morpheme morpheme : morphemeList) {
-            String type = morpheme.type();
+        for (MorphemeVO morphemeVO : morphemeVOList) {
+            String type = morphemeVO.type();
 
             // 명사 형태소만 필터링
             if (type.equals("NNG") || type.equals("NNP") || type.equals("NNB")) {
                 // 단어별로 등장 횟수 카운트
-                String word = morpheme.morpheme();
-                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+                String word = morphemeVO.morpheme();
+                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0L) + 1);
             }
         }
 
         // 카운트된 단어들을 결과 리스트에 추가
-        for (Map.Entry<String, Integer> entry : wordCountMap.entrySet()) {
-            result.add(UseWord.builder()
+        for (Map.Entry<String, Long> entry : wordCountMap.entrySet()) {
+            result.add(UseWordVO.builder()
                     .word(entry.getKey())
                     .count(entry.getValue())
                     .build());

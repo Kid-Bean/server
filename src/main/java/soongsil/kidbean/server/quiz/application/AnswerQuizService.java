@@ -1,10 +1,10 @@
 package soongsil.kidbean.server.quiz.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.ANSWER_QUIZ_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.Word_QUIZ_NOT_FOUND;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
-import soongsil.kidbean.server.quiz.application.vo.Morpheme;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
-import soongsil.kidbean.server.quiz.application.vo.UseWord;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
+import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
 
@@ -36,6 +34,7 @@ public class AnswerQuizService {
     private final AnswerQuizRepository answerQuizRepository;
     private final MemberRepository memberRepository;
     private final OpenApiService openApiService;
+    private final AnswerQuizSolvedService answerQuizSolvedService;
 
     /**
      * 랜덤 문제를 생성 후 멤버에게 전달
@@ -55,26 +54,28 @@ public class AnswerQuizService {
         return AnswerQuizResponse.from(answerQuiz);
     }
 
+    /**
+     * 대답하기 정답을 제출, 녹음 파일을 s3에 저장 후 응답 텍스트를 OpenApi로 분석
+     *
+     * @param answerQuizSolvedRequest 응답 텍스트 및 푼 문제 번호
+     * @param multipartFile           녹음 파일
+     * @param memberId                푼 사람
+     */
+    @Transactional
     public void submitAnswerQuiz(AnswerQuizSolvedRequest answerQuizSolvedRequest,
                                  MultipartFile multipartFile,
                                  Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        AnswerQuiz answerQuiz = answerQuizRepository.findById(answerQuizSolvedRequest.quizId())
+                .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
 
-        log.info("{}", answerQuizSolvedRequest.answer());
+        String submitAnswer = answerQuizSolvedRequest.answer();
+        OpenApiResponse openApiResponse = openApiService.analyzeAnswer(submitAnswer);
 
-        OpenApiResponse openApiResponse = openApiService.analyzeAnswer(answerQuizSolvedRequest.answer());
-
-        List<Morpheme> morphemeList = openApiResponse.morphemeList();
-        List<UseWord> useWordList = openApiResponse.useWordList();
-
-        for (Morpheme morpheme : morphemeList) {
-            log.info("morpheme: {}, type: {}", morpheme.morpheme(), morpheme.type());
-        }
-        for (UseWord useWord : useWordList) {
-            log.info("word: {}, count: {}", useWord.word(), useWord.count());
-        }
+        answerQuizSolvedService.enrollNewAnswerQuizSolved(
+                answerQuiz, submitAnswer, member, openApiResponse, multipartFile);
     }
 
     /**

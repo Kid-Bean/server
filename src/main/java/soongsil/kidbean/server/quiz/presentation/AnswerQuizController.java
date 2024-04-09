@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.quiz.presentation;
 
+import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,10 +37,14 @@ public class AnswerQuizController {
     }
 
     @PostMapping("/{memberId}")
-    public void solveAnswerQuiz(@PathVariable Long memberId,
-                                @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
-                                @RequestPart MultipartFile record) {
+    public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
+                                                                    @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
+                                                                    @RequestPart MultipartFile record) {
         log.info("{}", answerQuizSolvedRequest.answer());
         answerQuizService.submitAnswerQuiz(answerQuizSolvedRequest, record, memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(EMPTY_RESPONSE);
     }
 }
