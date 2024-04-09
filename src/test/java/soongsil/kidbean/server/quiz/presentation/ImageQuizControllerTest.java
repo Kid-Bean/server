@@ -24,8 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.domain.type.Level;
-import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedListRequest;
-import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.request.QuizSolvedListRequest;
+import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 
@@ -69,8 +69,8 @@ class ImageQuizControllerTest {
     @DisplayName("문제 풀기 요청")
     void solveImageQuizzes() throws Exception {
         //given
-        ImageQuizSolvedListRequest request = new ImageQuizSolvedListRequest(Collections.singletonList(
-                new ImageQuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer())
+        QuizSolvedListRequest request = new QuizSolvedListRequest(Collections.singletonList(
+                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer())
         ));
         Long memberId = MEMBER.getMemberId();
 

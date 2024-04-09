@@ -13,9 +13,11 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
+import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.application.vo.QuizType.WORD_QUIZ;
 import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 @Slf4j
@@ -33,6 +36,7 @@ public class WordQuizService {
 
     private final MemberRepository memberRepository;
     private final WordQuizRepository wordQuizRepository;
+    private final QuizSolvedService quizSolvedService;
 
     /**
      * 랜덤 문제를 생성 후 멤버에게 전달
@@ -50,6 +54,16 @@ public class WordQuizService {
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         return WordQuizResponse.from(WordQuiz);
+    }
+
+    @Transactional
+    public WordQuizSolveScoreResponse solveWordQuizzes(List<QuizSolvedRequest> quizSolvedRequestList, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        return WordQuizSolveScoreResponse.scoreFrom(
+                quizSolvedService.solveQuizzes(quizSolvedRequestList, member, WORD_QUIZ));
     }
 
     /**
