@@ -11,8 +11,8 @@ import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
-import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
+import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
+import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 
@@ -35,13 +35,13 @@ public class WordQuizSolver implements QuizSolver {
     public Long solveQuiz(QuizSolvedRequest solvedRequest, Member member) {
 
         WordQuiz wordQuiz = wordQuizRepository.findById(solvedRequest.quizId())
-                .orElseThrow(() -> new ImageQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
         QuizSolved wordQuizSolved = solvedRequest.toQuizSolved(wordQuiz, member);
 
         if (wordQuizSolvedExists(wordQuiz, member)) {
-            return updateExistingSolvedImageQuiz(wordQuizSolved, wordQuiz);
+            return updateExistingSolvedWordQuiz(wordQuizSolved, wordQuiz);
         } else {
-            return enrollNewSolvedImageQuiz(wordQuizSolved, wordQuiz);
+            return enrollNewSolvedWordQuiz(wordQuizSolved, wordQuiz);
         }
     }
 
@@ -53,7 +53,7 @@ public class WordQuizSolver implements QuizSolver {
      * @return Boolean
      */
     private Boolean wordQuizSolvedExists(WordQuiz wordQuiz, Member member) {
-        return quizSolvedRepository.existsWordQuizSolvedByWordQuizAndMember(wordQuiz, member);
+        return quizSolvedRepository.existsByWordQuizAndMember(wordQuiz, member);
     }
 
     /**
@@ -63,7 +63,7 @@ public class WordQuizSolver implements QuizSolver {
      * @param wordQuiz      단어 퀴즈
      * @return Long 점수
      */
-    private Long enrollNewSolvedImageQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
+    private Long enrollNewSolvedWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
 
         newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(wordQuiz.getAnswer()));
         quizSolvedRepository.save(newQuizSolved);
@@ -78,12 +78,12 @@ public class WordQuizSolver implements QuizSolver {
      * @param wordQuiz   단어 퀴즈
      * @return Long 점수
      */
-    private Long updateExistingSolvedImageQuiz(QuizSolved quizSolved, WordQuiz wordQuiz) {
+    private Long updateExistingSolvedWordQuiz(QuizSolved quizSolved, WordQuiz wordQuiz) {
 
         Member member = quizSolved.getMember();
         //이전에 푼 동일한 문제
         QuizSolved wordQuizSolvedEx = quizSolvedRepository.findByWordQuizAndMember(wordQuiz, member)
-                .orElseThrow(() -> new ImageQuizSolvedNotFoundException(IMAGE_QUIZ_SOLVED_NOT_FOUND));
+                .orElseThrow(() -> new QuizSolvedNotFoundException(IMAGE_QUIZ_SOLVED_NOT_FOUND));
 
         //정답을 포함하고 있는지
         boolean isCorrect = quizSolved.getReply().contains(wordQuiz.getAnswer());

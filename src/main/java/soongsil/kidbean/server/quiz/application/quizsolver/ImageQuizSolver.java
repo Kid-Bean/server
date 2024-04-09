@@ -12,7 +12,7 @@ import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
+import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 
@@ -53,7 +53,7 @@ public class ImageQuizSolver implements QuizSolver {
      * @return Boolean
      */
     private Boolean imageQuizSolvedExists(ImageQuiz imageQuiz, Member member) {
-        return quizSolvedRepository.existsImageQuizSolvedByImageQuizAndMember(imageQuiz, member);
+        return quizSolvedRepository.existsByImageQuizAndMember(imageQuiz, member);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ImageQuizSolver implements QuizSolver {
         Member member = quizSolved.getMember();
         //이전에 푼 동일한 문제
         QuizSolved imageQuizSolvedEx = quizSolvedRepository.findByImageQuizAndMember(imageQuiz, member)
-                .orElseThrow(() -> new ImageQuizSolvedNotFoundException(IMAGE_QUIZ_SOLVED_NOT_FOUND));
+                .orElseThrow(() -> new QuizSolvedNotFoundException(IMAGE_QUIZ_SOLVED_NOT_FOUND));
 
         //정답을 포함하고 있는지
         boolean isCorrect = quizSolved.getReply().contains(imageQuiz.getAnswer());

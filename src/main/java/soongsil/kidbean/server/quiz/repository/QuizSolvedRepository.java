@@ -12,9 +12,9 @@ import soongsil.kidbean.server.quiz.domain.WordQuiz;
 @Repository
 public interface QuizSolvedRepository extends JpaRepository<QuizSolved, Long> {
 
-    boolean existsImageQuizSolvedByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
+    boolean existsByImageQuizAndMember(ImageQuiz imageQuiz, Member member);
 
-    boolean existsWordQuizSolvedByWordQuizAndMember(WordQuiz wordQuiz, Member member);
+    boolean existsByWordQuizAndMember(WordQuiz wordQuiz, Member member);
 
     List<QuizSolved> findAllByMemberAndImageQuizIsNotNull(Member member);
 
