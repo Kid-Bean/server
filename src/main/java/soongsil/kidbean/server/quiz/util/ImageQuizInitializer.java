@@ -68,6 +68,15 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .member(DUMMY_ADMIN)
             .build();
 
+    public static final ImageQuiz IMAGE_QUIZ_6 = ImageQuiz.builder()
+            .quizCategory(OBJECT)
+            .level(SILVER)
+            .title("titlePlant2")
+            .answer("answerPlant2")
+            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .member(DUMMY_ADMIN)
+            .build();
+
     @Override
     public void run(ApplicationArguments args) {
         if (imageQuizRepository.count() > 0) {
@@ -81,6 +90,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             imageQuizList.add(IMAGE_QUIZ_3);
             imageQuizList.add(IMAGE_QUIZ_4);
             imageQuizList.add(IMAGE_QUIZ_5);
+            imageQuizList.add(IMAGE_QUIZ_6);
 
             imageQuizRepository.saveAll(imageQuizList);
         }
