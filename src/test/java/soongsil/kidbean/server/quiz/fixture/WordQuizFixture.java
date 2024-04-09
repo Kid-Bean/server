@@ -1,9 +1,9 @@
 package soongsil.kidbean.server.quiz.fixture;
 
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
-import static soongsil.kidbean.server.quiz.fixture.WordQuizWordFixture.WORD1;
-import static soongsil.kidbean.server.quiz.fixture.WordQuizWordFixture.WORD2;
-import static soongsil.kidbean.server.quiz.fixture.WordQuizWordFixture.WORD3;
+import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD1;
+import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD2;
+import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD3;
 
 import java.util.List;
 import org.springframework.test.util.ReflectionTestUtils;

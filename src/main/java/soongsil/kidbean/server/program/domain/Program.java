@@ -66,8 +66,8 @@ public class Program {
                    String phoneNumber,
                    String content,
                    ProgramCategory programCategory,
-                   ImageInfo teacherImageInfo,
-                   ImageInfo programImageInfo,
+                   S3Info teacherImageInfo,
+                   S3Info programImageInfo,
                    Member member) {
         this.teacherName = teacherName;
         this.title = title;
@@ -75,8 +75,8 @@ public class Program {
         this.phoneNumber = phoneNumber;
         this.content = content;
         this.programCategory = programCategory;
-        this.teacherImageInfo = teacherImageInfo;
-        this.programImageInfo = programImageInfo;
+        this.teacherS3Info = teacherImageInfo;
+        this.programS3Info = programImageInfo;
         this.member = member;
     }
 }

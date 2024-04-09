@@ -2,7 +2,6 @@ package soongsil.kidbean.server.member.controller;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_TRUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import soongsil.kidbean.server.member.application.MypageService;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
 import soongsil.kidbean.server.member.presentation.MypageController;
-import soongsil.kidbean.server.quiz.fixture.ImageQuizSolvedFixture;
 
 @WebMvcTest({MypageController.class})
 @MockBean(JpaMetamodelMappingContext.class)

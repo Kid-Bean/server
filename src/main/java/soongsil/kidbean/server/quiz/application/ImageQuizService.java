@@ -40,7 +40,7 @@ public class ImageQuizService {
 
     private final ImageQuizRepository imageQuizRepository;
     private final MemberRepository memberRepository;
-    private final ImageQuizSolvedService imageQuizSolvedService;
+    private final QuizSolvedService quizSolvedService;
     private final S3Uploader s3Uploader;
 
     private static final String COMMON_URL = "kidbean.s3.ap-northeast-2.amazonaws.com";
@@ -79,7 +79,7 @@ public class ImageQuizService {
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(
-                imageQuizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
+                quizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
     }
 
     /**
@@ -160,7 +160,7 @@ public class ImageQuizService {
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         String folderName = QUIZ_NAME + request.quizCategory();
-      
+
         String uploadUrl = s3Uploader.upload(image, folderName);
 
         String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
@@ -177,7 +177,6 @@ public class ImageQuizService {
     }
 
     @Transactional
-
     public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));

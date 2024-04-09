@@ -10,4 +10,6 @@ import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 public interface AnswerQuizSolvedRepository extends JpaRepository<AnswerQuizSolved, Long> {
 
     List<AnswerQuizSolved> findAllByMember(Member member);
+
+    List<AnswerQuizSolved> findAllByMemberAndAnswerQuizIsNotNull(Member member);
 }

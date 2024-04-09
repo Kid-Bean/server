@@ -1,7 +1,6 @@
 package soongsil.kidbean.server.member.dto.response;
 
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 
 public record SolvedImageDetailResponse(

@@ -12,11 +12,12 @@ public record SolvedAnswerDetailResponse(
         List<UseWordInfo> useWordInfo,
         List<MorphemeInfo> morphemeInfo //TODO
 ) {
-    public static SolvedAnswerDetailResponse of(AnswerQuizSolved answerQuizSolved, List<Morpheme> morphemeList, List<UseWord> useWordList) {
+    public static SolvedAnswerDetailResponse of(AnswerQuizSolved answerQuizSolved, List<Morpheme> morphemeList,
+                                                List<UseWord> useWordList) {
         return new SolvedAnswerDetailResponse(
                 answerQuizSolved.getSolvedId(),
                 answerQuizSolved.getRecordAnswer().getS3Url(),
-                answerQuizSolved.getWordAnswer(),
+                answerQuizSolved.getSentenceAnswer(),
                 useWordList.stream()
                         .map(UseWordInfo::from)
                         .toList(),

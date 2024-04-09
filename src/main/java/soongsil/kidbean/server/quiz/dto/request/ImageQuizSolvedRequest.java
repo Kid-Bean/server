@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.ImageQuizSolved;
+import soongsil.kidbean.server.quiz.domain.QuizSolved;
 
 @Builder
 public record ImageQuizSolvedRequest(
@@ -13,10 +13,10 @@ public record ImageQuizSolvedRequest(
         @NotNull(message = "정답을 입력해주세요.")
         String answer
 ) {
-    public ImageQuizSolved toImageQuizSolved(ImageQuiz imageQuiz, Member member) {
-        return ImageQuizSolved.builder()
+    public QuizSolved toQuizSolved(ImageQuiz imageQuiz, Member member) {
+        return QuizSolved.builder()
                 .imageQuiz(imageQuiz)
-                .answer(answer)
+                .reply(answer)
                 .member(member)
                 .build();
     }

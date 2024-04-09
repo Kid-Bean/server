@@ -62,4 +62,8 @@ public class QuizSolved {
         this.wordQuiz = wordQuiz;
         this.imageQuiz = imageQuiz;
     }
+
+    public void setAnswerIsCorrect(boolean isCorrect) {
+        this.isCorrect = isCorrect;
+    }
 }

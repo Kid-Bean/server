@@ -22,6 +22,7 @@ public class ProgramService {
 
     /**
      * 프로그램 상세 조회
+     *
      * @param programId 프로그램 id
      * @return response
      */
@@ -36,7 +37,7 @@ public class ProgramService {
 
     /* 카테고리에 따른 프로그램 목록 조회 */
     @Transactional
-    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory){
+    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory) {
         List<Program> programList = programRepository.findAllByProgramCategory(programCategory);
         return ProgramListResponse.from(programList);
     }

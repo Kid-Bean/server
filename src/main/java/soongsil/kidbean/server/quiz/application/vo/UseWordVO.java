@@ -3,8 +3,8 @@ package soongsil.kidbean.server.quiz.application.vo;
 import lombok.Builder;
 
 @Builder
-public record UseWord(
+public record UseWordVO(
         String word,
-        Integer count
+        Long count
 ) {
 }

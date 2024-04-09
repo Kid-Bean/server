@@ -43,7 +43,6 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .member(DUMMY_ADMIN)
             .build();
 
-
     public static final ImageQuiz IMAGE_QUIZ_3 = ImageQuiz.builder()
             .quizCategory(NONE)
             .level(SILVER)
@@ -82,6 +81,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             imageQuizList.add(IMAGE_QUIZ_3);
             imageQuizList.add(IMAGE_QUIZ_4);
             imageQuizList.add(IMAGE_QUIZ_5);
+
             imageQuizRepository.saveAll(imageQuizList);
         }
     }

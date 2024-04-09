@@ -21,17 +21,17 @@ import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 @RequiredArgsConstructor
 @Order(3)
 @LocalDummyDataInit
-public class ImageQuizSolvedInitializer implements ApplicationRunner {
+public class QuizSolvedInitializer implements ApplicationRunner {
 
     private final QuizSolvedRepository quizSolvedRepository;
 
     @Override
     public void run(ApplicationArguments args) {
         if (quizSolvedRepository.count() > 0) {
-            log.info("[ImageQuizSolved]더미 데이터 존재");
+            log.info("[QuizSolved]더미 데이터 존재");
         } else {
             //더미 데이터 작성
-            log.info("[ImageQuizSolved]더미 데이터 작성");
+            log.info("[QuizSolved]더미 데이터 작성");
             List<QuizSolved> quizSolvedList = new ArrayList<>();
 
             quizSolvedList.add(QuizSolved.builder()
