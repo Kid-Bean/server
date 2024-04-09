@@ -1,7 +1,5 @@
 package soongsil.kidbean.server.quiz.presentation;
 
-import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +15,7 @@ import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
 
 @Slf4j
 @RestController
@@ -40,11 +39,11 @@ public class AnswerQuizController {
     public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
                                                                     @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
                                                                     @RequestPart MultipartFile record) {
-        log.info("{}", answerQuizSolvedRequest.answer());
-        answerQuizService.submitAnswerQuiz(answerQuizSolvedRequest, record, memberId);
+        AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(answerQuizSolvedRequest, record,
+                memberId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(EMPTY_RESPONSE);
+                .body(ResponseTemplate.from(score));
     }
 }

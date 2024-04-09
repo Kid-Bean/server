@@ -21,6 +21,7 @@ import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
@@ -35,6 +36,8 @@ public class AnswerQuizService {
     private final MemberRepository memberRepository;
     private final OpenApiService openApiService;
     private final AnswerQuizSolvedService answerQuizSolvedService;
+
+    private static final Long ANSWER_QUIZ_POINT = 3L;
 
     /**
      * 랜덤 문제를 생성 후 멤버에게 전달
@@ -60,11 +63,12 @@ public class AnswerQuizService {
      * @param answerQuizSolvedRequest 응답 텍스트 및 푼 문제 번호
      * @param multipartFile           녹음 파일
      * @param memberId                푼 사람
+     * @return Long                   AnswerQuiz 풀었을 때의 점수
      */
     @Transactional
-    public void submitAnswerQuiz(AnswerQuizSolvedRequest answerQuizSolvedRequest,
-                                 MultipartFile multipartFile,
-                                 Long memberId) {
+    public AnswerQuizSolveScoreResponse submitAnswerQuiz(AnswerQuizSolvedRequest answerQuizSolvedRequest,
+                                                         MultipartFile multipartFile,
+                                                         Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
@@ -76,6 +80,8 @@ public class AnswerQuizService {
 
         answerQuizSolvedService.enrollNewAnswerQuizSolved(
                 answerQuiz, submitAnswer, member, openApiResponse, multipartFile);
+
+        return AnswerQuizSolveScoreResponse.scoreFrom(ANSWER_QUIZ_POINT);
     }
 
     /**
