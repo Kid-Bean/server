@@ -177,18 +177,18 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
+    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile s3Url) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         // 이미지 수정이 되지 않는 것 default
         S3Info s3Info = imageQuiz.getS3Info();
 
-        if (!image.getOriginalFilename().isEmpty()) {
+        if (!s3Url.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
 
             String updateFolderName = QUIZ_NAME + request.quizCategory();
-            String updateUrl = s3Uploader.upload(image, updateFolderName);
+            String updateUrl = s3Uploader.upload(s3Url, updateFolderName);
 
             String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
 
