@@ -4,6 +4,7 @@ import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER
 import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_1;
 import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_2;
 import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_3;
+import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_4;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .build());
 
             quizSolvedList.add(QuizSolved.builder()
-                    .imageQuiz(IMAGE_QUIZ_2)
+                    .imageQuiz(IMAGE_QUIZ_3)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
                     .solvedTime(LocalDateTime.now())
@@ -59,7 +60,7 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .build());
 
             quizSolvedList.add(QuizSolved.builder()
-                    .imageQuiz(IMAGE_QUIZ_3)
+                    .imageQuiz(IMAGE_QUIZ_4)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
                     .solvedTime(LocalDateTime.now())

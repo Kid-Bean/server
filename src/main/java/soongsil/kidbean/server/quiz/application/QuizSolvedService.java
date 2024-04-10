@@ -30,8 +30,12 @@ public class QuizSolvedService {
 
         QuizSolver solver = quizSolverFactory.getSolver(type);
 
-        return quizSolvedRequestList.stream()
+        Long score = quizSolvedRequestList.stream()
                 .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))
                 .reduce(0L, Long::sum);
+
+        member.updateScore(member.getScore() + score);
+
+        return score;
     }
 }

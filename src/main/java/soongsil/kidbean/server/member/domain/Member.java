@@ -49,4 +49,8 @@ public class Member {
         this.role = role;
         this.score = score;
     }
+
+    public void updateScore(Long score) {
+        this.score = score;
+    }
 }
