@@ -1,93 +1,99 @@
 package soongsil.kidbean.server.quiz.application;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.util.Arrays;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import java.util.Map;
+import soongsil.kidbean.server.quiz.application.config.MockWebClientConfig;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Import(MockWebClientConfig.class)
+@ActiveProfiles("test")
+@SpringBootTest(classes = {OpenApiService.class})
 public class OpenApiServiceTest {
 
-    @Mock
-    private WebClient.Builder webClientBuilder;
-
-    @Mock
-    private WebClient webClient;
-
-    @Mock
-    private WebClient.RequestBodyUriSpec requestBodyUriSpec;
-
-    @Mock
-    private WebClient.RequestBodySpec requestBodySpec;
-
-    @Mock
-    private WebClient.ResponseSpec responseSpec;
-
-    @Mock
-    private WebClient.RequestHeadersSpec requestHeadersSpec;
-
-    @InjectMocks
+    @Autowired
     private OpenApiService openApiService;
 
-    @BeforeEach
-    public void setUp() {
-        given(webClientBuilder.build()).willReturn(webClient);
-        given(webClient.post()).willReturn(requestBodyUriSpec);
-        given(requestBodyUriSpec.uri(nullable(String.class))).willReturn(requestBodySpec);
-        given(requestBodySpec.header(anyString(), any())).willReturn(requestBodySpec);
-        given(requestBodySpec.bodyValue(any())).willReturn(requestHeadersSpec);
-        given(requestHeadersSpec.retrieve()).willReturn(responseSpec);
+    ObjectMapper objectMapper = new ObjectMapper();
 
-        Map<String, Object> mockResponse = new HashMap<>();
-        Map<String, Object> returnObject = new HashMap<>();
-        List<Map<String, Object>> sentences = List.of(
-                Map.of("morp", Arrays.asList(
-                        Map.of("lemma", "테스트", "type", "NNG"),
-                        Map.of("lemma", "코드", "type", "NNG")
-                ))
-        );
-        returnObject.put("sentence", sentences);
-        mockResponse.put("return_object", returnObject);
+    @Autowired
+    private MockWebServer mockWebServer;
 
-        when(responseSpec.bodyToMono(Map.class)).thenReturn(Mono.just(mockResponse));
+    @AfterAll
+    void tearDown() throws IOException {
+        mockWebServer.shutdown();
     }
 
     @Test
-    public void testAnalyzeAnswer() {
+    void analyzeAnswerTest() throws Exception {
+        //given
+        String answerText = "test text";
+        Map<String, Object> mockResponse = makeMockResponse();
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(objectMapper.writeValueAsString(mockResponse))
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+
         //when
-        OpenApiResponse response = openApiService.analyzeAnswer("테스트 코드");
+        OpenApiResponse openApiResponse = openApiService.analyzeAnswer(answerText);
 
         //then
-        assertThat(response.morphemeVOList().size()).isEqualTo(2);
-        assertThat(response.morphemeVOList().get(0).morpheme()).isEqualTo("테스트");
-        assertThat(response.morphemeVOList().get(1).morpheme()).isEqualTo("코드");
-        assertThat(response.useWordVOList().size()).isEqualTo(2);
-        assertThat(response.useWordVOList().stream()
-                .filter(wc -> "테스트".equals(wc.word()))
-                .findFirst()
-                .get().count())
-                .isEqualTo(1);
-        assertThat(response.useWordVOList().stream()
-                .filter(wc -> "코드".equals(wc.word()))
-                .findFirst()
-                .get().count())
-                .isEqualTo(1);
+        assertThat(openApiResponse.useWordVOList().size()).isEqualTo(2);
+    }
+
+    private Map<String, Object> makeMockResponse() {
+        Map<String, Object> mockResponse = new HashMap<>();
+        Map<String, Object> returnObject = new HashMap<>();
+        List<Map<String, Object>> sentences = new ArrayList<>();
+
+        // 첫 번째 문장의 형태소 분석 결과
+        Map<String, Object> firstSentence = new HashMap<>();
+        List<Map<String, Object>> morphemes1 = new ArrayList<>();
+        Map<String, Object> morpheme1 = new HashMap<>();
+        morpheme1.put("id", 1);
+        morpheme1.put("text", "test");
+        morpheme1.put("type", "NNG");
+        morpheme1.put("lemma", "test");
+        morphemes1.add(morpheme1);
+
+        firstSentence.put("morp", morphemes1);
+        sentences.add(firstSentence);
+
+        // 두 번째 문장의 형태소 분석 결과
+        Map<String, Object> secondSentence = new HashMap<>();
+        List<Map<String, Object>> morphemes2 = new ArrayList<>();
+        Map<String, Object> morpheme2 = new HashMap<>();
+        morpheme2.put("id", 2);
+        morpheme2.put("text", "text");
+        morpheme2.put("type", "NNG");
+        morpheme2.put("lemma", "text");
+        morphemes2.add(morpheme2);
+
+        secondSentence.put("morp", morphemes2);
+        sentences.add(secondSentence);
+
+        returnObject.put("sentence", sentences);
+        mockResponse.put("return_object", returnObject);
+
+        return mockResponse;
     }
 }

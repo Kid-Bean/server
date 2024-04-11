@@ -78,7 +78,7 @@ class QuizSolvedServiceTest {
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
         given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER)).willReturn(true);
         given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL, MEMBER, true))
-                .willReturn(true);
+                .willReturn(false);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
@@ -143,7 +143,7 @@ class QuizSolvedServiceTest {
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
         given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER)).willReturn(true);
         given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER, true))
-                .willReturn(true);
+                .willReturn(false);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(

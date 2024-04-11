@@ -49,6 +49,9 @@ dependencies {
 
     // 테스트 코드 작성시 사용할 DB(H2)
     runtimeOnly 'com.h2database:h2'
+
+    //테스트용 웹서버
+    testImplementation 'com.squareup.okhttp3:mockwebserver'
 }
 
 tasks.named('test') {
