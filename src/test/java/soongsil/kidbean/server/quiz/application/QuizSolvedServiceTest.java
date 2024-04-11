@@ -4,10 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
-import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_FALSE;
-import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_TRUE;
-import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.WORD_QUIZ_SOLVED_FALSE;
-import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.WORD_QUIZ_SOLVED_TRUE;
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.Collections;
@@ -59,8 +55,8 @@ class QuizSolvedServiceTest {
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
         //이전에 풀었던 문제
         given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
-                .willReturn(Optional.of(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE));
+        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL, MEMBER, true))
+                .willReturn(true);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
@@ -81,8 +77,8 @@ class QuizSolvedServiceTest {
         given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
         given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.findByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER))
-                .willReturn(Optional.of(IMAGE_QUIZ_SOLVED_ANIMAL_FALSE));
+        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL, MEMBER, true))
+                .willReturn(true);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
@@ -124,8 +120,8 @@ class QuizSolvedServiceTest {
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
         //이전에 풀었던 문제
         given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.findByWordQuizAndMember(WORD_QUIZ, MEMBER))
-                .willReturn(Optional.of(WORD_QUIZ_SOLVED_TRUE));
+        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER, true))
+                .willReturn(true);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
@@ -146,8 +142,8 @@ class QuizSolvedServiceTest {
         given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
         given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.findByWordQuizAndMember(WORD_QUIZ, MEMBER))
-                .willReturn(Optional.of(WORD_QUIZ_SOLVED_FALSE));
+        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER, true))
+                .willReturn(true);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(

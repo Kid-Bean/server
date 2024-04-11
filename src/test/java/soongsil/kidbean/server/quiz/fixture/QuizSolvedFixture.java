@@ -6,7 +6,6 @@ import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import org.springframework.test.util.ReflectionTestUtils;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
-import soongsil.kidbean.server.quiz.domain.WordQuiz;
 
 public class QuizSolvedFixture {
 
