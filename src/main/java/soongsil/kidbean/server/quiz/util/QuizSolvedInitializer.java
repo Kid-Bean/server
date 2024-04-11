@@ -60,7 +60,7 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .build());
 
             quizSolvedList.add(QuizSolved.builder()
-                    .imageQuiz(IMAGE_QUIZ_4)
+                    .imageQuiz(IMAGE_QUIZ_3)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
                     .solvedTime(LocalDateTime.now())
