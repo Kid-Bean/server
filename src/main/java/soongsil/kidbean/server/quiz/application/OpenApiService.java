@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,13 +19,7 @@ import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 @RequiredArgsConstructor
 public class OpenApiService {
 
-    private final WebClient.Builder webClientBuilder;
-
-    @Value("${openApi.accessKey}")
-    private String accessKey;
-
-    @Value("${openApi.url}")
-    private String openApiURL;
+    private final WebClient webClient;
 
     /**
      * 제출된 정답 String을 분석
@@ -49,14 +42,13 @@ public class OpenApiService {
 
     @SuppressWarnings(value = "unchecked")
     private List<Map<String, Object>> useWebClient(String answerText) {
+
         String analysisCode = "morp"; // 언어 분석 코드 - 형태소 분석
         Map<String, Object> request = makeBaseRequest(analysisCode, answerText);
 
         //Blocking 방식으로 처리
-        return webClientBuilder.build().post()
-                .uri(openApiURL)
-                .header("Content-Type", "application/json; charset=UTF-8")
-                .header("Authorization", accessKey)
+        return webClient
+                .post()
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(Map.class)
