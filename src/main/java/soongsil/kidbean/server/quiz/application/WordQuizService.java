@@ -13,6 +13,7 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
+import soongsil.kidbean.server.quiz.dto.request.WordQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
@@ -107,5 +108,15 @@ public class WordQuizService {
                 .stream()
                 .map(WordQuizMemberResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public void uploadWordQuiz(WordQuizUploadRequest request, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        WordQuiz wordQuiz = request.toWordQuiz(member);
+
+        wordQuizRepository.save(wordQuiz);
     }
 }
