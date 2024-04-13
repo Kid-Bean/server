@@ -26,14 +26,14 @@ public record WordQuizUploadRequest(
                 .build();
 
         // 단어 목록을 Word 객체로 변환하여 WordQuiz 객체에 추가
-        List<Word> wordObjects = words.stream()
+        List<Word> wordList = words.stream()
                 .map(wordContent -> Word.builder()
                         .content(wordContent)
                         .wordQuiz(wordQuiz)
                         .build())
                 .toList();
 
-        wordQuiz.getWords().addAll(wordObjects);
+        wordQuiz.getWords().addAll(wordList);
 
         return wordQuiz;
     }
