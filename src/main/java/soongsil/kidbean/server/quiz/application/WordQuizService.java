@@ -131,11 +131,12 @@ public class WordQuizService {
 
         List<Word> wordList = wordRepository.findAllByWordQuiz(wordQuiz);
 
-        // 기존 단어 목록을 새로운 단어로 업데이트합니다.
-        for (int i = 0; i < wordList.size(); i++) {
-            Word originalWord = wordList.get(i);
+        int i = 0;
+
+        for (Word originalWord : wordList) {
             String newWord = request.words().get(i);
             originalWord.update(newWord);
+            i++;
         }
 
         wordQuiz.update(request.title(), request.answer());
