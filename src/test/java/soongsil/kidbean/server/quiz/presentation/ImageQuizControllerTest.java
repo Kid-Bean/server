@@ -59,7 +59,7 @@ class ImageQuizControllerTest {
         //then
         //JSON 형태로 응답이 왔는지 확인
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.results.imageUrl").value(imageQuizResponse.imageUrl()))
+                .andExpect(jsonPath("$.results.s3Url").value(imageQuizResponse.s3Url()))
                 .andExpect(jsonPath("$.results.category").value(imageQuizResponse.category()))
                 .andExpect(jsonPath("$.results.answer").value(imageQuizResponse.answer()))
                 .andExpect(jsonPath("$.results.title").value(imageQuizResponse.title()));
