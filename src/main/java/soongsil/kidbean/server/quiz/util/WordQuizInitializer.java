@@ -37,10 +37,6 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .title("WordQuiz1")
                     .answer("word1")
                     .member(DUMMY_MEMBER)
-                    .words(List.of(new Word("word1", null),
-                            new Word("word2", null),
-                            new Word("word3", null),
-                            new Word("word4", null)))
                     .build();
             WordQuizList.add(WordQuiz1);
 
@@ -48,10 +44,6 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .title("WordQuiz2")
                     .answer("word3")
                     .member(DUMMY_ADMIN)
-                    .words(List.of(new Word("word1", null),
-                            new Word("word2", null),
-                            new Word("word3", null),
-                            new Word("word4", null)))
                     .build();
             WordQuizList.add(WordQuiz2);
 
@@ -59,10 +51,6 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .title("WordQuiz3")
                     .answer("word4")
                     .member(DUMMY_ADMIN)
-                    .words(List.of(new Word("word1", null),
-                            new Word("word2", null),
-                            new Word("word3", null),
-                            new Word("word4", null)))
                     .build();
             WordQuizList.add(WordQuiz3);
 
