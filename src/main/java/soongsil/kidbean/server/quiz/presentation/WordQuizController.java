@@ -9,10 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.WordQuizService;
+import soongsil.kidbean.server.quiz.dto.request.WordQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.WordQuizUploadRequest;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 
 import java.util.List;
 
@@ -65,6 +66,19 @@ public class WordQuizController {
                                                                    @Valid @RequestBody WordQuizUploadRequest request) {
 
         wordQuizService.uploadWordQuiz(request, memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(EMPTY_RESPONSE);
+    }
+
+    @Operation(summary = "WordQuiz 문제 수정하기", description = "WordQuiz 수정하기")
+    @PutMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(@PathVariable Long memberId,
+                                                                    @PathVariable Long quizId,
+                                                                    @Valid @RequestBody WordQuizUpdateRequest request) {
+
+        wordQuizService.updateWordQuiz(request, memberId, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
