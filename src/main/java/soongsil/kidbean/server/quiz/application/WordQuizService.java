@@ -141,4 +141,13 @@ public class WordQuizService {
 
         wordQuiz.update(request.title(), request.answer());
     }
+
+    @Transactional
+    public void deleteWordQuiz(Long memberId, Long quizId) {
+        WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+
+        wordQuizRepository.delete(wordQuiz);
+        wordQuizRepository.flush();
+    }
 }

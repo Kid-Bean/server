@@ -84,4 +84,16 @@ public class WordQuizController {
                 .status(HttpStatus.OK)
                 .body(EMPTY_RESPONSE);
     }
+
+    @Operation(summary = "WordQuiz 문제 삭제하기", description = "WordQuiz 삭제하기")
+    @DeleteMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(@PathVariable Long memberId,
+                                                                    @PathVariable Long quizId) {
+
+        wordQuizService.deleteWordQuiz(memberId, quizId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(EMPTY_RESPONSE);
+    }
 }
