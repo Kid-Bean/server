@@ -131,6 +131,12 @@ public class WordQuizService {
 
         List<Word> wordList = wordRepository.findAllByWordQuiz(wordQuiz);
 
+        updateWords(request, wordList);
+
+        wordQuiz.update(request.title(), request.answer());
+    }
+
+    private static void updateWords(WordQuizUpdateRequest request, List<Word> wordList) {
         int i = 0;
 
         for (Word originalWord : wordList) {
@@ -138,8 +144,6 @@ public class WordQuizService {
             originalWord.update(newWord);
             i++;
         }
-
-        wordQuiz.update(request.title(), request.answer());
     }
 
     @Transactional
