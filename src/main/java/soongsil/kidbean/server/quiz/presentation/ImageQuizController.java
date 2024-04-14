@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
-import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedListRequest;
+import soongsil.kidbean.server.quiz.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
@@ -33,7 +33,7 @@ public class ImageQuizController {
     @Operation(summary = "추가한 ImageQuiz 문제 상세 정보 가져오기", description = "ImageQuiz 상세 정보 가져오기")
     @GetMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> getImageQuizById(@PathVariable Long memberId,
-                                                                          @PathVariable Long quizId) {
+                                                                     @PathVariable Long quizId) {
 
         ImageQuizMemberDetailResponse response = imageQuizService.getImageQuizById(memberId, quizId);
 
@@ -67,10 +67,10 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 풀기", description = "푼 ImageQuiz 문제를 제출")
     @PostMapping("/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> solveImageQuizzes(@PathVariable Long memberId,
-                                                                      @Valid @RequestBody ImageQuizSolvedListRequest request) {
+                                                                      @Valid @RequestBody QuizSolvedListRequest request) {
 
-        ImageQuizSolveScoreResponse score = imageQuizService.solveImageQuizzes(request.imageQuizSolvedRequestList(),
-                memberId);
+        ImageQuizSolveScoreResponse score = imageQuizService.solveImageQuizzes(
+                request.quizSolvedRequestList(), memberId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -107,7 +107,7 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 삭제하기", description = "ImageQuiz 삭제하기")
     @DeleteMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(@PathVariable Long memberId,
-                                                @PathVariable Long quizId) {
+                                                                    @PathVariable Long quizId) {
 
         imageQuizService.deleteImageQuiz(memberId, quizId);
 

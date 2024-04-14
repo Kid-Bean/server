@@ -61,7 +61,7 @@ public class AnswerQuizSolvedService {
     private void enrollMorphemes(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
         List<Morpheme> morphemeList = openApiResponse.morphemeVOList().stream()
                 .map(morphemeVO -> Morpheme.builder()
-                        .morpheme(morphemeVO.morpheme())
+                        .morpheme(morphemeVO.lemma())
                         .type(morphemeVO.type())
                         .answerQuizSolved(answerQuizSolved)
                         .build())

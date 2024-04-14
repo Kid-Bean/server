@@ -30,7 +30,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .level(BRONZE)
             .title("titleAnimal")
             .answer("answerAnimal")
-            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .s3Info(new S3Info("image1", "filename", "folderName"))
             .member(DUMMY_ADMIN)
             .build();
 
@@ -39,7 +39,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .level(SILVER)
             .title("titleNone")
             .answer("answerNone")
-            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .s3Info(new S3Info("image2", "filename", "folderName"))
             .member(DUMMY_ADMIN)
             .build();
 
@@ -48,7 +48,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .level(SILVER)
             .title("titleNone")
             .answer("answerNone")
-            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .s3Info(new S3Info("image3", "filename", "folderName"))
             .member(DUMMY_ADMIN)
             .build();
     public static final ImageQuiz IMAGE_QUIZ_4 = ImageQuiz.builder()
@@ -56,7 +56,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .level(SILVER)
             .title("titleObject2")
             .answer("answerObject2")
-            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .s3Info(new S3Info("image4", "filename", "folderName"))
             .member(DUMMY_MEMBER)
             .build();
     public static final ImageQuiz IMAGE_QUIZ_5 = ImageQuiz.builder()
@@ -64,7 +64,16 @@ public class ImageQuizInitializer implements ApplicationRunner {
             .level(SILVER)
             .title("titlePlant2")
             .answer("answerPlant2")
-            .s3Info(new S3Info("imageUrl", "filename", "folderName"))
+            .s3Info(new S3Info("image5", "filename", "folderName"))
+            .member(DUMMY_ADMIN)
+            .build();
+
+    public static final ImageQuiz IMAGE_QUIZ_6 = ImageQuiz.builder()
+            .quizCategory(OBJECT)
+            .level(SILVER)
+            .title("titlePlant2")
+            .answer("answerPlant2")
+            .s3Info(new S3Info("image6", "filename", "folderName"))
             .member(DUMMY_ADMIN)
             .build();
 
@@ -81,6 +90,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             imageQuizList.add(IMAGE_QUIZ_3);
             imageQuizList.add(IMAGE_QUIZ_4);
             imageQuizList.add(IMAGE_QUIZ_5);
+            imageQuizList.add(IMAGE_QUIZ_6);
 
             imageQuizRepository.saveAll(imageQuizList);
         }
