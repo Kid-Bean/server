@@ -80,10 +80,10 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 등록하기", description = "ImageQuiz 등록하기")
     @PostMapping("/member/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> uploadImageQuiz(@PathVariable Long memberId,
-                                                                    @Valid @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
-                                                                    @RequestPart MultipartFile image) {
+                                                @Valid @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
+                                                @RequestPart MultipartFile s3Url) {
 
-        imageQuizService.uploadImageQuiz(imageQuizUploadRequest, memberId, image);
+        imageQuizService.uploadImageQuiz(imageQuizUploadRequest, memberId, s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -93,11 +93,11 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 수정하기", description = "ImageQuiz 수정하기")
     @PutMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(@PathVariable Long memberId,
-                                                                    @PathVariable Long quizId,
-                                                                    @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
-                                                                    @RequestPart MultipartFile image) {
+                                                @PathVariable Long quizId,
+                                                @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
+                                                @RequestPart MultipartFile s3Url) {
 
-        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, memberId, quizId, image);
+        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, memberId, quizId, s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

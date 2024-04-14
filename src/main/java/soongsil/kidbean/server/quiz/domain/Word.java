@@ -28,4 +28,8 @@ public class Word {
         this.content = content;
         this.wordQuiz = wordQuiz;
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
