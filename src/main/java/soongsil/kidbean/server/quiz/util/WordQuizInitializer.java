@@ -16,9 +16,9 @@ import java.util.List;
 
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.Level.BRONZE;
 import static soongsil.kidbean.server.quiz.domain.type.Level.DIAMOND;
-import static soongsil.kidbean.server.quiz.domain.type.Level.PLATINUM;
+import static soongsil.kidbean.server.quiz.domain.type.Level.GOLD;
+import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +39,7 @@ public class WordQuizInitializer implements ApplicationRunner {
             WordQuiz WordQuiz1 = WordQuiz.builder()
                     .title("WordQuiz1")
                     .answer("word1")
+                    .level(SILVER)
                     .member(DUMMY_MEMBER)
                     .build();
             WordQuizList.add(WordQuiz1);
@@ -46,6 +47,7 @@ public class WordQuizInitializer implements ApplicationRunner {
             WordQuiz WordQuiz2 = WordQuiz.builder()
                     .title("WordQuiz2")
                     .answer("word3")
+                    .level(GOLD)
                     .member(DUMMY_ADMIN)
                     .build();
             WordQuizList.add(WordQuiz2);
