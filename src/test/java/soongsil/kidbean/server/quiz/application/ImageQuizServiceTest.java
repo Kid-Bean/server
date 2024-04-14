@@ -26,6 +26,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
@@ -76,5 +77,23 @@ class ImageQuizServiceTest {
 
         // then
         assertThat(response.answer()).isEqualTo(IMAGE_QUIZ_ANIMAL.getAnswer());
+    }
+
+    @Test
+    @DisplayName("특정 Member가 추가한 ImageQuiz 리스트 반환")
+    void getAllImageQuizByMember() {
+        List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL);
+
+        // given
+        given(memberRepository.findById(MEMBER.getMemberId()))
+            .willReturn(Optional.of(MEMBER));
+        given(imageQuizRepository.findAllByMember(MEMBER))
+                .willReturn(imageQuizList);
+
+        // when
+        List<ImageQuizMemberResponse> response = imageQuizService.getAllImageQuizByMember(MEMBER.getMemberId());
+
+        // then
+        assertThat(response.size()).isEqualTo(1);
     }
 }

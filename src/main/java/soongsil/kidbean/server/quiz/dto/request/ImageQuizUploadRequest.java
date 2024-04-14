@@ -12,8 +12,7 @@ public record ImageQuizUploadRequest(
         String title,
         @NotNull(message = "정답을 입력해주세요.")
         String answer,
-        QuizCategory quizCategory,
-        Member member
+        QuizCategory quizCategory
 ) {
     public ImageQuiz toImageQuiz(Member member) {
         return ImageQuiz

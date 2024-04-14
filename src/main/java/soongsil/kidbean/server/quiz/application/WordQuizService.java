@@ -12,12 +12,16 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quiz.domain.Word;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
+import soongsil.kidbean.server.quiz.dto.request.WordQuizUpdateRequest;
+import soongsil.kidbean.server.quiz.dto.request.WordQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
+import soongsil.kidbean.server.quiz.repository.WordRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +37,7 @@ public class WordQuizService {
 
     private final MemberRepository memberRepository;
     private final WordQuizRepository wordQuizRepository;
+    private final WordRepository wordRepository;
 
     /**
      * 랜덤 문제를 생성 후 멤버에게 전달
@@ -107,5 +112,46 @@ public class WordQuizService {
                 .stream()
                 .map(WordQuizMemberResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public void uploadWordQuiz(WordQuizUploadRequest request, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        WordQuiz wordQuiz = request.toWordQuiz(member);
+
+        wordQuizRepository.save(wordQuiz);
+    }
+
+    @Transactional
+    public void updateWordQuiz(WordQuizUpdateRequest request, Long memberId, Long quizId) {
+        WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+
+        List<Word> wordList = wordRepository.findAllByWordQuiz(wordQuiz);
+
+        updateWords(request, wordList);
+
+        wordQuiz.update(request.title(), request.answer());
+    }
+
+    private static void updateWords(WordQuizUpdateRequest request, List<Word> wordList) {
+        int i = 0;
+
+        for (Word originalWord : wordList) {
+            String newWord = request.words().get(i);
+            originalWord.update(newWord);
+            i++;
+        }
+    }
+
+    @Transactional
+    public void deleteWordQuiz(Long memberId, Long quizId) {
+        WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+
+        wordQuizRepository.delete(wordQuiz);
+        wordQuizRepository.flush();
     }
 }
