@@ -18,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.domain.type.Role;
 
 @Getter
 @EntityListeners(AuditingEntityListener.class)
@@ -65,5 +66,9 @@ public class QuizSolved {
 
     public void setAnswerIsCorrect(boolean isCorrect) {
         this.isCorrect = isCorrect;
+    }
+
+    public boolean isImageQuizMadeByAdmin() {
+        return imageQuiz.getMember().getRole().equals(Role.ADMIN);
     }
 }

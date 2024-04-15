@@ -28,4 +28,17 @@ public enum Level {
             case BRONZE -> 1L;
         };
     }
+
+    public static Level calculate(Long accuracy) {
+        if (accuracy <= 20) {
+            return Level.DIAMOND;
+        } else if (accuracy <= 40) {
+            return Level.PLATINUM;
+        } else if (accuracy <= 60) {
+            return Level.GOLD;
+        } else if (accuracy <= 80) {
+            return Level.SILVER;
+        }
+        return Level.BRONZE;
+    }
 }

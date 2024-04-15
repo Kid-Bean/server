@@ -9,6 +9,7 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
 
 import java.time.LocalDate;
+import soongsil.kidbean.server.quiz.domain.type.Level;
 
 @Entity
 @Getter
@@ -52,5 +53,9 @@ public class Member {
 
     public void updateScore(Long score) {
         this.score = score;
+    }
+
+    public void updateScore(Level beforeLevel, Level afterLevel) {
+        score = score - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
     }
 }
