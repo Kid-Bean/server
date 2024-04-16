@@ -94,7 +94,7 @@ public class MypageService {
         QuizSolved quizSolved = findQuizSolvedById(solvedId);
         List<Word> wordList = wordRepository.findAllByWordQuiz(quizSolved.getWordQuiz());
 
-        return SolvedWordDetailResponse.from(quizSolved, wordList); //TODO
+        return SolvedWordDetailResponse.from(quizSolved, wordList);
     }
 
     public SolvedAnswerQuizListResponse findSolvedAnswerQuiz(Long memberId) {
