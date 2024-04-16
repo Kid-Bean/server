@@ -19,10 +19,15 @@ public class WordFixture {
             .wordQuiz(WORD_QUIZ)
             .content("content3")
             .build();
+    public static final Word WORD4 = Word.builder()
+            .wordQuiz(WORD_QUIZ)
+            .content("content4")
+            .build();
 
     static {
         ReflectionTestUtils.setField(WORD1, "wordId", 1L);
         ReflectionTestUtils.setField(WORD2, "wordId", 2L);
         ReflectionTestUtils.setField(WORD3, "wordId", 3L);
+        ReflectionTestUtils.setField(WORD4, "wordId", 4L);
     }
 }

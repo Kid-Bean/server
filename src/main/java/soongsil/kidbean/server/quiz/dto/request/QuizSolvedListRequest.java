@@ -6,9 +6,9 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record ImageQuizSolvedListRequest(
+public record QuizSolvedListRequest(
         @Valid
         @Size(min = 1, max = 5)
-        List<ImageQuizSolvedRequest> imageQuizSolvedRequestList
+        List<QuizSolvedRequest> quizSolvedRequestList
 ) {
 }

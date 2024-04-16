@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
-import soongsil.kidbean.server.quiz.application.vo.MorphemeVO;
+import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence.MorphemeVO;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;

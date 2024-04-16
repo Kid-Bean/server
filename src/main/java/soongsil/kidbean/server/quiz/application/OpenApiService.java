@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import soongsil.kidbean.server.quiz.application.vo.MorphemeVO;
+import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO;
+import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence;
+import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence.MorphemeVO;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 
@@ -20,13 +22,7 @@ import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 @RequiredArgsConstructor
 public class OpenApiService {
 
-    private final WebClient.Builder webClientBuilder;
-
-    @Value("${openApi.accessKey}")
-    private String accessKey;
-
-    @Value("${openApi.url}")
-    private String openApiURL;
+    private final WebClient webClient;
 
     /**
      * 제출된 정답 String을 분석
@@ -36,9 +32,9 @@ public class OpenApiService {
      */
     public OpenApiResponse analyzeAnswer(String answerText) {
 
-        List<Map<String, Object>> responseBody = useWebClient(answerText);
+        ApiResponseVO responseBody = useWebClient(answerText);
 
-        List<MorphemeVO> morphemeVOList = parseMorphemeAnalysis(responseBody);
+        List<MorphemeVO> morphemeVOList = parseMorphemes(responseBody);
         List<UseWordVO> useWordVOList = parseWordAnalysis(morphemeVOList);
 
         return OpenApiResponse.builder()
@@ -47,23 +43,17 @@ public class OpenApiService {
                 .build();
     }
 
-    @SuppressWarnings(value = "unchecked")
-    private List<Map<String, Object>> useWebClient(String answerText) {
+    private ApiResponseVO useWebClient(String answerText) {
+
         String analysisCode = "morp"; // 언어 분석 코드 - 형태소 분석
         Map<String, Object> request = makeBaseRequest(analysisCode, answerText);
 
         //Blocking 방식으로 처리
-        return webClientBuilder.build().post()
-                .uri(openApiURL)
-                .header("Content-Type", "application/json; charset=UTF-8")
-                .header("Authorization", accessKey)
+        return webClient
+                .post()
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(Map.class)
-                .map(responseBody -> {
-                    Map<Object, Object> returnObject = (Map<Object, Object>) responseBody.get("return_object");
-                    return (List<Map<String, Object>>) returnObject.get("sentence");
-                })
+                .bodyToMono(ApiResponseVO.class)
                 .block();
     }
 
@@ -79,20 +69,12 @@ public class OpenApiService {
         return request;
     }
 
-    @SuppressWarnings(value = "unchecked")
-    private List<MorphemeVO> parseMorphemeAnalysis(List<Map<String, Object>> sentences) {
+    private List<MorphemeVO> parseMorphemes(ApiResponseVO response) {
 
         List<MorphemeVO> result = new ArrayList<>();
 
-        for (Map<String, Object> sentence : sentences) {
-            List<Map<String, Object>> morphemeList = (List<Map<String, Object>>) sentence.get("morp");
-
-            for (Map<String, Object> morpheme : morphemeList) {
-                result.add(MorphemeVO.builder()
-                        .morpheme(morpheme.get("lemma").toString())
-                        .type(morpheme.get("type").toString())
-                        .build());
-            }
+        for (Sentence sentence : response.returnObject().sentence()) {
+            result.addAll(sentence.morp());
         }
 
         return result;
@@ -101,7 +83,7 @@ public class OpenApiService {
     private List<UseWordVO> parseWordAnalysis(List<MorphemeVO> morphemeVOList) {
 
         List<UseWordVO> result = new ArrayList<>();
-        Map<String, Long> wordCountMap = new HashMap<>();
+        Map<String, Long> wordCountMap = new ConcurrentHashMap<>();
 
         for (MorphemeVO morphemeVO : morphemeVOList) {
             String type = morphemeVO.type();
@@ -109,7 +91,7 @@ public class OpenApiService {
             // 명사 형태소만 필터링
             if (type.equals("NNG") || type.equals("NNP") || type.equals("NNB")) {
                 // 단어별로 등장 횟수 카운트
-                String word = morphemeVO.morpheme();
+                String word = morphemeVO.lemma();
                 wordCountMap.put(word, wordCountMap.getOrDefault(word, 0L) + 1);
             }
         }

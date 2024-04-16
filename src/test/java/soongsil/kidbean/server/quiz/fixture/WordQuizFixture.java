@@ -4,17 +4,21 @@ import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
 import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD1;
 import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD2;
 import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD3;
+import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD4;
 
 import java.util.List;
 import org.springframework.test.util.ReflectionTestUtils;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
+import soongsil.kidbean.server.quiz.domain.type.Level;
 
 public class WordQuizFixture {
 
     public static final WordQuiz WORD_QUIZ = WordQuiz.builder()
             .title("WordQuiz")
+            .level(Level.BRONZE)
             .member(MEMBER)
-            .words(List.of(WORD1, WORD2, WORD3))
+            .answer("answer")
+            .words(List.of(WORD1, WORD2, WORD3, WORD4))
             .build();
 
     static {

@@ -32,23 +32,20 @@ dependencies {
 
     //aws s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    //s3 테스트를 위한 mock 라이브러리
-    testImplementation 'io.findify:s3mock_2.13:0.2.6'
-
     //WebClient
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
     //swagger
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
-
-    //테스트 코드에서 lombok 사용
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.projectlombok:lombok'
 
     // 테스트 코드 작성시 사용할 DB(H2)
     runtimeOnly 'com.h2database:h2'
+    //s3 테스트 mock server
+    testImplementation 'io.findify:s3mock_2.13:0.2.6'
+    //WebClient 테스트 웹서버
+    testImplementation 'com.squareup.okhttp3:mockwebserver'
+    //테스트 코드 lombok 사용
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

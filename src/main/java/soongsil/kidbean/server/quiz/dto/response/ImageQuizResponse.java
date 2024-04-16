@@ -6,7 +6,7 @@ public record ImageQuizResponse(
         Long quizId,
         String category,
         String answer,
-        String imageUrl,
+        String s3Url,
         String title
 ) {
     public static ImageQuizResponse from(ImageQuiz imageQuiz) {
