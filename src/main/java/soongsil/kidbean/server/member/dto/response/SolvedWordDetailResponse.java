@@ -1,13 +1,26 @@
 package soongsil.kidbean.server.member.dto.response;
 
-import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
+
+import java.util.List;
+import soongsil.kidbean.server.quiz.domain.QuizSolved;
+import soongsil.kidbean.server.quiz.domain.Word;
+import soongsil.kidbean.server.quiz.domain.WordQuiz;
 
 public record SolvedWordDetailResponse(
         Long solvedId,
-        String question,
+        String title,
+        List<String> wordList,
+        String answer,
         String kidAnswer
 ) {
-    public static SolvedWordDetailResponse of(AnswerQuizSolved answerQuizSolved) {
-        return null;
+    public static SolvedWordDetailResponse from(QuizSolved quizSolved, List<Word> wordList) {
+        WordQuiz wordQuiz = quizSolved.getWordQuiz();
+        return new SolvedWordDetailResponse(
+                quizSolved.getSolvedId(),
+                wordQuiz.getTitle(),
+                wordList.stream().map(Word::getContent).toList(),
+                wordQuiz.getAnswer(),
+                quizSolved.getReply()
+        );
     }
 }
