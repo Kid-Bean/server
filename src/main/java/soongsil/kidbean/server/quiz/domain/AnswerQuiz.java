@@ -20,13 +20,17 @@ public class AnswerQuiz {
     @Column(name = "question", length = 40)
     private String question;
 
+    @Column(name = "title", length = 40)
+    private String title;
+
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @Builder
-    public AnswerQuiz(String question, Member member) {
+    public AnswerQuiz(String question, String title, Member member) {
         this.question = question;
+        this.title = title;
         this.member = member;
     }
 }
