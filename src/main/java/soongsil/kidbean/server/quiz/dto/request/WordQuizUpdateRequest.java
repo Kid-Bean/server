@@ -11,6 +11,6 @@ public record WordQuizUpdateRequest(
         @NotNull(message = "정답을 입력해주세요.")
         String answer,
         @Size(min = 4, max = 4, message = "4개의 단어를 입력해주세요")
-        List<String> words
+        List<WordRequest> words
 ) {
 }
