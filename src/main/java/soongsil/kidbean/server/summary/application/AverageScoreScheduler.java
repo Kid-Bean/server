@@ -15,6 +15,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.Level;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.summary.domain.AverageScore;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
@@ -69,7 +70,7 @@ public class AverageScoreScheduler {
                             .stream())
                     .toList();
 
-
+            List<QuizCategory> quizCategories = QuizCategory.allValue();
             long sum = quizSolvedList.stream()
                     .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
                     .sum();
