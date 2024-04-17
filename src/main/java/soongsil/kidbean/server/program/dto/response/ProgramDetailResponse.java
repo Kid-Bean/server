@@ -25,8 +25,8 @@ public record ProgramDetailResponse(
                 .phoneNumber(program.getPhoneNumber())
                 .title(program.getTitle())
                 .content(program.getContent())
-                .programImageUrl(program.getProgramS3Info().getS3Url())
-                .teacherImageUrl(program.getTeacherS3Info().getS3Url())
+                .programImageUrl(program.getProgramImageInfo().getS3Url())
+                .teacherImageUrl(program.getTeacherImageInfo().getS3Url())
                 .build();
     }
 }

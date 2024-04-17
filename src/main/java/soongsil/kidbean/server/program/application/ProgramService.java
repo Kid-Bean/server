@@ -4,10 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.global.application.S3Uploader;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
+import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.List;
@@ -35,10 +39,61 @@ public class ProgramService {
         return ProgramDetailResponse.from(program);
     }
 
-    /* 카테고리에 따른 프로그램 목록 조회 */
+    /**
+     *  카테고리에 따른 프로그램 목록 조회
+     *  */
     @Transactional
     public ProgramListResponse getProgramListInfo(ProgramCategory programCategory) {
         List<Program> programList = programRepository.findAllByProgramCategory(programCategory);
         return ProgramListResponse.from(programList);
     }
+
+    /**
+     * image upload
+     * @param multipartFile
+     * @return
+     */
+    private S3Info uploadFile( MultipartFile multipartFile) {
+        S3Uploader s3Uploader;
+        String folderName = s3Uploader.upload(multipartFile);
+        String uploadUrl = s3Uploader.upload(multipartFile, folderName);
+        String fileName = uploadUrl.split(folderName + "/")[1];
+
+        return S3Info.builder()
+                .folderName(folderName)
+                .fileName(fileName)
+                .s3Url(uploadUrl)
+                .build();
+    }
+
+    /**
+     * 프로그램 수정 - 관리자
+     */
+    @Transactional
+    public ProgramDetailResponse updateProgram(Long programId ){
+        Program program = programRepository.findById(programId)
+                .orElseThrow(RuntimeException::new);
+
+
+        program = programRepository.save(program);
+        return ProgramDetailResponse.from(program);
+    }
+
+    /**
+     * 프로그램 삭제 - 관리자
+     *
+     * @param 
+     * @return
+     */
+    @Transactional
+    public ProgramResponse deleteProgram(Long programId) {
+        Program program = programRepository.findById(programId)
+                .orElseThrow(RuntimeException::new);
+
+        programRepository.delete(program);
+
+        return ProgramResponse.from(program);
+    }
+
+
 }

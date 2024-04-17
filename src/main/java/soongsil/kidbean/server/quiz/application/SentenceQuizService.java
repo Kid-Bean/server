@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import soongsil.kidbean.server.quiz.repository.SentenceQuizRepository;
-import soongsil.kidbean.server.quiz.repository.SentenceQuizWordRepository;
+//import soongsil.kidbean.server.quiz.repository.SentenceQuizRepository;
+//import soongsil.kidbean.server.quiz.repository.SentenceQuizWordRepository;
 
 @Slf4j
 @Service
@@ -13,7 +13,7 @@ import soongsil.kidbean.server.quiz.repository.SentenceQuizWordRepository;
 @RequiredArgsConstructor
 public class SentenceQuizService {
 
-    private final SentenceQuizRepository sentenceQuizRepository;
-    private final SentenceQuizWordRepository sentenceQuizWordRepository;
+//    private final SentenceQuizRepository sentenceQuizRepository;
+//    private final SentenceQuizWordRepository sentenceQuizWordRepository;
 
 }
