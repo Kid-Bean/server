@@ -61,8 +61,6 @@ public class AverageScoreScheduler {
                         member -> AgeGroup.calculate(member.getBirthDate())
                 ));
 
-
-        //퀴즈 카테고리 별로 나눠서 저장해야 함
         groupMember.forEach((ageGroup, members) -> {
             List<QuizSolved> quizSolvedList = members.stream()
                     .flatMap(member -> quizSolvedRepository
@@ -71,16 +69,21 @@ public class AverageScoreScheduler {
                     .toList();
 
             List<QuizCategory> quizCategories = QuizCategory.allValue();
-            long sum = quizSolvedList.stream()
-                    .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
-                    .sum();
 
-            Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroup(ageGroup);
-            if (optionalAverageScore.isPresent()) {
-                AverageScore averageScore = optionalAverageScore.get();
-                averageScore.updateScoreAndCount(sum, quizSolvedList.size());
-            } else {
-                averageScoreRepository.save(new AverageScore(ageGroup, sum, quizSolvedList.size()))
+            for (QuizCategory category : quizCategories) {
+                long sum = quizSolvedList.stream()
+                        .filter(quizSolved -> category == quizSolved.getImageQuiz().getQuizCategory())
+                        .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
+                        .sum();
+
+                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroup(ageGroup);
+
+                if (optionalAverageScore.isPresent()) {
+                    AverageScore averageScore = optionalAverageScore.get();
+                    averageScore.updateScoreAndCount(sum, quizSolvedList.size());
+                } else {
+                    averageScoreRepository.save(new AverageScore(ageGroup, sum, quizSolvedList.size(), category));
+                }
             }
         });
     }
@@ -110,9 +113,5 @@ public class AverageScoreScheduler {
         }
 
         return null;
-    }
-
-    private long getTotalScore(List<Member> members) {
-        return
     }
 }

@@ -39,7 +39,12 @@ public class AverageScore {
     private Integer quizCount;
 
     @Builder
-    public AverageScore(AgeGroup ageGroup, )
+    public AverageScore(AgeGroup ageGroup, Long sum, int quizCount, QuizCategory category) {
+        this.ageGroup = ageGroup;
+        this.totalScore = sum;
+        this.quizCount = quizCount;
+        this.quizCategory = category;
+    }
 
     public void updateScoreAndCount(long sum, int size) {
         totalScore = sum;
