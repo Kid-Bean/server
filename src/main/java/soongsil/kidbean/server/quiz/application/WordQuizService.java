@@ -154,7 +154,7 @@ public class WordQuizService {
         int i = 0;
 
         for (Word originalWord : wordList) {
-            String newWord = request.words().get(i);
+            String newWord = request.words().get(i).content();
             originalWord.update(newWord);
             i++;
         }

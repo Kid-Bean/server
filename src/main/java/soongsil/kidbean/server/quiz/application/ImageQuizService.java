@@ -208,6 +208,8 @@ public class ImageQuizService {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
+        s3Uploader.deleteFile(imageQuiz.getS3Info());
+
         imageQuizRepository.delete(imageQuiz);
         imageQuizRepository.flush();
     }

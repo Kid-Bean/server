@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
+import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Builder
@@ -21,6 +22,7 @@ public record ImageQuizUploadRequest(
                 .title(title)
                 .answer(answer)
                 .quizCategory(quizCategory)
+                .level(Level.BRONZE)
                 .build();
     }
 }
