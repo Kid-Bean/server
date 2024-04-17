@@ -31,24 +31,28 @@ public class AnswerQuizInitializer implements ApplicationRunner {
             List<AnswerQuiz> answerQuizList = new ArrayList<>();
 
             AnswerQuiz answerQuiz1 = AnswerQuiz.builder()
+                    .title("meal")
                     .question("오늘 점심 뭐 먹었어?")
                     .member(DUMMY_ADMIN)
                     .build();
             answerQuizList.add(answerQuiz1);
 
             AnswerQuiz answerQuiz2 = AnswerQuiz.builder()
+                    .title("proper")
                     .question("엄마가 좋아 아빠가 좋아?")
                     .member(DUMMY_ADMIN)
                     .build();
             answerQuizList.add(answerQuiz2);
 
             AnswerQuiz answerQuiz3 = AnswerQuiz.builder()
+                    .title("like")
                     .question("좋아하는 장난감 있어?")
                     .member(DUMMY_MEMBER)
                     .build();
             answerQuizList.add(answerQuiz3);
 
             AnswerQuiz answerQuiz4 = AnswerQuiz.builder()
+                    .title("exciting")
                     .question("어제 재밌는 일 있었어?")
                     .member(DUMMY_MEMBER)
                     .build();
