@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
@@ -35,5 +36,13 @@ public class AverageScore {
     private Long totalScore;
 
     @Column(name = "quiz_count")
-    private Long quizCount;
+    private Integer quizCount;
+
+    @Builder
+    public AverageScore(AgeGroup ageGroup, )
+
+    public void updateScoreAndCount(long sum, int size) {
+        totalScore = sum;
+        quizCount = size;
+    }
 }
