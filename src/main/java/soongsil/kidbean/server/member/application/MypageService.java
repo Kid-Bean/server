@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
@@ -16,7 +15,6 @@ import soongsil.kidbean.server.member.dto.response.SolvedWordDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedWordQuizInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedWordQuizListResponse;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
@@ -25,6 +23,7 @@ import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 import soongsil.kidbean.server.quiz.domain.Morpheme;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.UseWord;
+import soongsil.kidbean.server.quiz.domain.Word;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode;
@@ -32,7 +31,7 @@ import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
-import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
+import soongsil.kidbean.server.quiz.repository.WordRepository;
 
 @Slf4j
 @Service
@@ -42,7 +41,7 @@ public class MypageService {
 
     private final QuizSolvedRepository quizSolvedRepository;
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
-    private final WordQuizRepository wordQuizRepository;
+    private final WordRepository wordRepository;
     private final MemberRepository memberRepository;
     private final UseWordRepository useWordRepository;
     private final MorphemeRepository morphemeRepository;
@@ -92,7 +91,10 @@ public class MypageService {
      * @return
      */
     public SolvedWordDetailResponse solvedWordDetail(Long solvedId) {
-        return null; //TODO
+        QuizSolved quizSolved = findQuizSolvedById(solvedId);
+        List<Word> wordList = wordRepository.findAllByWordQuiz(quizSolved.getWordQuiz());
+
+        return SolvedWordDetailResponse.from(quizSolved, wordList);
     }
 
     public SolvedAnswerQuizListResponse findSolvedAnswerQuiz(Long memberId) {

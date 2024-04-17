@@ -69,4 +69,8 @@ public class ImageQuiz {
         this.quizCategory = quizCategory;
         this.s3Info = s3Info;
     }
+
+    public void updateLevel(Level level) {
+        this.level = level;
+    }
 }
