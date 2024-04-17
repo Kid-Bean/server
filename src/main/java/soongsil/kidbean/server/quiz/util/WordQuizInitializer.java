@@ -16,6 +16,9 @@ import java.util.List;
 
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.quiz.domain.type.Level.DIAMOND;
+import static soongsil.kidbean.server.quiz.domain.type.Level.GOLD;
+import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,51 +37,42 @@ public class WordQuizInitializer implements ApplicationRunner {
             List<WordQuiz> WordQuizList = new ArrayList<>();
 
             WordQuiz WordQuiz1 = WordQuiz.builder()
-                    .title("WordQuiz1")
-                    .answer("word1")
+                    .title("가족")
+                    .answer("자동차")
+                    .level(SILVER)
                     .member(DUMMY_MEMBER)
-                    .words(List.of(new Word("word1", null),
-                            new Word("word2", null),
-                            new Word("word3", null),
-                            new Word("word4", null)))
                     .build();
             WordQuizList.add(WordQuiz1);
 
             WordQuiz WordQuiz2 = WordQuiz.builder()
-                    .title("WordQuiz2")
-                    .answer("word3")
+                    .title("동물")
+                    .answer("자")
+                    .level(GOLD)
                     .member(DUMMY_ADMIN)
-                    .words(List.of(new Word("word1", null),
-                            new Word("word2", null),
-                            new Word("word3", null),
-                            new Word("word4", null)))
                     .build();
             WordQuizList.add(WordQuiz2);
 
             WordQuiz WordQuiz3 = WordQuiz.builder()
-                    .title("WordQuiz3")
-                    .answer("word4")
+                    .title("식물")
+                    .answer("물병")
+                    .level(DIAMOND)
                     .member(DUMMY_ADMIN)
-                    .words(List.of(new Word("word1", null),
-                            new Word("word2", null),
-                            new Word("word3", null),
-                            new Word("word4", null)))
                     .build();
             WordQuizList.add(WordQuiz3);
 
             List<Word> wordList = new ArrayList<>();
-            wordList.add(new Word("word1", WordQuiz1));
-            wordList.add(new Word("word2", WordQuiz1));
-            wordList.add(new Word("word3", WordQuiz1));
-            wordList.add(new Word("word4", WordQuiz1));
-            wordList.add(new Word("word1", WordQuiz2));
-            wordList.add(new Word("word2", WordQuiz2));
-            wordList.add(new Word("word3", WordQuiz2));
-            wordList.add(new Word("word4", WordQuiz2));
-            wordList.add(new Word("word1", WordQuiz3));
-            wordList.add(new Word("word2", WordQuiz3));
-            wordList.add(new Word("word3", WordQuiz3));
-            wordList.add(new Word("word4", WordQuiz3));
+            wordList.add(new Word("엄마", WordQuiz1));
+            wordList.add(new Word("아빠", WordQuiz1));
+            wordList.add(new Word("할아버지", WordQuiz1));
+            wordList.add(new Word("자동차", WordQuiz1));
+            wordList.add(new Word("자", WordQuiz2));
+            wordList.add(new Word("고래", WordQuiz2));
+            wordList.add(new Word("낙타", WordQuiz2));
+            wordList.add(new Word("강아지", WordQuiz2));
+            wordList.add(new Word("물병", WordQuiz3));
+            wordList.add(new Word("선인장", WordQuiz3));
+            wordList.add(new Word("진달래", WordQuiz3));
+            wordList.add(new Word("소나무", WordQuiz3));
 
             wordQuizRepository.saveAll(WordQuizList);
             wordRepository.saveAll(wordList);

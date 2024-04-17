@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
+import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Builder
@@ -12,8 +13,7 @@ public record ImageQuizUploadRequest(
         String title,
         @NotNull(message = "정답을 입력해주세요.")
         String answer,
-        QuizCategory quizCategory,
-        Member member
+        QuizCategory quizCategory
 ) {
     public ImageQuiz toImageQuiz(Member member) {
         return ImageQuiz
@@ -22,6 +22,7 @@ public record ImageQuizUploadRequest(
                 .title(title)
                 .answer(answer)
                 .quizCategory(quizCategory)
+                .level(Level.BRONZE)
                 .build();
     }
 }

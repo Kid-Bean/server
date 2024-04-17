@@ -1,5 +1,6 @@
 package soongsil.kidbean.server.quiz.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class AnswerQuizController {
 
     private final AnswerQuizService answerQuizService;
 
+    @Operation(summary = "AnswerQuiz 가져오기", description = "AnswerQuiz 가져오기")
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(@PathVariable Long memberId) {
 
@@ -35,6 +37,7 @@ public class AnswerQuizController {
                 .body(ResponseTemplate.from(answerQuizResponse));
     }
 
+    @Operation(summary = "AnswerQuiz 문제 풀기", description = "AnswerQuiz 문제 풀기")
     @PostMapping("/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
                                                                     @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,

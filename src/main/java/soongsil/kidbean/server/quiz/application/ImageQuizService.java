@@ -16,7 +16,7 @@ import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.quiz.dto.request.ImageQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.application.vo.QuizType.IMAGE_QUIZ;
 import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
 
 @Slf4j
@@ -67,19 +68,19 @@ public class ImageQuizService {
     }
 
     /**
-     * @param imageQuizSolvedRequestList DTO의 List
-     * @param memberId                   문제를 푼 유저의 id
+     * @param quizSolvedRequestList DTO의 List
+     * @param memberId              문제를 푼 유저의 id
      * @return 추가된 점수
      */
     @Transactional
-    public ImageQuizSolveScoreResponse solveImageQuizzes(List<ImageQuizSolvedRequest> imageQuizSolvedRequestList,
+    public ImageQuizSolveScoreResponse solveImageQuizzes(List<QuizSolvedRequest> quizSolvedRequestList,
                                                          Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(
-                quizSolvedService.solveImageQuizzes(imageQuizSolvedRequestList, member));
+                quizSolvedService.solveQuizzes(quizSolvedRequestList, member, IMAGE_QUIZ));
     }
 
     /**
@@ -155,13 +156,13 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile image) {
+    public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile s3Url) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         String folderName = QUIZ_NAME + request.quizCategory();
 
-        String uploadUrl = s3Uploader.upload(image, folderName);
+        String uploadUrl = s3Uploader.upload(s3Url, folderName);
 
         String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
 
@@ -177,18 +178,18 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile image) {
+    public void updateImageQuiz(ImageQuizUpdateRequest request, Long memberId, Long quizId, MultipartFile s3Url) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         // 이미지 수정이 되지 않는 것 default
         S3Info s3Info = imageQuiz.getS3Info();
 
-        if (!image.getOriginalFilename().isEmpty()) {
+        if (!s3Url.getOriginalFilename().isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
 
             String updateFolderName = QUIZ_NAME + request.quizCategory();
-            String updateUrl = s3Uploader.upload(image, updateFolderName);
+            String updateUrl = s3Uploader.upload(s3Url, updateFolderName);
 
             String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
 
@@ -206,6 +207,8 @@ public class ImageQuizService {
     public void deleteImageQuiz(Long memberId, Long quizId) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
+
+        s3Uploader.deleteFile(imageQuiz.getS3Info());
 
         imageQuizRepository.delete(imageQuiz);
         imageQuizRepository.flush();

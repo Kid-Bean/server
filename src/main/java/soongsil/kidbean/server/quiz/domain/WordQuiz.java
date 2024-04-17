@@ -1,13 +1,15 @@
 package soongsil.kidbean.server.quiz.domain;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.quiz.domain.type.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -25,18 +27,27 @@ public class WordQuiz {
     @Column(name = "answer", length = 20)
     private String answer;
 
+    @Enumerated(EnumType.STRING)
+    private Level level;
+
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "wordQuiz", orphanRemoval = true)
+    @OneToMany(mappedBy = "wordQuiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Word> words = new ArrayList<>();
 
     @Builder
-    public WordQuiz(String title, String answer, Member member, List<Word> words) {
+    public WordQuiz(String title, String answer, Level level, Member member, List<Word> words) {
         this.title = title;
         this.answer = answer;
+        this.level = level;
         this.member = member;
         this.words = words;
+    }
+
+    public void update(String title, String answer) {
+        this.title = title;
+        this.answer = answer;
     }
 }

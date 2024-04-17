@@ -21,7 +21,7 @@ import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.ImageQuizSolvedNotFoundException;
+import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 
 @Slf4j
@@ -53,8 +53,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode);
     }
 
-    @ExceptionHandler(ImageQuizSolvedNotFoundException.class)
-    public ResponseEntity<Object> handleImageQuizSolvedNotFound(final ImageQuizSolvedNotFoundException e) {
+    @ExceptionHandler(QuizSolvedNotFoundException.class)
+    public ResponseEntity<Object> handleImageQuizSolvedNotFound(final QuizSolvedNotFoundException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
