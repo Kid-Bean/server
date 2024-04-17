@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import soongsil.kidbean.server.program.application.ProgramService;
+import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
@@ -32,5 +30,15 @@ public class ProgramController {
         return  ResponseEntity
                 .status(HttpStatus.OK)
                 .body(programService.getProgramListInfo(category));
+    }
+
+    @PostMapping("/programs")
+    public ResponseEntity<ProgramDetailResponse> updateProgramInfo(@RequestParam ProgramCategory category,
+                                                                   @PathVariable Long programId){
+        ProgramDetailResponse updateProgram = programService.updateProgram(programId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(programService.updateProgram(programId));
     }
 }
