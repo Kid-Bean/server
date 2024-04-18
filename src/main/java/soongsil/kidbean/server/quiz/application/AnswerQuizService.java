@@ -5,6 +5,8 @@ import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.ANS
 import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
@@ -120,5 +123,15 @@ public class AnswerQuizService {
         } else {
             return Optional.empty();
         }
+    }
+
+    public List<AnswerQuizMemberResponse> getAllAnswerQuizByMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        return answerQuizRepository.findAllByMember(member)
+                .stream()
+                .map(AnswerQuizMemberResponse::from)
+                .toList();
     }
 }

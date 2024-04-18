@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
 
+import java.util.List;
+
+@Tag(name = "AnswerQuiz", description = "AnswerQuiz 관련 API 입니다.")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -48,5 +54,16 @@ public class AnswerQuizController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(score));
+    }
+
+    @Operation(summary = "추가한 AnswerQuiz 문제 리스트 가져오기", description = "AnswerQuiz 리스트 가져오기")
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<ResponseTemplate<Object>> getAllAnswerQuizByMember(@PathVariable Long memberId) {
+
+        List<AnswerQuizMemberResponse> response = answerQuizService.getAllAnswerQuizByMember(memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
     }
 }
