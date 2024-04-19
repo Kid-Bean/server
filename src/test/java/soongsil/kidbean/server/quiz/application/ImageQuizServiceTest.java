@@ -60,7 +60,7 @@ class ImageQuizServiceTest {
         ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(1L);
 
         //then
-        assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getQuizCategory().toString());
+        assertThat(imageQuizResponse.quizId()).isEqualTo(imageQuizList.get(0).getQuizId());
     }
 
     @Test
@@ -86,7 +86,7 @@ class ImageQuizServiceTest {
 
         // given
         given(memberRepository.findById(MEMBER.getMemberId()))
-            .willReturn(Optional.of(MEMBER));
+                .willReturn(Optional.of(MEMBER));
         given(imageQuizRepository.findAllByMember(MEMBER))
                 .willReturn(imageQuizList);
 
