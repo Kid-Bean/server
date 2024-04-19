@@ -47,7 +47,7 @@ public class AverageScoreScheduler {
 
             if (imageQuiz.isLevelUpdateNeed(level)) {
                 updateMemberTotalScore(imageQuiz, level);
-                imageQuiz.updateLevel(level);
+                updateLevel(imageQuiz, level);
             }
         });
     }
@@ -100,6 +100,11 @@ public class AverageScoreScheduler {
             imageQuizScoreRepository.findByMemberAndQuizCategory(member, imageQuiz.getQuizCategory())
                     .ifPresent(imageQuizScore -> imageQuizScore.updateScore(imageQuiz.getLevel(), level));
         });
+    }
+
+    @Transactional
+    public void updateLevel(ImageQuiz imageQuiz, Level level) {
+        imageQuiz.updateLevel(level);
     }
 
     private Long calculateAccuracy(List<QuizSolved> quizSolvedList) {
