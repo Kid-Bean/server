@@ -43,10 +43,9 @@ public class AverageScoreScheduler {
 
         groupByImageQuiz.forEach((imageQuiz, quizSolvedList) -> {
             Long accuracy = calculateAccuracy(quizSolvedList);
-
             Level level = Level.calculate(accuracy);
 
-            if ((imageQuiz.getLevel() == null) || (level != imageQuiz.getLevel())) {
+            if (imageQuiz.isLevelUpdateNeed(level)) {
                 updateMemberTotalScore(imageQuiz, level);
                 imageQuiz.updateLevel(level);
             }
