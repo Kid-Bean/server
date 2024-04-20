@@ -1,13 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.ANSWER_QUIZ_NOT_FOUND;
-import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
-
 import ch.qos.logback.core.testUtil.RandomUtil;
-
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,12 +15,20 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.ANSWER_QUIZ_NOT_FOUND;
+import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -123,6 +124,16 @@ public class AnswerQuizService {
         } else {
             return Optional.empty();
         }
+    }
+
+    public AnswerQuizMemberDetailResponse getAnswerQuizById(Long memberId, Long quizId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        AnswerQuiz answerQuiz = answerQuizRepository.findByQuizIdAndMember(quizId, member)
+                .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
+
+        return AnswerQuizMemberDetailResponse.from(answerQuiz);
     }
 
     public List<AnswerQuizMemberResponse> getAllAnswerQuizByMember(Long memberId) {

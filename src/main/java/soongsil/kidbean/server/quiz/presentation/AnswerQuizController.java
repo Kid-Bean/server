@@ -6,20 +6,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
 
 import java.util.List;
 
@@ -61,6 +56,18 @@ public class AnswerQuizController {
     public ResponseEntity<ResponseTemplate<Object>> getAllAnswerQuizByMember(@PathVariable Long memberId) {
 
         List<AnswerQuizMemberResponse> response = answerQuizService.getAllAnswerQuizByMember(memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
+    }
+
+    @Operation(summary = "추가한 AnswerQuiz 문제 상세 정보 가져오기", description = "AnswerQuiz 상세 정보 가져오기")
+    @GetMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> getAnswerQuizById(@PathVariable Long memberId,
+                                                                    @PathVariable Long quizId) {
+
+        AnswerQuizMemberDetailResponse response = answerQuizService.getAnswerQuizById(memberId, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
