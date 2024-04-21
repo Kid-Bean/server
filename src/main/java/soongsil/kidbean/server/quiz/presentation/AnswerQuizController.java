@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.request.AnswerQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
@@ -84,6 +85,19 @@ public class AnswerQuizController {
                                                                    @Valid @RequestBody AnswerQuizUploadRequest request) {
 
         answerQuizService.uploadAnswerQuiz(request, memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(EMPTY_RESPONSE);
+    }
+
+    @Operation(summary = "AnswerQuiz 문제 수정하기", description = "AnswerQuiz 수정하기")
+    @PutMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> updateAnswerQuiz(@PathVariable Long memberId,
+                                                                    @PathVariable Long quizId,
+                                                                    @Valid @RequestBody AnswerQuizUpdateRequest request) {
+
+        answerQuizService.updateAnswerQuiz(request, memberId, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

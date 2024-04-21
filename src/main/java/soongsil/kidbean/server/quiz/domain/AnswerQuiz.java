@@ -33,4 +33,9 @@ public class AnswerQuiz {
         this.title = title;
         this.member = member;
     }
+
+    public void update(String title, String question) {
+        this.question = question;
+        this.title = title;
+    }
 }

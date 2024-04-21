@@ -15,6 +15,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.request.AnswerQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
@@ -155,5 +156,13 @@ public class AnswerQuizService {
         AnswerQuiz answerQuiz = request.toAnswerQuiz(member);
 
         answerQuizRepository.save(answerQuiz);
+    }
+
+    @Transactional
+    public void updateAnswerQuiz(AnswerQuizUpdateRequest request, Long memberId, Long quizId) {
+        AnswerQuiz answerQuiz = answerQuizRepository.findById(quizId)
+                .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
+
+        answerQuiz.update(request.title(), request.question());
     }
 }
