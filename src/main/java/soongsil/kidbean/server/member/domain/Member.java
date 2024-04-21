@@ -27,6 +27,9 @@ public class Member {
     @Column(name = "name", length = 20)
     private String name;
 
+    @Column(name = "oauth_type", length = 20)
+    private String oAuthType;
+
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -42,9 +45,11 @@ public class Member {
     private Long score;
 
     @Builder
-    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+    public Member(String email, String name, String oAuthType, Gender gender, LocalDate birthDate, Role role,
+                  Long score) {
         this.email = email;
         this.name = name;
+        this.oAuthType = oAuthType;
         this.gender = gender;
         this.birthDate = birthDate;
         this.role = role;
@@ -64,11 +69,12 @@ public class Member {
                 gender.equals(Gender.NONE);
     }
 
-    public static Member createFirstLoginMember(final String email) {
+    public static Member createFirstLoginMember(String email, String oAuthType) {
         return Member.builder()
                 .email(email)
-                .role(Role.MEMBER)
+                .role(Role.GUEST)
                 .gender(Gender.NONE)
+                .oAuthType(oAuthType)
                 .score(0L)
                 .build();
     }

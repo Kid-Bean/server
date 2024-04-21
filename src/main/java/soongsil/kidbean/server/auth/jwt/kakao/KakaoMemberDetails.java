@@ -3,10 +3,12 @@ package soongsil.kidbean.server.auth.jwt.kakao;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+@Getter
 @RequiredArgsConstructor
 public class KakaoMemberDetails implements OAuth2User {
 
@@ -14,10 +16,6 @@ public class KakaoMemberDetails implements OAuth2User {
     private final String email;
     private final List<? extends GrantedAuthority> authorities;
     private final Map<String, Object> attributes;
-
-    public Long getId() {
-        return id;
-    }
 
     @Override
     public String getName() {

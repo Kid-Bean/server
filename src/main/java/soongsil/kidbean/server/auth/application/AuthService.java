@@ -20,7 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import soongsil.kidbean.server.auth.jwt.kakao.KakaoLoginRequest;
 import soongsil.kidbean.server.auth.jwt.token.LoginResponse;
-import soongsil.kidbean.server.auth.jwt.token.TokenProvider;
+import soongsil.kidbean.server.auth.jwt.token.JwtTokenProvider;
 import soongsil.kidbean.server.auth.jwt.token.TokenResponse;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Gender;
@@ -34,7 +34,7 @@ public class AuthService {
 
     private static final String REFRESH_HEADER = "RefreshToken";
 
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
@@ -53,7 +53,7 @@ public class AuthService {
 
         Member member = saveIfNonExist(request);
 
-        TokenResponse tokenResponse = tokenProvider.createToken(String.valueOf(member.getMemberId()),
+        TokenResponse tokenResponse = jwtTokenProvider.createToken(String.valueOf(member.getMemberId()),
                 member.getEmail(),
                 member.getRole().name());
 
@@ -65,7 +65,7 @@ public class AuthService {
         KakaoLoginRequest request = getKakaoUserInfo(code);
         Member member = saveIfNonExist(request);
 
-        TokenResponse tokenResponse = tokenProvider.createToken(String.valueOf(member.getMemberId()),
+        TokenResponse tokenResponse = jwtTokenProvider.createToken(String.valueOf(member.getMemberId()),
                 member.getEmail(),
                 member.getRole().name());
 

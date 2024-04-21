@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import soongsil.kidbean.server.auth.jwt.token.TokenProvider;
+import soongsil.kidbean.server.auth.jwt.token.JwtTokenProvider;
 import soongsil.kidbean.server.auth.jwt.token.TokenResponse;
 
 @Slf4j
@@ -22,7 +22,7 @@ import soongsil.kidbean.server.auth.jwt.token.TokenResponse;
 @RequiredArgsConstructor
 public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -57,7 +57,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         if (isExist) {
             // JWT 토큰 생성 로직 활성화
             // 여기서 jwtUtil은 JWT 토큰을 생성하는 유틸리티 클래스의 인스턴스입니다.
-            TokenResponse token = tokenProvider.createToken(email, email, role);
+            TokenResponse token = jwtTokenProvider.createToken(email, email, role);
             log.info("jwtToken = {}", token.getAccessToken());
 
             String targetUrl = UriComponentsBuilder.fromUriString("http://localhost/loginSuccess")
@@ -78,6 +78,4 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
     }
-
-
 }

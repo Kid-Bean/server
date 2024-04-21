@@ -2,71 +2,51 @@ package soongsil.kidbean.server.auth.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-import soongsil.kidbean.server.auth.jwt.token.TokenProvider;
+import org.springframework.web.filter.GenericFilterBean;
+import soongsil.kidbean.server.auth.jwt.token.JwtTokenProvider;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends GenericFilterBean {
 
-    private static final String ACCESS_HEADER = "AccessToken";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_TYPE = "Bearer";
 
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        if (isRequestPassURI(request)) {
-            filterChain.doFilter(request, response);
-            return;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        // 1. Request Header 에서 JWT 토큰 추출
+        String token = resolveToken((HttpServletRequest) request);
+
+        // 2. validateToken 으로 토큰 유효성 검사
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        String accessToken = getTokenFromHeader(request, ACCESS_HEADER);
-
-        if (!tokenProvider.validateExpire(accessToken) && tokenProvider.validate(accessToken)) {
-            String redirectUrl =
-                    "http://" + request.getServerName() + "/auth/login";
-            response.sendRedirect(redirectUrl);
-            return;
-        }
-
-        if (tokenProvider.validateExpire(accessToken) && tokenProvider.validate(accessToken)) {
-            SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthentication(accessToken));
-        }
-
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 
-    private static boolean isRequestPassURI(HttpServletRequest request) {
-        if (request.getRequestURI().equals("/")) {
-            return true;
-        }
-
-        if (request.getRequestURI().startsWith("/auth")) {
-            return true;
-        }
-
-        if (request.getRequestURI().startsWith("/favicon.ico")) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private String getTokenFromHeader(HttpServletRequest request, String headerName) {
-        String token = request.getHeader(headerName);
-        if (StringUtils.hasText(token)) {
-            return token;
+    // Request Header 에서 토큰 정보 추출
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
+            return bearerToken.substring(7);
         }
         return null;
     }
