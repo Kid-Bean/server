@@ -165,4 +165,13 @@ public class AnswerQuizService {
 
         answerQuiz.update(request.title(), request.question());
     }
+
+    @Transactional
+    public void deleteAnswerQuiz(Long memberId, Long quizId) {
+        AnswerQuiz answerQuiz = answerQuizRepository.findById(quizId)
+                .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
+
+        answerQuizRepository.delete(answerQuiz);
+        answerQuizRepository.flush();
+    }
 }

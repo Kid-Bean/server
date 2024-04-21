@@ -103,4 +103,16 @@ public class AnswerQuizController {
                 .status(HttpStatus.OK)
                 .body(EMPTY_RESPONSE);
     }
+
+    @Operation(summary = "AnswerQuiz 문제 삭제하기", description = "AnswerQuiz 삭제하기")
+    @DeleteMapping("/member/{memberId}/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> deleteAnswerQuiz(@PathVariable Long memberId,
+                                                                    @PathVariable Long quizId) {
+
+        answerQuizService.deleteAnswerQuiz(memberId, quizId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(EMPTY_RESPONSE);
+    }
 }
