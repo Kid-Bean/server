@@ -58,4 +58,18 @@ public class Member {
     public void updateScore(Level beforeLevel, Level afterLevel) {
         score = score - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
     }
+
+    public boolean isFirstLogin() {
+        return name == null &&
+                gender.equals(Gender.NONE);
+    }
+
+    public static Member createFirstLoginMember(final String email) {
+        return Member.builder()
+                .email(email)
+                .role(Role.MEMBER)
+                .gender(Gender.NONE)
+                .score(0L)
+                .build();
+    }
 }
