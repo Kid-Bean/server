@@ -1,6 +1,12 @@
 package soongsil.kidbean.server.member.domain.type;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Getter
 public enum Role {
@@ -10,7 +16,14 @@ public enum Role {
     GUEST("ROLE_GUEST"),
     ;
 
+    private static final Map<String, Role> BY_KEY = Collections.unmodifiableMap(
+            Stream.of(values()).collect(Collectors.toMap(Role::getKey, Function.identity())));
+
     private final String key;
+
+    public static Role valueOfKey(String key) {
+        return BY_KEY.get(key);
+    }
 
     Role(String key) {
         this.key = key;

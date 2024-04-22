@@ -28,6 +28,7 @@ public class CustomOAuth2User extends DefaultOAuth2User {
                             String nameAttributeKey,
                             String email,
                             Role role) {
+        //여기서 attributes가 empty라고 함.
         super(authorities, attributes, nameAttributeKey);
         this.email = email;
         this.role = role;

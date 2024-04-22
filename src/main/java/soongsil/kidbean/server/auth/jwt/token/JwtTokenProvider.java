@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,6 +55,8 @@ public class JwtTokenProvider {
 
         Date accessValidity = new Date(now + jwtProperties.getAccessTokenExpiration());
 
+        log.info("expire: {}", accessValidity);
+
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -62,17 +65,18 @@ public class JwtTokenProvider {
         Claims claims = createClaims(authorities);
 
         //나중에 email 필요하면 넣어주기
+        //여기서 setClaim하면 덮어씌여짐. -> 해결하기
         return Jwts.builder()
                 // 토큰의 발급 시간을 기록
                 .setIssuedAt(new Date(now))
-                .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(accessValidity)
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
+                .addClaims(claims)
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setClaims(claims)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -87,24 +91,28 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 // 토큰의 발급 시간을 기록
                 .setIssuedAt(new Date(now))
-                .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(refreshValidity)
                 .setSubject(REFRESH_TOKEN_SUBJECT)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(final String token) {
         try {
+            log.info("now date: {}", new Date());
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+
+            log.info("expire date: {}", claims.getBody().getExpiration());
+            return claims.getBody().getExpiration().after(new Date());
         } catch (Exception e) {
+            log.error("Token validation error: ", e);
             return false;
         }
     }
@@ -112,33 +120,45 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
 
+        // Finding authorities
         List<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTH_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+                        .toList();
 
-        // claims에서 이메일과 역할 정보 추출
+        // Extracting email and name information from claims
         String email = (String) claims.get(AUTH_EMAIL);
-        // 역할 정보는 예시로 "ROLE_USER"와 같은 형태의 문자열로 저장되어 있다고 가정
+        String name = (String) claims.get("name"); // 'name' is just an example key
+
+        log.info("email: {}", email);
+
+        // Creating the attributes map with default or fake data
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("email", email != null ? email : "unknown@example.com");
+        attributes.put("name", name != null ? name : "Unknown User");
+
+        // Extracting role information and logging
         String roleStr = (String) claims.get(AUTH_ROLE);
-
-        Role role = Role.valueOf(roleStr);
-
+        Role role = Role.valueOfKey(roleStr);
         log.info("role: {}", roleStr);
 
-        // CustomOAuth2User 객체 생성
+        // Passing the attributes map when creating the CustomOAuth2User object
         CustomOAuth2User principal = new CustomOAuth2User(
-                authorities, Map.of(), "name", email, role);
+                authorities, attributes, "name", email, role);
 
         log.info("authorities: {}", authorities);
 
+        // Creating UsernamePasswordAuthenticationToken
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
 
     private Claims createClaims(String authorities) {
-        return (Claims) Jwts.claims()
-                .put(AUTH_KEY, authorities);
+
+        Claims claims = Jwts.claims().setSubject(ACCESS_TOKEN_SUBJECT); // 사용자 정의 클레임 추가
+        claims.put(AUTH_KEY, authorities); // 여기에 필요한 추가 클레임들을 넣습니다
+
+        return claims;
     }
 
     private Claims getClaims(String token) {
