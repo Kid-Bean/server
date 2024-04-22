@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import soongsil.kidbean.server.auth.jwt.common.CustomOAuth2UserService;
 import soongsil.kidbean.server.auth.jwt.filter.JwtFilter;
 import soongsil.kidbean.server.auth.jwt.handler.MyAuthenticationFailureHandler;
@@ -35,7 +36,13 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
         return web -> web.ignoring()
-                .requestMatchers("/error", "/token/**", "/swagger-ui/**", "/auth/**");
+                .requestMatchers(
+                        "/error",
+                        "/token/**",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/*",
+                        "/auth/**");
     }
 
     @Bean
@@ -58,7 +65,7 @@ public class SecurityConfig {
                             .failureHandler(oAuth2LoginFailureHandler)
                             .successHandler(oAuth2LoginSuccessHandler);
                 })
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) -> logout
                         .logoutSuccessUrl("/auth/login")
                         .invalidateHttpSession(true));

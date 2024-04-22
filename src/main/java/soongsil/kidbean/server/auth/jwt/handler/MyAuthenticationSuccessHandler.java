@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.auth.jwt.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +33,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
             if (oAuth2User.getRole() == Role.GUEST) {
-                String accessToken = jwtTokenProvider.createAccessToken(oAuth2User.getEmail());
+                String accessToken = jwtTokenProvider.createAccessToken(authentication);
                 response.addHeader(ACCESS_HEADER, "Bearer " + accessToken);
 
                 //아래에서 http://localhost:8080/auth/loginSuccess로 바꾸면 AuthController에서 받음
