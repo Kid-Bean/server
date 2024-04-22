@@ -14,11 +14,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import soongsil.kidbean.server.auth.jwt.common.CustomOAuth2UserService;
 import soongsil.kidbean.server.auth.jwt.filter.JwtFilter;
 import soongsil.kidbean.server.auth.jwt.handler.MyAuthenticationFailureHandler;
 import soongsil.kidbean.server.auth.jwt.handler.MyAuthenticationSuccessHandler;
-import soongsil.kidbean.server.auth.jwt.kakao.KakaoMemberDetailsService;
 import soongsil.kidbean.server.member.domain.type.Role;
 
 @Slf4j
@@ -29,7 +28,8 @@ import soongsil.kidbean.server.member.domain.type.Role;
 public class SecurityConfig {
 
     private final MyAuthenticationSuccessHandler oAuth2LoginSuccessHandler;
-    private final KakaoMemberDetailsService kakaoMemberDetailsService;
+    //    private final KakaoMemberDetailsService kakaoMemberDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final MyAuthenticationFailureHandler oAuth2LoginFailureHandler;
     private final JwtFilter jwtFilter;
 
@@ -55,7 +55,7 @@ public class SecurityConfig {
                     oauth2
                             .userInfoEndpoint(  //OAuth 2 로그인 성공 이후 사용자 정보를 가져올 때의 설정 담당
                                     userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                                            kakaoMemberDetailsService))
+                                            customOAuth2UserService))
                             .failureHandler(oAuth2LoginFailureHandler)
                             .successHandler(oAuth2LoginSuccessHandler);
                 })

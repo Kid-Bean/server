@@ -126,6 +126,7 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
+        // TODO 나중에 KakaoMemberDetails가 아니라 KakaoOAuth2UserInfo로 만들기
         KakaoMemberDetails principal = new KakaoMemberDetails(Long.parseLong((String) claims.get(AUTH_ID)),
                 (String) claims.get(AUTH_EMAIL),
                 simpleGrantedAuthorities, Map.of());
