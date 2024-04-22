@@ -51,6 +51,7 @@ public class OAuthAttributes {
                 .email(oAuth2UserInfo.getEmail())
                 .role(Role.GUEST)
                 .gender(Gender.NONE)
+                .socialId(oAuth2UserInfo.getId())
                 .oAuthType(oAuthType)
                 .score(0L)
                 .build();

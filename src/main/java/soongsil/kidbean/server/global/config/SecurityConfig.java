@@ -28,7 +28,6 @@ import soongsil.kidbean.server.member.domain.type.Role;
 public class SecurityConfig {
 
     private final MyAuthenticationSuccessHandler oAuth2LoginSuccessHandler;
-    //    private final KakaoMemberDetailsService kakaoMemberDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final MyAuthenticationFailureHandler oAuth2LoginFailureHandler;
     private final JwtFilter jwtFilter;
@@ -61,7 +60,7 @@ public class SecurityConfig {
                 })
 //                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/auth/login")
                         .invalidateHttpSession(true));
 
         return http.build();

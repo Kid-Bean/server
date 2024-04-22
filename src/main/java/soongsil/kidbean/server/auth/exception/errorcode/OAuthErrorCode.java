@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.exception.code;
+package soongsil.kidbean.server.auth.exception.errorcode;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

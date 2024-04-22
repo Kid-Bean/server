@@ -1,5 +1,6 @@
 package soongsil.kidbean.server.auth.jwt.common;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,16 +38,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuthType socialType = getSocialType(registrationId);
 
-        String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
+        String userNameAttributeName = userRequest
+                .getClientRegistration()
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
+
         Map<String, Object> attributes = oAuth2User.getAttributes(); // 소셜 로그인에서 API가 제공하는 userInfo의 Json 값(유저 정보들)
 
-        // socialType에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
+        //socialType에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
         OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
 
-        Member createdUser = getMember(extractAttributes, socialType); // getUser() 메소드로 User 객체 생성 후 반환
+        //Member 객체 생성 후 반환
+        Member createdUser = getMember(Objects.requireNonNull(extractAttributes), socialType);
 
-        // DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
+        //DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
                 attributes,
@@ -69,8 +75,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      */
     private Member getMember(OAuthAttributes attributes, OAuthType oAuthType) {
 
-        return memberRepository.findByoAuthTypeAndSocialId(
-                        oAuthType, attributes.getOAuth2UserInfo().getId())
+        //socialId와 oAuthType으로 유저 존재 확인
+        return memberRepository.findByoAuthTypeAndSocialId(oAuthType, attributes.getOAuth2UserInfo().getId())
                 .orElseGet(() ->
                         memberRepository.save(
                                 attributes.toMember(oAuthType, attributes.getOAuth2UserInfo())
