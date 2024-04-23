@@ -1,11 +1,11 @@
-package soongsil.kidbean.server.auth.jwt.common;
+package soongsil.kidbean.server.auth.jwt.oauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
-import soongsil.kidbean.server.auth.jwt.common.type.OAuthType;
+import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
 import soongsil.kidbean.server.auth.jwt.kakao.KakaoOAuth2UserInfo;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Gender;

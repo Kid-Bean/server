@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.auth.jwt.common.type.OAuthType;
+import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
 
@@ -68,21 +68,5 @@ public class Member {
 
     public void updateScore(Level beforeLevel, Level afterLevel) {
         score = score - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
-    }
-
-    public boolean isFirstLogin() {
-        return name == null &&
-                gender.equals(Gender.NONE);
-    }
-
-    public static Member createFirstLoginMember(String email, OAuthType oAuthType, String socialId) {
-        return Member.builder()
-                .email(email)
-                .role(Role.GUEST)
-                .gender(Gender.NONE)
-                .socialId(socialId)
-                .oAuthType(oAuthType)
-                .score(0L)
-                .build();
     }
 }

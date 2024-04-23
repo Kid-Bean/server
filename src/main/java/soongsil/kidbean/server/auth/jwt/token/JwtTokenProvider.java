@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.auth.jwt.token;
 
+import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jws;
@@ -9,35 +11,26 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import soongsil.kidbean.server.auth.jwt.common.CustomOAuth2User;
-import soongsil.kidbean.server.auth.jwt.kakao.KakaoMemberDetails;
-import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
-    private static final String AUTH_ROLE = "role";
     private final JwtProperties jwtProperties;
-    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String AUTH_ID = "ID";
+    private final MemberRepository memberRepository;
+
     private static final String AUTH_KEY = "auth";
-    private static final String AUTH_EMAIL = "EMAIL";
 
     private Key key;
 
@@ -50,7 +43,7 @@ public class JwtTokenProvider {
     /**
      * AccessToken 생성 메소드
      */
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(Member member, Authentication authentication) {
         long now = (new Date()).getTime();
 
         Date accessValidity = new Date(now + jwtProperties.getAccessTokenExpiration());
@@ -62,7 +55,7 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Claims claims = createClaims(authorities);
+        Claims claims = createClaims(member, authorities);
 
         //나중에 email 필요하면 넣어주기
         //여기서 setClaim하면 덮어씌여짐. -> 해결하기
@@ -70,7 +63,6 @@ public class JwtTokenProvider {
                 // 토큰의 발급 시간을 기록
                 .setIssuedAt(new Date(now))
                 .setExpiration(accessValidity)
-                .setSubject(ACCESS_TOKEN_SUBJECT)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
                 .addClaims(claims)
@@ -92,7 +84,6 @@ public class JwtTokenProvider {
                 // 토큰의 발급 시간을 기록
                 .setIssuedAt(new Date(now))
                 .setExpiration(refreshValidity)
-                .setSubject(REFRESH_TOKEN_SUBJECT)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
                 // 토큰이 JWT 타입 명시
@@ -117,45 +108,19 @@ public class JwtTokenProvider {
         }
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = getClaims(token);
+    public Member getMember(String token) {
+        String socialId = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().getSubject();
 
-        // Finding authorities
-        List<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTH_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .toList();
+        log.info("in getMember() socialId: {}", socialId);
 
-        // Extracting email and name information from claims
-        String email = (String) claims.get(AUTH_EMAIL);
-        String name = (String) claims.get("name"); // 'name' is just an example key
-
-        log.info("email: {}", email);
-
-        // Creating the attributes map with default or fake data
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("email", email != null ? email : "unknown@example.com");
-        attributes.put("name", name != null ? name : "Unknown User");
-
-        // Extracting role information and logging
-        String roleStr = (String) claims.get(AUTH_ROLE);
-        Role role = Role.valueOfKey(roleStr);
-        log.info("role: {}", roleStr);
-
-        // Passing the attributes map when creating the CustomOAuth2User object
-        CustomOAuth2User principal = new CustomOAuth2User(
-                authorities, attributes, "name", email, role);
-
-        log.info("authorities: {}", authorities);
-
-        // Creating UsernamePasswordAuthenticationToken
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return memberRepository.findBySocialId(socialId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
     }
 
+    private Claims createClaims(Member member, String authorities) {
 
-    private Claims createClaims(String authorities) {
-
-        Claims claims = Jwts.claims().setSubject(ACCESS_TOKEN_SUBJECT); // 사용자 정의 클레임 추가
+        Claims claims = Jwts.claims().setSubject(member.getSocialId()); // 사용자 정의 클레임 추가
         claims.put(AUTH_KEY, authorities); // 여기에 필요한 추가 클레임들을 넣습니다
 
         return claims;

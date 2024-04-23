@@ -1,24 +1,39 @@
 package soongsil.kidbean.server.auth.jwt.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import soongsil.kidbean.server.auth.exception.errorcode.OAuthErrorCode;
+import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
+import soongsil.kidbean.server.global.exception.response.ErrorResponse;
 
-@Component
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
+    private final ObjectMapper objectMapper;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception)
-            throws IOException {
-        // 인증 실패시 로그인 페이지로 이동
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.getWriter().write("소셜 로그인 실패! 서버 로그를 확인해주세요.");
-        log.info("소셜 로그인에 실패했습니다. 에러 메시지 : {}", exception.getMessage());
-        response.sendRedirect("http://localhost:8080/login/kakao");
+                                        AuthenticationException e) throws IOException {
+        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+
+        setErrorResponse(response, OAuthErrorCode.LOGIN_TYPE_NOT_SUPPORT);
+    }
+
+    private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+        response.setStatus(500);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        //임시로 에러 메시지 작성
+        objectMapper.writeValue(response.getWriter(), new ErrorResponse(false, "404", errorCode.getMessage(), null));
     }
 }

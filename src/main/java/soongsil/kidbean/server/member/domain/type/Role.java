@@ -6,7 +6,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Getter
 public enum Role {

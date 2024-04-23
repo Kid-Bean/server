@@ -1,64 +1,76 @@
 package soongsil.kidbean.server.auth.jwt.handler;
 
-import jakarta.servlet.ServletException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
-import soongsil.kidbean.server.auth.jwt.common.CustomOAuth2User;
+import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
 import soongsil.kidbean.server.auth.jwt.token.JwtTokenProvider;
+import soongsil.kidbean.server.global.dto.ResponseTemplate;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.domain.type.Gender;
 import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
+    private final MemberRepository memberRepository;
     private final String ACCESS_HEADER = "Authorization";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
 
         log.info("OAuth2 Login 성공!");
-        try {
-            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-            // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
-            if (oAuth2User.getRole() == Role.GUEST) {
-                String accessToken = jwtTokenProvider.createAccessToken(authentication);
-                response.addHeader(ACCESS_HEADER, "Bearer " + accessToken);
+        Long socialId = (Long) oAuth2User.getAttributes().get("id");
+        String email = (String) oAuth2User.getAttributes().get("email");
 
-                //아래에서 http://localhost:8080/auth/loginSuccess로 바꾸면 AuthController에서 받음
-                String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/auth/loginSuccess2")
-                        .queryParam("status", "ok")
-                        .queryParam("accesstoken", accessToken)
-                        .build()
-                        .encode(StandardCharsets.UTF_8)
-                        .toUriString();
+        Member member = memberRepository.findBySocialId(socialId.toString())
+                .orElseGet(() -> Member.builder()
+                        .email(email)
+                        .role(Role.GUEST)
+                        .gender(Gender.NONE)
+                        .socialId(socialId.toString())
+                        .oAuthType(OAuthType.KAKAO)
+                        .score(0L)
+                        .build());
 
-                getRedirectStrategy().sendRedirect(request, response, targetUrl);
-            } else {
-//                loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-            }
-        } catch (Exception e) {
-            throw e;
+        log.info("oAuth2User: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(oAuth2User));
+
+        // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
+        if (member.getRole() == Role.GUEST) {
+            String accessToken = jwtTokenProvider.createAccessToken(member, authentication);
+            response.addHeader(ACCESS_HEADER, "Bearer " + accessToken);
+
+            log.info("token: {}", accessToken);
+
+            // Response message 생성
+            writeOauthResponse(response);
+        } else {
+            //유저가 처음 등록하지 않은 경우 - 토큰만 재발급 or 아무것도 안하기
         }
     }
 
-//    //소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
-//    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) {
-//        String accessToken = jwtTokenProvider.createAccessToken(oAuth2User.getEmail());
-//        String refreshToken = jwtTokenProvider.createRefreshToken();
-//        response.addHeader(ACCESS_HEADER, "Bearer " + accessToken);
-//
-////        jwtTokenProvider.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
-//    }
+    private void writeOauthResponse(HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/json;charset=UTF-8");
+
+        // Httpbody에 json 형태로 로그인 내용 추가
+        var writer = response.getWriter();
+        writer.println(objectMapper.writeValueAsString(ResponseTemplate.EMPTY_RESPONSE));
+        writer.flush();
+    }
 }

@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.common;
+package soongsil.kidbean.server.auth.jwt.oauth;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.common.type;
+package soongsil.kidbean.server.auth.jwt.oauth.type;
 
 import lombok.Getter;
 

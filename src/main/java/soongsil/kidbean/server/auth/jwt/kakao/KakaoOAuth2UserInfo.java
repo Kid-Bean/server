@@ -1,7 +1,7 @@
 package soongsil.kidbean.server.auth.jwt.kakao;
 
 import java.util.Map;
-import soongsil.kidbean.server.auth.jwt.common.OAuth2UserInfo;
+import soongsil.kidbean.server.auth.jwt.oauth.OAuth2UserInfo;
 
 public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
