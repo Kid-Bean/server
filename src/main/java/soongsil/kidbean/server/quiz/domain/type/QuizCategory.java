@@ -35,6 +35,6 @@ public enum QuizCategory {
     }
 
     public static List<QuizCategory> allValue() {
-        return
+        return List.of(values());
     }
 }
