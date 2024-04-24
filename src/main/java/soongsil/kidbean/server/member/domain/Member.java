@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
+import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
 

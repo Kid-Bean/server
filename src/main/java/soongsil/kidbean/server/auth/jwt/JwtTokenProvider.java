@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.token;
+package soongsil.kidbean.server.auth.jwt;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 

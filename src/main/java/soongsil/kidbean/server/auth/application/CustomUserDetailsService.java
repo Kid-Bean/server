@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.oauth;
+package soongsil.kidbean.server.auth.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.*;
 
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import soongsil.kidbean.server.auth.dto.CustomUserDetails;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;

@@ -30,7 +30,6 @@ public class AnswerQuizSolved {
     @Column(name = "sentence_answer", length = 80)
     private String sentenceAnswer;
 
-    @CreatedDate
     @LastModifiedDate
     private LocalDateTime solvedTime;
 

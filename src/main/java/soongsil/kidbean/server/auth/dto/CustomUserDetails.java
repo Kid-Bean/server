@@ -1,16 +1,13 @@
-package soongsil.kidbean.server.auth.jwt.oauth;
+package soongsil.kidbean.server.auth.dto;
 
 import java.util.Collection;
 import java.util.List;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import soongsil.kidbean.server.member.domain.Member;
 
-@Getter
 public record CustomUserDetails(Member member) implements UserDetails {
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.handler;
+package soongsil.kidbean.server.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,8 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
-import soongsil.kidbean.server.auth.jwt.token.JwtTokenProvider;
+import soongsil.kidbean.server.member.domain.type.OAuthType;
+import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Gender;

@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.oauth;
+package soongsil.kidbean.server.auth.application;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Map;
-import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
+import soongsil.kidbean.server.auth.dto.OAuthAttributes;
+import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
@@ -42,18 +42,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
 
-        Map<String, Object> attributes = oAuth2User.getAttributes(); //유저의 정보
-
         //socialType 에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
-        OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
+        OAuthAttributes attributes = OAuthAttributes.
+                of(socialType, userNameAttributeName, oAuth2User.getAttributes());
 
-        //Member 객체 생성 후 반환
-        Member createdUser = getMember(Objects.requireNonNull(extractAttributes), socialType);
+        log.info("attributes.email: {}", attributes.getEmail());
+
+        //Member 반환
+        Member member = getMember(Objects.requireNonNull(attributes), socialType);
 
         //DefaultOAuth2User 를 구현한 CustomOAuth2User 객체를 반환
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
-                attributes, extractAttributes.getNameAttributeKey()
+                Collections.singleton(new SimpleGrantedAuthority(member.getRole().getKey())),
+                Objects.requireNonNull(attributes).getAttributes(),
+                attributes.getNameAttributeKey()
         );
     }
 
@@ -70,10 +72,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Member getMember(OAuthAttributes attributes, OAuthType oAuthType) {
 
         //socialId와 oAuthType 으로 유저 존재 확인
-        return memberRepository.findByoAuthTypeAndSocialId(oAuthType, attributes.getOAuth2UserInfo().getId())
+        return memberRepository.findByEmail(attributes.getEmail())
                 .orElseGet(() ->
                         memberRepository.save(
-                                attributes.toMember(oAuthType, attributes.getOAuth2UserInfo())
+                                attributes.toEntity(oAuthType)
                         )
                 );
     }

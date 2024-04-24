@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.token;
+package soongsil.kidbean.server.auth.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

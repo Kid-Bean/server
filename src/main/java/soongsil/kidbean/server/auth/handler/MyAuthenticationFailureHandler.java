@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.jwt.handler;
+package soongsil.kidbean.server.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

@@ -3,7 +3,7 @@ package soongsil.kidbean.server.member.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import soongsil.kidbean.server.auth.jwt.oauth.type.OAuthType;
+import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.Member;
 
 @Repository
