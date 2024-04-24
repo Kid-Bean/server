@@ -7,6 +7,7 @@ import soongsil.kidbean.server.member.domain.Member;
 public record MemberInfoResponse(
         Long memberId,
         LocalDate memberBirth,
+        String memberName,
         Integer memberAge
 ) {
     public static MemberInfoResponse from(Member member) {
@@ -15,6 +16,7 @@ public record MemberInfoResponse(
         return new MemberInfoResponse(
                 member.getMemberId(),
                 member.getBirthDate(),
+                member.getName(),
                 age
         );
     }
