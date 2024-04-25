@@ -46,8 +46,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuthAttributes attributes = OAuthAttributes.
                 of(socialType, userNameAttributeName, oAuth2User.getAttributes());
 
-        log.info("attributes.email: {}", attributes.getEmail());
-
         //Member 반환
         Member member = getMember(Objects.requireNonNull(attributes), socialType);
 
