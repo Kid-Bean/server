@@ -25,7 +25,8 @@ public class AuthService {
         //1. 사용자 정보 가져오기
         Member member = getUserDataFromPlatform(loginRequest.accessToken(), provider);
         //2. 로그인 및 회원가입
-        Member authenticatedMember = memberRepository.save(member);
+        Member authenticatedMember = memberRepository.findBySocialId(member.getSocialId())
+                .orElseGet(() -> memberRepository.save(member));
         //3. security 처리
         AuthenticationUtil.makeAuthentication(authenticatedMember);
         //4. token 만들기
