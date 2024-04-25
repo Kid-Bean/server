@@ -38,7 +38,6 @@ public class AuthController {
                 .body(ResponseTemplate.from(loginResponse));
     }
 
-
     @Operation(summary = "테스트용 access token 발급", description = "테스트용 access token 발급")
     @GetMapping("test/login/{memberId}")
     public ResponseEntity<String> testAccessToken(@PathVariable Long memberId) {

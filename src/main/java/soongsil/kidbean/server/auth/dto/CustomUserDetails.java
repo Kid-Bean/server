@@ -25,7 +25,7 @@ public record CustomUserDetails(
     @Override
     public String getUsername() {
         //username은 소셜 로그인에 사용 X
-        return null;
+        return member.getMemberId().toString();
     }
 
     @Override
