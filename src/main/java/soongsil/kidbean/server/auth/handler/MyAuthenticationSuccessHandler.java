@@ -52,7 +52,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
 
         // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
         if (member.getRole() == Role.GUEST) {
-            String accessToken = jwtTokenProvider.createAccessToken(member, authentication);
+            String accessToken = jwtTokenProvider.createAccessToken(member);
             response.addHeader(ACCESS_HEADER, "Bearer " + accessToken);
 
             log.info("token: {}", accessToken);

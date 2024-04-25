@@ -43,39 +43,30 @@ public class JwtTokenProvider {
     /**
      * AccessToken 생성 메소드
      */
-    public String createAccessToken(Member member, Authentication authentication) {
+    public String createAccessToken(Member member) {
         long now = (new Date()).getTime();
 
         Date accessValidity = new Date(now + jwtProperties.getAccessTokenExpiration());
 
         log.info("expire: {}", accessValidity);
 
-        // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        Claims claims = createClaims(member, authorities);
-
-        //나중에 email 필요하면 넣어주기
-        //여기서 setClaim하면 덮어씌여짐. -> 해결하기
         return Jwts.builder()
                 // 토큰의 발급 시간을 기록
                 .setIssuedAt(new Date(now))
                 .setExpiration(accessValidity)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
-                .addClaims(claims)
+                .setSubject(member.getSocialId())
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     /**
-     * RefreshToken 생성 RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
+     * RefreshToken 생성
      */
-    public String createRefreshToken() {
+    public String createRefreshToken(Member member) {
         long now = (new Date()).getTime();
 
         Date refreshValidity = new Date(now + jwtProperties.getRefreshTokenExpiration());
@@ -86,9 +77,10 @@ public class JwtTokenProvider {
                 .setExpiration(refreshValidity)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
+                .setSubject(member.getSocialId())
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -116,14 +108,6 @@ public class JwtTokenProvider {
 
         return memberRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-    }
-
-    private Claims createClaims(Member member, String authorities) {
-
-        Claims claims = Jwts.claims().setSubject(member.getSocialId()); // 사용자 정의 클레임 추가
-        claims.put(AUTH_KEY, authorities); // 여기에 필요한 추가 클레임들을 넣습니다
-
-        return claims;
     }
 
     private Claims getClaims(String token) {
