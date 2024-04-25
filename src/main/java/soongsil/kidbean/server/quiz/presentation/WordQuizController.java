@@ -39,7 +39,7 @@ public class WordQuizController {
     private final WordQuizService wordQuizService;
 
     @Operation(summary = "WordQuiz 문제 불러오기", description = "WordQuiz 문제 불러오기")
-    @GetMapping
+    @GetMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> getRandomWordQuiz(@AuthenticationPrincipal AuthUser user) {
 
         WordQuizResponse WordQuizResponse = wordQuizService.selectRandomWordQuiz(user.memberId());
@@ -50,7 +50,7 @@ public class WordQuizController {
     }
 
     @Operation(summary = "WordQuiz 문제 풀기", description = "푼 WordQuiz 문제를 제출")
-    @PostMapping
+    @PostMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> solveImageQuizzes(
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestBody QuizSolvedListRequest request) {

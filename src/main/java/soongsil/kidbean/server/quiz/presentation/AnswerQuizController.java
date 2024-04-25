@@ -28,7 +28,7 @@ public class AnswerQuizController {
     private final AnswerQuizService answerQuizService;
 
     @Operation(summary = "AnswerQuiz 가져오기", description = "AnswerQuiz 가져오기")
-    @GetMapping
+    @GetMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(
             @AuthenticationPrincipal AuthUser user) {
 
@@ -40,7 +40,7 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "AnswerQuiz 문제 풀기", description = "AnswerQuiz 문제 풀기")
-    @PostMapping
+    @PostMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(
             @AuthenticationPrincipal AuthUser user,
             @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,

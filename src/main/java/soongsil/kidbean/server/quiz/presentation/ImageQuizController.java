@@ -59,7 +59,7 @@ public class ImageQuizController {
     }
 
     @Operation(summary = "ImageQuiz 문제 가져오기", description = "랜덤 ImageQuiz 가져오기")
-    @GetMapping
+    @GetMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> getRandomImageQuiz(
             @AuthenticationPrincipal AuthUser user) {
 
@@ -72,7 +72,7 @@ public class ImageQuizController {
     }
 
     @Operation(summary = "ImageQuiz 문제 풀기", description = "푼 ImageQuiz 문제를 제출")
-    @PostMapping
+    @PostMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> solveImageQuizzes(
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestBody QuizSolvedListRequest request) {
