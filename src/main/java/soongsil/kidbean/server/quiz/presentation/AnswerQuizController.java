@@ -32,7 +32,7 @@ public class AnswerQuizController {
     public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(
             @AuthenticationPrincipal AuthUser user) {
 
-        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(user.getMemberId());
+        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -46,7 +46,7 @@ public class AnswerQuizController {
             @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
             @RequestPart MultipartFile record) {
         AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(
-                answerQuizSolvedRequest, record, user.getMemberId());
+                answerQuizSolvedRequest, record, user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

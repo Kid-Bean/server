@@ -7,7 +7,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import soongsil.kidbean.server.member.domain.Member;
 
-public record CustomUserDetails(Member member) implements UserDetails {
+public record CustomUserDetails(
+        Member member
+) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

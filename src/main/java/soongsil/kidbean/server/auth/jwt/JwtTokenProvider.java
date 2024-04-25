@@ -12,11 +12,8 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
@@ -29,8 +26,6 @@ public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties;
     private final MemberRepository memberRepository;
-
-    private static final String AUTH_KEY = "auth";
 
     private Key key;
 
@@ -108,13 +103,5 @@ public class JwtTokenProvider {
 
         return memberRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-    }
-
-    private Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 }

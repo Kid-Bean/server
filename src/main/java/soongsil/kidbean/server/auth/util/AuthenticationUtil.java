@@ -17,20 +17,9 @@ import soongsil.kidbean.server.member.domain.Member;
 @Component
 public class AuthenticationUtil {
 
-
-    public static String getCurrentUserEmail() {
-        AuthUser authUser = (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return authUser.getEmail();
-    }
-
-    public static String getCurrentUserSocialId() {
-        AuthUser authUser = (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return authUser.getSocialId();
-    }
-
     public static Authentication getAuthentication(AuthUser authUser) {
 
-        List<GrantedAuthority> grantedAuthorities = authUser.getRoles().stream()
+        List<GrantedAuthority> grantedAuthorities = authUser.roles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 

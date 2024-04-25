@@ -42,7 +42,7 @@ public class WordQuizController {
     @GetMapping
     public ResponseEntity<ResponseTemplate<Object>> getRandomWordQuiz(@AuthenticationPrincipal AuthUser user) {
 
-        WordQuizResponse WordQuizResponse = wordQuizService.selectRandomWordQuiz(user.getMemberId());
+        WordQuizResponse WordQuizResponse = wordQuizService.selectRandomWordQuiz(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -56,7 +56,7 @@ public class WordQuizController {
             @Valid @RequestBody QuizSolvedListRequest request) {
 
         WordQuizSolveScoreResponse score =
-                wordQuizService.solveWordQuizzes(request.quizSolvedRequestList(), user.getMemberId());
+                wordQuizService.solveWordQuizzes(request.quizSolvedRequestList(), user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -69,7 +69,7 @@ public class WordQuizController {
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        WordQuizMemberDetailResponse response = wordQuizService.getWordQuizById(user.getMemberId(), quizId);
+        WordQuizMemberDetailResponse response = wordQuizService.getWordQuizById(user.memberId(), quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -80,7 +80,7 @@ public class WordQuizController {
     @GetMapping("/member")
     public ResponseEntity<ResponseTemplate<Object>> getAllWordQuizByMember(@AuthenticationPrincipal AuthUser user) {
 
-        List<WordQuizMemberResponse> response = wordQuizService.getAllWordQuizByMember(user.getMemberId());
+        List<WordQuizMemberResponse> response = wordQuizService.getAllWordQuizByMember(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -93,7 +93,7 @@ public class WordQuizController {
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestBody WordQuizUploadRequest request) {
 
-        wordQuizService.uploadWordQuiz(request, user.getMemberId());
+        wordQuizService.uploadWordQuiz(request, user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -107,7 +107,7 @@ public class WordQuizController {
             @PathVariable Long quizId,
             @Valid @RequestBody WordQuizUpdateRequest request) {
 
-        wordQuizService.updateWordQuiz(request, user.getMemberId(), quizId);
+        wordQuizService.updateWordQuiz(request, user.memberId(), quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -120,7 +120,7 @@ public class WordQuizController {
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        wordQuizService.deleteWordQuiz(user.getMemberId(), quizId);
+        wordQuizService.deleteWordQuiz(user.memberId(), quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

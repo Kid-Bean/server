@@ -10,7 +10,7 @@ import soongsil.kidbean.server.member.domain.type.Gender;
 import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.type.Role;
 
-@Service("kakaoLoginProvider")
+@Service
 @RequiredArgsConstructor
 public class KakaoLoginProvider implements SocialLoginProvider {
 

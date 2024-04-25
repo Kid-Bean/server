@@ -38,8 +38,7 @@ public class ImageQuizController {
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        ImageQuizMemberDetailResponse response = imageQuizService.getImageQuizById(
-                user.getMemberId(), quizId);
+        ImageQuizMemberDetailResponse response = imageQuizService.getImageQuizById(user.memberId(), quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -52,7 +51,7 @@ public class ImageQuizController {
             @AuthenticationPrincipal AuthUser user) {
 
         List<ImageQuizMemberResponse> response =
-                imageQuizService.getAllImageQuizByMember(user.getMemberId());
+                imageQuizService.getAllImageQuizByMember(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -65,7 +64,7 @@ public class ImageQuizController {
             @AuthenticationPrincipal AuthUser user) {
 
         ImageQuizResponse imageQuizResponse =
-                imageQuizService.selectRandomImageQuiz(user.getMemberId());
+                imageQuizService.selectRandomImageQuiz(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -79,7 +78,7 @@ public class ImageQuizController {
             @Valid @RequestBody QuizSolvedListRequest request) {
 
         ImageQuizSolveScoreResponse score = imageQuizService.solveImageQuizzes(
-                request.quizSolvedRequestList(), user.getMemberId());
+                request.quizSolvedRequestList(), user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -93,7 +92,7 @@ public class ImageQuizController {
             @Valid @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
             @RequestPart MultipartFile s3Url) {
 
-        imageQuizService.uploadImageQuiz(imageQuizUploadRequest, user.getMemberId(), s3Url);
+        imageQuizService.uploadImageQuiz(imageQuizUploadRequest, user.memberId(), s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -108,7 +107,7 @@ public class ImageQuizController {
             @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
             @RequestPart MultipartFile s3Url) {
 
-        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, user.getMemberId(), quizId, s3Url);
+        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, user.memberId(), quizId, s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -121,7 +120,7 @@ public class ImageQuizController {
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        imageQuizService.deleteImageQuiz(user.getMemberId(), quizId);
+        imageQuizService.deleteImageQuiz(user.memberId(), quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
