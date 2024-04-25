@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.config;
+package soongsil.kidbean.server.global.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.config;
+package soongsil.kidbean.server.global.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
