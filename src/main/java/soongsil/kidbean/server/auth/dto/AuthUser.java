@@ -10,7 +10,8 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class SessionUser implements Serializable {
+public class AuthUser implements Serializable {
+    private Long memberId;
     private String socialId;
     private String name;
     private String email;

@@ -10,7 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import soongsil.kidbean.server.auth.dto.SessionUser;
+import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.member.domain.Member;
 
 @RequiredArgsConstructor
@@ -19,34 +19,35 @@ public class AuthenticationUtil {
 
 
     public static String getCurrentUserEmail() {
-        SessionUser sessionUser = (SessionUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return sessionUser.getEmail();
+        AuthUser authUser = (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return authUser.getEmail();
     }
 
     public static String getCurrentUserSocialId() {
-        SessionUser sessionUser = (SessionUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return sessionUser.getSocialId();
+        AuthUser authUser = (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return authUser.getSocialId();
     }
 
-    public static Authentication getAuthentication(SessionUser sessionUser) {
+    public static Authentication getAuthentication(AuthUser authUser) {
 
-        List<GrantedAuthority> grantedAuthorities = sessionUser.getRoles().stream()
+        List<GrantedAuthority> grantedAuthorities = authUser.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(sessionUser, "", grantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(authUser, "", grantedAuthorities);
     }
 
     public static void makeAuthentication(Member member) {
         // Authentication 정보 만들기
-        SessionUser sessionUser = SessionUser.builder()
+        AuthUser authUser = AuthUser.builder()
+                .memberId(member.getMemberId())
                 .socialId(member.getSocialId())
                 .email(member.getEmail())
                 .roles(Collections.singletonList(member.getRole().getKey()))
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장
-        Authentication auth = AuthenticationUtil.getAuthentication(sessionUser);
+        Authentication auth = AuthenticationUtil.getAuthentication(authUser);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

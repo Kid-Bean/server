@@ -5,13 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
@@ -27,10 +28,11 @@ public class AnswerQuizController {
     private final AnswerQuizService answerQuizService;
 
     @Operation(summary = "AnswerQuiz 가져오기", description = "AnswerQuiz 가져오기")
-    @GetMapping("/{memberId}")
-    public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(@PathVariable Long memberId) {
+    @GetMapping
+    public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(
+            @AuthenticationPrincipal AuthUser user) {
 
-        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(memberId);
+        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(user.getMemberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -38,12 +40,13 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "AnswerQuiz 문제 풀기", description = "AnswerQuiz 문제 풀기")
-    @PostMapping("/{memberId}")
-    public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
-                                                                    @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
-                                                                    @RequestPart MultipartFile record) {
+    @PostMapping
+    public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(
+            @AuthenticationPrincipal AuthUser user,
+            @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
+            @RequestPart MultipartFile record) {
         AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(
-                answerQuizSolvedRequest, record, memberId);
+                answerQuizSolvedRequest, record, user.getMemberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

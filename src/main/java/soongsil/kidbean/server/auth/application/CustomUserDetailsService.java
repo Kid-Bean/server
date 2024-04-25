@@ -13,14 +13,12 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
-@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-
     public UserDetails loadUserByUsername(String socialId) throws UsernameNotFoundException {
         Member member = memberRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));

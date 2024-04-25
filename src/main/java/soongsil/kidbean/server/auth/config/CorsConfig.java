@@ -25,7 +25,7 @@ public class CorsConfig {
                 HttpMethod.PATCH.name(),
                 HttpMethod.OPTIONS.name()));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
