@@ -2,12 +2,15 @@ package soongsil.kidbean.server.member.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.dto.response.ImageQuizScoreResponse;
+import soongsil.kidbean.server.member.dto.response.ScoreInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizListResponse;
@@ -32,6 +35,10 @@ import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
+import soongsil.kidbean.server.summary.domain.ImageQuizScore;
+import soongsil.kidbean.server.summary.domain.type.AgeGroup;
+import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
+import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
 
 @Slf4j
 @Service
@@ -43,6 +50,8 @@ public class MypageService {
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final WordRepository wordRepository;
     private final MemberRepository memberRepository;
+    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final AverageScoreRepository averageScoreRepository;
     private final UseWordRepository useWordRepository;
     private final MorphemeRepository morphemeRepository;
 
@@ -113,6 +122,25 @@ public class MypageService {
         List<UseWord> useWordList = useWordRepository.findAllByAnswerQuizSolved(answerQuizSolved);
 
         return SolvedAnswerDetailResponse.of(answerQuizSolved, morphemeList, useWordList);
+    }
+
+    public ImageQuizScoreResponse findImageQuizScore(Long memberId) {
+        Member member = findMemberById(memberId);
+
+        List<ScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMember(member)
+                .stream().map(ScoreInfo::byImageQuizScore)
+                .toList();
+
+        if (member.getBirthDate() != null) {
+            AgeGroup memberAgeGroup = AgeGroup.calculate(member.getBirthDate());
+            List<ScoreInfo> ageScoreInfo = averageScoreRepository.findAllByAgeGroup(memberAgeGroup).stream()
+                    .map(ScoreInfo::byAverageScore)
+                    .toList();
+
+            return ImageQuizScoreResponse.of(myScoreInfo, ageScoreInfo);
+        }
+
+        return ImageQuizScoreResponse.of(myScoreInfo, List.of());
     }
 
     private QuizSolved findQuizSolvedById(Long solvedId) {

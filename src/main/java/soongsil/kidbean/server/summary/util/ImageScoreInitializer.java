@@ -46,7 +46,7 @@ public class ImageScoreInitializer implements ApplicationRunner {
     private ImageQuizScore makeImageQuizScore(Long totalScore, QuizCategory quizCategory, Long quizCount, Member member) {
         return ImageQuizScore.builder()
                 .member(DUMMY_MEMBER)
-                .totalScore(10L)
+                .totalScore(totalScore)
                 .quizCategory(quizCategory)
                 .quizCount(quizCount)
                 .build();

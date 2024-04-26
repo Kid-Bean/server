@@ -42,9 +42,9 @@ public class AverageScoreInitializer implements ApplicationRunner {
         }
     }
 
-    private AverageScore makeAverageScore(int quizCount, Long sum, AgeGroup ageGroup, QuizCategory quizCategory) {
+    private AverageScore makeAverageScore(long quizCount, Long sum, AgeGroup ageGroup, QuizCategory quizCategory) {
         return AverageScore.builder()
-                .quizCount(quizCount)
+                .memberCount(quizCount)
                 .sum(sum)
                 .ageGroup(ageGroup)
                 .category(quizCategory)
