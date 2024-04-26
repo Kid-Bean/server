@@ -2,7 +2,6 @@ package soongsil.kidbean.server.member.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.dto.response.ImageQuizScoreResponse;
-import soongsil.kidbean.server.member.dto.response.ScoreInfo;
+import soongsil.kidbean.server.member.dto.response.AgeScoreInfo;
+import soongsil.kidbean.server.member.dto.response.MyScoreInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizListResponse;
@@ -35,7 +35,6 @@ import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
-import soongsil.kidbean.server.summary.domain.ImageQuizScore;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
 import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
@@ -127,14 +126,14 @@ public class MypageService {
     public ImageQuizScoreResponse findImageQuizScore(Long memberId) {
         Member member = findMemberById(memberId);
 
-        List<ScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMember(member)
-                .stream().map(ScoreInfo::byImageQuizScore)
+        List<MyScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMember(member)
+                .stream().map(MyScoreInfo::from)
                 .toList();
 
         if (member.getBirthDate() != null) {
             AgeGroup memberAgeGroup = AgeGroup.calculate(member.getBirthDate());
-            List<ScoreInfo> ageScoreInfo = averageScoreRepository.findAllByAgeGroup(memberAgeGroup).stream()
-                    .map(ScoreInfo::byAverageScore)
+            List<AgeScoreInfo> ageScoreInfo = averageScoreRepository.findAllByAgeGroup(memberAgeGroup).stream()
+                    .map(AgeScoreInfo::from)
                     .toList();
 
             return ImageQuizScoreResponse.of(myScoreInfo, ageScoreInfo);
