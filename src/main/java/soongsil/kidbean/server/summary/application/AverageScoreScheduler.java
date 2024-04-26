@@ -79,9 +79,9 @@ public class AverageScoreScheduler {
 
                 if (optionalAverageScore.isPresent()) {
                     AverageScore averageScore = optionalAverageScore.get();
-                    averageScore.updateScoreAndCount(sum, quizSolvedList.size());
+                    averageScore.updateScoreAndCount(sum, members.size());
                 } else {
-                    averageScoreRepository.save(new AverageScore(ageGroup, sum, quizSolvedList.size(), category));
+                    averageScoreRepository.save(new AverageScore(ageGroup, sum, members.size(), category));
                 }
             }
         });

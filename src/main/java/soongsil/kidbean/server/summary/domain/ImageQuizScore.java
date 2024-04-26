@@ -11,11 +11,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 
 @Entity
 @Getter
@@ -40,6 +42,14 @@ public class ImageQuizScore {
 
     @Column(name = "quiz_count")
     private Long quizCount;
+
+    @Builder
+    public ImageQuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount) {
+        this.member = member;
+        this.quizCategory = quizCategory;
+        this.totalScore = totalScore;
+        this.quizCount = quizCount;
+    }
 
     public void updateScore(Level beforeLevel, Level afterLevel) {
         totalScore = totalScore - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
