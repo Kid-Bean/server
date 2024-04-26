@@ -36,18 +36,18 @@ public class AverageScore {
     private Long totalScore;
 
     @Column(name = "quiz_count")
-    private Integer quizCount;
+    private Integer memberCount;
 
     @Builder
-    public AverageScore(AgeGroup ageGroup, Long sum, int quizCount, QuizCategory category) {
+    public AverageScore(AgeGroup ageGroup, Long sum, int memberCount, QuizCategory category) {
         this.ageGroup = ageGroup;
         this.totalScore = sum;
-        this.quizCount = quizCount;
+        this.memberCount = memberCount;
         this.quizCategory = category;
     }
 
     public void updateScoreAndCount(long sum, int size) {
         totalScore = sum;
-        quizCount = size;
+        memberCount = size;
     }
 }
