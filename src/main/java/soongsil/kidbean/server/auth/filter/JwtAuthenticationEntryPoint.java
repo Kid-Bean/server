@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 
 /**
- * 인증 되지 않은 사용자가 security 가 적용된 uri 에 액세스 할 때 호출
+ * 인증 되지 않은 사용자가 security 가 적용된 uri 에 액세스 할 때 호출(AccessToken 부적확 or 없음) - 401
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {

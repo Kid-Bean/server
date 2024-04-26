@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 
 /**
- * AccessToken 은 있으나 권한이 맞지 않는 경우
+ * AccessToken 은 있으나 권한이 맞지 않는 경우 - 403
  */
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
