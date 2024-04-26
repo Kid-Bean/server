@@ -35,7 +35,7 @@ public class AverageScore {
     @Column(name = "total_score")
     private Long totalScore;
 
-    @Column(name = "quiz_count")
+    @Column(name = "member_count")
     private Long memberCount;
 
     @Builder
