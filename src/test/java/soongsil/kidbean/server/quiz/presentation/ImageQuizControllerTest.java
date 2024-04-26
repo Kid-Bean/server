@@ -78,6 +78,8 @@ class ImageQuizControllerTest extends CommonControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .with(csrf()))
                 .andDo(print());
+        //TODO 위와 같이 csrf 가 적용된 부분들 나중에 spring rest docs 사용 시 @AutoConfigureRestDocs로 공통 처리해주기
+        //CommonControllerTest 에서 MockMvc 에 설정 하면 됨.
 
         //then
         resultActions.andExpect(status().isOk())
