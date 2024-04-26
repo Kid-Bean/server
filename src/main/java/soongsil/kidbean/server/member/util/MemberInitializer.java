@@ -67,7 +67,7 @@ public class MemberInitializer implements ApplicationRunner {
                     .email("email4")
                     .name("name4")
                     .gender(Gender.MAN)
-                    .role(Role.MEMBER)
+                    .role(Role.GUEST)
                     .socialId("socialId5")
                     .score(12L)
                     .build());

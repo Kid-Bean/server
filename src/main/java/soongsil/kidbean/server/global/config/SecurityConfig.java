@@ -17,9 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import soongsil.kidbean.server.auth.application.CustomOAuth2UserService;
 import soongsil.kidbean.server.auth.filter.JwtFilter;
-import soongsil.kidbean.server.auth.handler.MyAuthenticationFailureHandler;
-import soongsil.kidbean.server.auth.handler.MyAuthenticationSuccessHandler;
-import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.auth.filter.JwtAccessDeniedHandler;
+import soongsil.kidbean.server.auth.filter.JwtAuthenticationEntryPoint;
 
 @Slf4j
 @Profile("!test")
@@ -28,10 +27,12 @@ import soongsil.kidbean.server.member.domain.type.Role;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final MyAuthenticationSuccessHandler oAuth2LoginSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final MyAuthenticationFailureHandler oAuth2LoginFailureHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtFilter jwtFilter;
+
+    private static final String MEMBER = "MEMBER";
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
@@ -54,16 +55,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth // 요청에 대한 인증 설정
-                        .requestMatchers("/logout", "/auth/refresh-token").hasRole(Role.MEMBER.toString())
+                        .requestMatchers("/logout", "/auth/refresh-token").hasRole(MEMBER)
                         .anyRequest().authenticated())  //이외의 요청은 전부 인증 필요
                 .oauth2Login(oauth2 -> {
                     log.info("oauth2 configure");
                     oauth2
                             .userInfoEndpoint(  //OAuth 2 로그인 성공 이후 사용자 정보를 가져올 때의 설정 담당
                                     userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                                            customOAuth2UserService))
-                            .failureHandler(oAuth2LoginFailureHandler)
-                            .successHandler(oAuth2LoginSuccessHandler);
+                                            customOAuth2UserService));
+                })
+                .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling
+                            .authenticationEntryPoint(jwtAuthenticationEntryPoint) //인증되지 않은 사용자가 보호된 리소스에 액세스 할 때 호출
+                            .accessDeniedHandler(jwtAccessDeniedHandler); //권한이 없는 사용자가 보호된 리소스에 액세스 할 때 호출
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
