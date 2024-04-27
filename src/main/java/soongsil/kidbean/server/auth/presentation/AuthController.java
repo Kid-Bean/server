@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.auth.application.AuthService;
 import soongsil.kidbean.server.auth.dto.request.LoginRequest;
+import soongsil.kidbean.server.auth.dto.request.ReissueRequest;
 import soongsil.kidbean.server.auth.dto.response.LoginResponse;
+import soongsil.kidbean.server.auth.dto.response.ReissueResponse;
 import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -38,7 +40,17 @@ public class AuthController {
                 .body(ResponseTemplate.from(loginResponse));
     }
 
-    @Operation(summary = "테스트용 access token 발급", description = "테스트용 access token 발급")
+    @Operation(summary = "access token 재발급", description = "access token 재발급")
+    @PostMapping("/reissue")
+    public ResponseEntity<ResponseTemplate<Object>> reissue(@RequestBody ReissueRequest request) {
+        ReissueResponse reissueResponse = authService.reissueAccessToken(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(reissueResponse));
+    }
+
+    @Operation(summary = "테스트 용 access token 발급", description = "테스트 용 access token 발급")
     @GetMapping("test/login/{memberId}")
     public ResponseEntity<String> testAccessToken(@PathVariable Long memberId) {
         return ResponseEntity

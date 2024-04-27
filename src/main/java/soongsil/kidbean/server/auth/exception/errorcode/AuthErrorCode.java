@@ -7,8 +7,9 @@ import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
 
 @Getter
 @RequiredArgsConstructor
-public enum OAuthErrorCode implements ErrorCode {
+public enum AuthErrorCode implements ErrorCode {
     LOGIN_TYPE_NOT_SUPPORT(HttpStatus.NOT_ACCEPTABLE, "login type not support."),
+    TOKEN_NOT_VALID(HttpStatus.NOT_ACCEPTABLE, "refresh token is not valid."),
     ;
 
     private final HttpStatus httpStatus;

@@ -49,7 +49,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //Member 반환
         Member member = getMember(Objects.requireNonNull(attributes), socialType);
 
-        //DefaultOAuth2User 를 구현한 CustomOAuth2User 객체를 반환
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(member.getRole().getKey())),
                 Objects.requireNonNull(attributes).getAttributes(),
