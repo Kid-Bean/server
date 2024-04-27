@@ -34,6 +34,9 @@ public class Member {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Column(name = "join_date")
+    private LocalDate joinDate;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -42,11 +45,12 @@ public class Member {
     private Long score;
 
     @Builder
-    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+    public Member(String email, String name, Gender gender, LocalDate birthDate, LocalDate joinDate, Role role, Long score) {
         this.email = email;
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.joinDate = joinDate;
         this.role = role;
         this.score = score;
     }
