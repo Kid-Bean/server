@@ -63,7 +63,7 @@ public class ImageQuiz {
         this.s3Info = s3Info;
     }
 
-    public void update(String title, String answer, QuizCategory quizCategory, S3Info s3Info) {
+    public void updateImageQuiz(String title, String answer, QuizCategory quizCategory, S3Info s3Info) {
         this.title = title;
         this.answer = answer;
         this.quizCategory = quizCategory;
