@@ -18,7 +18,7 @@ public interface AnswerQuizRepository extends JpaRepository<AnswerQuiz, Long> {
 
     Page<AnswerQuiz> findByMemberOrMember_Role(Member member, Role role, Pageable pageable);
 
-    Optional<AnswerQuiz> findByQuizIdAndMember(Long quizId, Member member);
+    Optional<AnswerQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 
-    List<AnswerQuiz> findAllByMember(Member member);
+    List<AnswerQuiz> findAllByMember_MemberId(Long memberId);
 }

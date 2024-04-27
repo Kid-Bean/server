@@ -110,20 +110,14 @@ public class WordQuizService {
     }
 
     public WordQuizMemberDetailResponse getWordQuizById(Long memberId, Long quizId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-        WordQuiz WordQuiz = wordQuizRepository.findByQuizIdAndMember(quizId, member)
+        WordQuiz WordQuiz = wordQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         return WordQuizMemberDetailResponse.from(WordQuiz);
     }
 
     public List<WordQuizMemberResponse> getAllWordQuizByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        return wordQuizRepository.findAllByMember(member)
-                .stream()
+        return wordQuizRepository.findAllByMember_MemberId(memberId).stream()
                 .map(WordQuizMemberResponse::from)
                 .toList();
     }
@@ -147,7 +141,7 @@ public class WordQuizService {
 
         updateWords(request, wordList);
 
-        wordQuiz.update(request.title(), request.answer());
+        wordQuiz.updateWordQuiz(request.title(), request.answer());
     }
 
     private static void updateWords(WordQuizUpdateRequest request, List<Word> wordList) {
@@ -166,6 +160,5 @@ public class WordQuizService {
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         wordQuizRepository.delete(wordQuiz);
-        wordQuizRepository.flush();
     }
 }

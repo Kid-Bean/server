@@ -46,7 +46,7 @@ public class WordQuiz {
         this.words = words;
     }
 
-    public void update(String title, String answer) {
+    public void updateWordQuiz(String title, String answer) {
         this.title = title;
         this.answer = answer;
     }

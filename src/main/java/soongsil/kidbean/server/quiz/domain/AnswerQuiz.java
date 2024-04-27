@@ -34,7 +34,7 @@ public class AnswerQuiz {
         this.member = member;
     }
 
-    public void update(String title, String question) {
+    public void updateAnswerQuiz(String title, String question) {
         this.question = question;
         this.title = title;
     }

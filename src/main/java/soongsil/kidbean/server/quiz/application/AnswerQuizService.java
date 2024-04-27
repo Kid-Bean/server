@@ -129,21 +129,14 @@ public class AnswerQuizService {
     }
 
     public AnswerQuizMemberDetailResponse getAnswerQuizById(Long memberId, Long quizId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        AnswerQuiz answerQuiz = answerQuizRepository.findByQuizIdAndMember(quizId, member)
+        AnswerQuiz answerQuiz = answerQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
                 .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
 
         return AnswerQuizMemberDetailResponse.from(answerQuiz);
     }
 
     public List<AnswerQuizMemberResponse> getAllAnswerQuizByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        return answerQuizRepository.findAllByMember(member)
-                .stream()
+        return answerQuizRepository.findAllByMember_MemberId(memberId).stream()
                 .map(AnswerQuizMemberResponse::from)
                 .toList();
     }
@@ -163,7 +156,7 @@ public class AnswerQuizService {
         AnswerQuiz answerQuiz = answerQuizRepository.findById(quizId)
                 .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
 
-        answerQuiz.update(request.title(), request.question());
+        answerQuiz.updateAnswerQuiz(request.title(), request.question());
     }
 
     @Transactional
@@ -172,6 +165,5 @@ public class AnswerQuizService {
                 .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
 
         answerQuizRepository.delete(answerQuiz);
-        answerQuizRepository.flush();
     }
 }
