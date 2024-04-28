@@ -1,12 +1,10 @@
 package soongsil.kidbean.server.program.application;
 
+import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import soongsil.kidbean.server.global.application.S3Uploader;
-import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
@@ -14,6 +12,7 @@ import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
+import javax.swing.*;
 import java.util.List;
 
 @Slf4j
@@ -48,42 +47,61 @@ public class ProgramService {
         return ProgramListResponse.from(programList);
     }
 
-    /**
-     * image upload
-     * @param multipartFile
-     * @return
-     */
-    private S3Info uploadFile( MultipartFile multipartFile) {
-        S3Uploader s3Uploader;
-        String folderName = s3Uploader.upload(multipartFile);
-        String uploadUrl = s3Uploader.upload(multipartFile, folderName);
-        String fileName = uploadUrl.split(folderName + "/")[1];
+//    /**
+//     * image upload
+//     * @param multipartFile
+//     * @return
+//     */
+//    private S3Info uploadFile( MultipartFile multipartFile) {
+//        S3Uploader s3Uploader;
+//        String folderName = s3Uploader.upload(multipartFile);
+//        String uploadUrl = s3Uploader.upload(multipartFile, folderName);
+//        String fileName = uploadUrl.split(folderName + "/")[1];
+//
+//        return S3Info.builder()
+//                .folderName(folderName)
+//                .fileName(fileName)
+//                .s3Url(uploadUrl)
+//                .build();
+//    }
 
-        return S3Info.builder()
-                .folderName(folderName)
-                .fileName(fileName)
-                .s3Url(uploadUrl)
-                .build();
+    /**
+     * 프로그램 추가하기- 관리자
+     */
+    @Transactional
+        public ProgramDetailResponse createProgram(Category category,Program program) {
+
+            Program createProgram = Program.builder()
+                    .title(program.getTitle())
+                    .content(program.getContent())
+                    .programImageInfo(program.getProgramImageInfo())
+                    .teacherImageInfo(program.getTeacherImageInfo())
+                    .build();
+
+            programRepository.save(createProgram);
+            log.info("추가!!");
+            return ProgramDetailResponse.from(createProgram);
     }
 
     /**
-     * 프로그램 수정 - 관리자
+     * 프로그램 수정하기. -> ex) 선생님 이름만 수정
      */
-    @Transactional
-    public ProgramDetailResponse updateProgram(Long programId ){
+    public ProgramDetailResponse editProgramInfo(Long programId, Program editprogram){
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
+        program.setTitle(editprogram.getTitle());
+        program.setContent(editprogram.getContent());
+        program.setTeacherImageInfo(editprogram.getTeacherImageInfo());
+        program.setProgramImageInfo(editprogram.getProgramImageInfo());
 
-        program = programRepository.save(program);
+        programRepository.save(program);
+        log.info("수정완료");
         return ProgramDetailResponse.from(program);
     }
 
     /**
      * 프로그램 삭제 - 관리자
-     *
-     * @param 
-     * @return
      */
     @Transactional
     public ProgramResponse deleteProgram(Long programId) {
@@ -94,6 +112,5 @@ public class ProgramService {
 
         return ProgramResponse.from(program);
     }
-
 
 }

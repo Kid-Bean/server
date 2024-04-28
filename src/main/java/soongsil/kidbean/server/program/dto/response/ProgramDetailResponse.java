@@ -15,6 +15,7 @@ public record ProgramDetailResponse(
         String programImageUrl,
         String teacherImageUrl
 ) {
+
     public static ProgramDetailResponse from(Program program) {
 
         return ProgramDetailResponse

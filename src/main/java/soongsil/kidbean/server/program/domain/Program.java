@@ -9,6 +9,7 @@ import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Program {
 
@@ -77,16 +78,17 @@ public class Program {
         this.member = member;
     }
 
-    public void setS3Info(S3Info programImageInfo, S3Info teacherImageInfo) {
+    public Program(S3Info programImageInfo, S3Info teacherImageInfo) {
         this.programImageInfo = programImageInfo;
         this.teacherImageInfo = teacherImageInfo;
     }
 
     @Builder
-    public void updateInfo(String title, String content, S3Info programImageInfo, S3Info teacherImageInfo) {
+    public Program(String title, String content, S3Info programImageInfo, S3Info teacherImageInfo) {
         this.title = title;
         this.content = content;
         this.programImageInfo=programImageInfo;
         this.teacherImageInfo=teacherImageInfo;
     }
+
 }
