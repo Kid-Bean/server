@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.member.application.MemberService;
-import soongsil.kidbean.server.member.application.MypageService;
 
 @RestController
 @RequiredArgsConstructor

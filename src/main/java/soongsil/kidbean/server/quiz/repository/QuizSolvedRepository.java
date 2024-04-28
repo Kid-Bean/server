@@ -17,6 +17,7 @@ public interface QuizSolvedRepository extends JpaRepository<QuizSolved, Long> {
     boolean existsByWordQuizAndMember(WordQuiz wordQuiz, Member member);
 
     List<QuizSolved> findAllByMemberAndImageQuizIsNotNull(Member member);
+
     List<QuizSolved> findAllByMemberAndIsCorrectTrueAndImageQuizIsNotNull(Member member);
 
     List<QuizSolved> findAllByMemberAndWordQuizNotNull(Member member);
@@ -24,8 +25,6 @@ public interface QuizSolvedRepository extends JpaRepository<QuizSolved, Long> {
     boolean existsByImageQuizAndMemberAndIsCorrect(ImageQuiz imageQuiz, Member member, boolean isCorrect);
 
     boolean existsByWordQuizAndMemberAndIsCorrect(WordQuiz wordQuiz, Member member, boolean isCorrect);
-
-    List<QuizSolved> findAllByMember(Member member);
 
     List<QuizSolved> findAllByImageQuizIsNotNull();
 

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
@@ -41,10 +43,11 @@ public class AnswerQuizController {
     private final AnswerQuizService answerQuizService;
 
     @Operation(summary = "AnswerQuiz 가져오기", description = "AnswerQuiz 가져오기")
-    @GetMapping("/{memberId}")
-    public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(@PathVariable Long memberId) {
+    @GetMapping("/solve")
+    public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(
+            @AuthenticationPrincipal AuthUser user) {
 
-        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(memberId);
+        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -52,12 +55,13 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "AnswerQuiz 문제 풀기", description = "AnswerQuiz 문제 풀기")
-    @PostMapping("/{memberId}")
-    public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(@PathVariable Long memberId,
-                                                                    @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
-                                                                    @RequestPart MultipartFile record) {
+    @PostMapping("/solve")
+    public ResponseEntity<ResponseTemplate<Object>> solveAnswerQuiz(
+            @AuthenticationPrincipal AuthUser user,
+            @RequestPart AnswerQuizSolvedRequest answerQuizSolvedRequest,
+            @RequestPart MultipartFile record) {
         AnswerQuizSolveScoreResponse score = answerQuizService.submitAnswerQuiz(
-                answerQuizSolvedRequest, record, memberId);
+                answerQuizSolvedRequest, record, user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -78,7 +82,7 @@ public class AnswerQuizController {
     @Operation(summary = "추가한 AnswerQuiz 문제 상세 정보 가져오기", description = "AnswerQuiz 상세 정보 가져오기")
     @GetMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> getAnswerQuizById(@PathVariable Long memberId,
-                                                                    @PathVariable Long quizId) {
+                                                                      @PathVariable Long quizId) {
 
         AnswerQuizMemberDetailResponse response = answerQuizService.getAnswerQuizById(memberId, quizId);
 
@@ -90,7 +94,7 @@ public class AnswerQuizController {
     @Operation(summary = "AnswerQuiz 등록하기", description = "AnswerQuiz 등록하기")
     @PostMapping("/member/{memberId}")
     public ResponseEntity<ResponseTemplate<Object>> uploadAnswerQuiz(@PathVariable Long memberId,
-                                                                   @Valid @RequestBody AnswerQuizUploadRequest request) {
+                                                                     @Valid @RequestBody AnswerQuizUploadRequest request) {
 
         answerQuizService.uploadAnswerQuiz(request, memberId);
 
@@ -102,8 +106,8 @@ public class AnswerQuizController {
     @Operation(summary = "AnswerQuiz 문제 수정하기", description = "AnswerQuiz 수정하기")
     @PutMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateAnswerQuiz(@PathVariable Long memberId,
-                                                                    @PathVariable Long quizId,
-                                                                    @Valid @RequestBody AnswerQuizUpdateRequest request) {
+                                                                     @PathVariable Long quizId,
+                                                                     @Valid @RequestBody AnswerQuizUpdateRequest request) {
 
         answerQuizService.updateAnswerQuiz(request, memberId, quizId);
 
@@ -115,7 +119,7 @@ public class AnswerQuizController {
     @Operation(summary = "AnswerQuiz 문제 삭제하기", description = "AnswerQuiz 삭제하기")
     @DeleteMapping("/member/{memberId}/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteAnswerQuiz(@PathVariable Long memberId,
-                                                                    @PathVariable Long quizId) {
+                                                                     @PathVariable Long quizId) {
 
         answerQuizService.deleteAnswerQuiz(memberId, quizId);
 

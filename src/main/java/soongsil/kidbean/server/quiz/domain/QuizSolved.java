@@ -37,7 +37,6 @@ public class QuizSolved {
     @Column(name = "reply", length = 30)
     private String reply;
 
-    @CreatedDate
     @LastModifiedDate
     private LocalDateTime solvedTime;
 
