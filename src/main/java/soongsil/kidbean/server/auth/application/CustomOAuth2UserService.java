@@ -72,7 +72,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Member getMember(OAuthAttributes attributes) {
 
         //socialId로 유저 존재 확인
-        return memberRepository.findByEmail(attributes.getAttributes().get("id").toString())
+        return memberRepository.findByEmail(attributes.getSocialId())
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
     }
 }
