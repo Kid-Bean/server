@@ -18,7 +18,7 @@ public interface WordQuizRepository extends JpaRepository<WordQuiz, Long> {
 
     Page<WordQuiz> findByMemberOrMember_Role(Member member, Role role, Pageable pageable);
 
-    Optional<WordQuiz> findByQuizIdAndMember(Long quizId, Member member);
+    Optional<WordQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 
-    List<WordQuiz> findAllByMember(Member member);
+    List<WordQuiz> findAllByMember_MemberId(Long memberId);
 }

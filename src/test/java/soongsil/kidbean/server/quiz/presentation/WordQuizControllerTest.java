@@ -14,16 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.quiz.application.WordQuizService;
 import soongsil.kidbean.server.quiz.domain.Word;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
 
 @WebMvcTest(WordQuizController.class)
-@MockBean(JpaMetamodelMappingContext.class)
-class WordQuizControllerTest {
+class WordQuizControllerTest extends CommonControllerTest {
 
     @MockBean
     private WordQuizService wordQuizService;
@@ -44,13 +43,12 @@ class WordQuizControllerTest {
                 .willReturn(wordQuizResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/quiz/word/{memberId}", memberId)
-                        .param("memberId", memberId.toString()))
+        ResultActions resultActions = mockMvc.perform(get("/quiz/word/solve"))
                 .andDo(print());
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.results.title").value("WordQuiz"))
+                .andExpect(jsonPath("$.results.title").value(WORD_QUIZ.getTitle()))
                 .andExpect(jsonPath("$.results.quizId").value(WORD_QUIZ.getQuizId()))
                 .andExpect(jsonPath("$.results.words[0].content").value(wordList.get(0).getContent()))
                 .andExpect(jsonPath("$.results.words[1].content").value(wordList.get(1).getContent()))

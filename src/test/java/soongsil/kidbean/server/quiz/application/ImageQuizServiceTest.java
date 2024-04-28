@@ -60,16 +60,14 @@ class ImageQuizServiceTest {
         ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(1L);
 
         //then
-        assertThat(imageQuizResponse.category()).isEqualTo(imageQuizList.get(0).getQuizCategory().toString());
+        assertThat(imageQuizResponse.quizId()).isEqualTo(imageQuizList.get(0).getQuizId());
     }
 
     @Test
     @DisplayName("quizId에 해당하는 ImageQuiz 반환")
     void getImageQuiz() {
         // given
-        given(memberRepository.findById(MEMBER.getMemberId()))
-                .willReturn(Optional.of(MEMBER));
-        given(imageQuizRepository.findByQuizIdAndMember(any(Long.class), eq(MEMBER)))
+        given(imageQuizRepository.findByQuizIdAndMember_MemberId(any(Long.class), eq(MEMBER.getMemberId())))
                 .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
 
         // when
@@ -85,10 +83,7 @@ class ImageQuizServiceTest {
         List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL);
 
         // given
-        given(memberRepository.findById(MEMBER.getMemberId()))
-            .willReturn(Optional.of(MEMBER));
-        given(imageQuizRepository.findAllByMember(MEMBER))
-                .willReturn(imageQuizList);
+        given(imageQuizRepository.findAllByMember_MemberId(MEMBER.getMemberId())).willReturn(imageQuizList);
 
         // when
         List<ImageQuizMemberResponse> response = imageQuizService.getAllImageQuizByMember(MEMBER.getMemberId());

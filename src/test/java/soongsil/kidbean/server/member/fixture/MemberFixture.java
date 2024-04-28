@@ -4,6 +4,7 @@ import static soongsil.kidbean.server.member.domain.type.Gender.MAN;
 
 import org.springframework.test.util.ReflectionTestUtils;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.domain.type.Role;
 
 public class MemberFixture {
 
@@ -11,6 +12,8 @@ public class MemberFixture {
             .gender(MAN)
             .name("asd")
             .score(21L)
+            .role(Role.MEMBER)
+            .socialId("socialIdMember")
             .email("asd@naver.com")
             .build();
 

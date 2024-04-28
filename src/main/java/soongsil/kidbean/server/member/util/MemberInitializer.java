@@ -24,6 +24,7 @@ public class MemberInitializer implements ApplicationRunner {
     public static final Member DUMMY_MEMBER = Member.builder()
             .email("email1")
             .name("name1")
+            .socialId("socialId1")
             .gender(Gender.MAN)
             .role(Role.MEMBER)
             .score(25L)
@@ -31,6 +32,7 @@ public class MemberInitializer implements ApplicationRunner {
     public static final Member DUMMY_ADMIN = Member.builder()
             .email("email5")
             .name("name5")
+            .socialId("socialId2")
             .gender(Gender.MAN)
             .role(Role.ADMIN)
             .score(3L)
@@ -49,6 +51,7 @@ public class MemberInitializer implements ApplicationRunner {
                     .email("email2")
                     .name("name2")
                     .gender(Gender.WOMAN)
+                    .socialId("socialId3")
                     .role(Role.MEMBER)
                     .score(2L)
                     .build());
@@ -57,13 +60,15 @@ public class MemberInitializer implements ApplicationRunner {
                     .name("name3")
                     .gender(Gender.MAN)
                     .role(Role.MEMBER)
+                    .socialId("socialId4")
                     .score(6L)
                     .build());
             memberList.add(Member.builder()
                     .email("email4")
                     .name("name4")
                     .gender(Gender.MAN)
-                    .role(Role.MEMBER)
+                    .role(Role.GUEST)
+                    .socialId("socialId5")
                     .score(12L)
                     .build());
 

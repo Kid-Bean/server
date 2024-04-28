@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
 
@@ -27,6 +28,13 @@ public class Member {
     @Column(name = "name", length = 20)
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth_type", length = 20)
+    private OAuthType oAuthType;
+
+    @Column(name = "social_id", length = 100)
+    private String socialId;
+
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -42,9 +50,12 @@ public class Member {
     private Long score;
 
     @Builder
-    public Member(String email, String name, Gender gender, LocalDate birthDate, Role role, Long score) {
+    public Member(String email, String name, OAuthType oAuthType, String socialId, Gender gender, LocalDate birthDate,
+                  Role role, Long score) {
         this.email = email;
         this.name = name;
+        this.oAuthType = oAuthType;
+        this.socialId = socialId;
         this.gender = gender;
         this.birthDate = birthDate;
         this.role = role;

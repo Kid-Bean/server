@@ -48,21 +48,14 @@ public class ImageQuizService {
     private static final String QUIZ_NAME = "quiz/";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-        ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember(quizId, member)
+        ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         return ImageQuizMemberDetailResponse.from(imageQuiz);
     }
 
     public List<ImageQuizMemberResponse> getAllImageQuizByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        return imageQuizRepository.findAllByMember(member)
-                .stream()
+        return imageQuizRepository.findAllByMember_MemberId(memberId).stream()
                 .map(ImageQuizMemberResponse::from)
                 .toList();
     }
@@ -161,9 +154,7 @@ public class ImageQuizService {
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         String folderName = QUIZ_NAME + request.quizCategory();
-
         String uploadUrl = s3Uploader.upload(s3Url, folderName);
-
         String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
 
         ImageQuiz imageQuiz = request.toImageQuiz(member);
@@ -200,7 +191,7 @@ public class ImageQuizService {
                     .build();
         }
 
-        imageQuiz.update(request.title(), request.answer(), request.quizCategory(), s3Info);
+        imageQuiz.updateImageQuiz(request.title(), request.answer(), request.quizCategory(), s3Info);
     }
 
     @Transactional
@@ -209,8 +200,6 @@ public class ImageQuizService {
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         s3Uploader.deleteFile(imageQuiz.getS3Info());
-
         imageQuizRepository.delete(imageQuiz);
-        imageQuizRepository.flush();
     }
 }
