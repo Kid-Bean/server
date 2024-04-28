@@ -25,7 +25,7 @@ public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
     Page<ImageQuiz> findImageQuizWithPage(@Param("member") Member member, @Param("role") Role role,
                                           @Param("category") QuizCategory category, Pageable pageable);
 
-    Optional<ImageQuiz> findByQuizIdAndMember(Long quizId, Member member);
+    Optional<ImageQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 
-    List<ImageQuiz> findAllByMember(Member member);
+    List<ImageQuiz> findAllByMember_MemberId(Long memberId);
 }
