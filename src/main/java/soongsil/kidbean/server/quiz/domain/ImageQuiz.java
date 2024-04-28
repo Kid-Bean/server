@@ -70,6 +70,11 @@ public class ImageQuiz {
         this.s3Info = s3Info;
     }
 
+
+    public boolean isLevelUpdateNeed(Level newLevel) {
+        return ((level == null) || (newLevel != level));
+    }
+
     public void updateLevel(Level level) {
         this.level = level;
     }

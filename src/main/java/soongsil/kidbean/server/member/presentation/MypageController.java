@@ -58,4 +58,10 @@ public class MypageController {
             @PathVariable(name = "solvedId") Long solvedId) {
         return ResponseEntity.ok(ResponseTemplate.from(mypageService.solvedAnswerQuizDetail(solvedId)));
     }
+
+    @GetMapping("/image/result/{memberId}")
+    public ResponseEntity<ResponseTemplate<Object>> findImageQuizScoreInfo(
+            @PathVariable(name = "memberId") Long memberId) {
+                return ResponseEntity.ok(ResponseTemplate.from(mypageService.findImageQuizScore(memberId)));
+    }
 }
