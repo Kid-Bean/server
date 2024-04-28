@@ -7,13 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
-import soongsil.kidbean.server.member.dto.response.SolvedAnswerDetailResponse;
-import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
-import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizListResponse;
-import soongsil.kidbean.server.member.dto.response.SolvedWordDetailResponse;
 import soongsil.kidbean.server.member.application.MypageService;
-import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
-import soongsil.kidbean.server.member.dto.response.SolvedWordQuizListResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,5 +51,11 @@ public class MypageController {
     public ResponseEntity<ResponseTemplate<Object>> findSolvedVoiceDetail(
             @PathVariable(name = "solvedId") Long solvedId) {
         return ResponseEntity.ok(ResponseTemplate.from(mypageService.solvedAnswerQuizDetail(solvedId)));
+    }
+
+    @GetMapping("/image/result/{memberId}")
+    public ResponseEntity<ResponseTemplate<Object>> findImageQuizScoreInfo(
+            @PathVariable(name = "memberId") Long memberId) {
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findImageQuizScore(memberId)));
     }
 }
