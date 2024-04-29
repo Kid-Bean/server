@@ -3,17 +3,24 @@ package soongsil.kidbean.server.program.application;
 import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
+import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
+import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
-import javax.swing.*;
 import java.util.List;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +29,7 @@ import java.util.List;
 public class ProgramService {
 
     private final ProgramRepository programRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 프로그램 상세 조회
@@ -39,11 +47,12 @@ public class ProgramService {
     }
 
     /**
-     *  카테고리에 따른 프로그램 목록 조회
-     *  */
+     * 카테고리에 따른 프로그램 목록 조회
+     */
     @Transactional
-    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory) {
-        List<Program> programList = programRepository.findAllByProgramCategory(programCategory);
+    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory,Pageable pageable) {
+
+        Page<Program> programList = programRepository.findAllByProgramCategory(programCategory,pageable);
         return ProgramListResponse.from(programList);
     }
 
@@ -66,41 +75,6 @@ public class ProgramService {
 //    }
 
     /**
-     * 프로그램 추가하기- 관리자
-     */
-    @Transactional
-        public ProgramDetailResponse createProgram(Category category,Program program) {
-
-            Program createProgram = Program.builder()
-                    .title(program.getTitle())
-                    .content(program.getContent())
-                    .programImageInfo(program.getProgramImageInfo())
-                    .teacherImageInfo(program.getTeacherImageInfo())
-                    .build();
-
-            programRepository.save(createProgram);
-            log.info("추가!!");
-            return ProgramDetailResponse.from(createProgram);
-    }
-
-    /**
-     * 프로그램 수정하기. -> ex) 선생님 이름만 수정
-     */
-    public ProgramDetailResponse editProgramInfo(Long programId, Program editprogram){
-        Program program = programRepository.findById(programId)
-                .orElseThrow(RuntimeException::new);
-
-        program.setTitle(editprogram.getTitle());
-        program.setContent(editprogram.getContent());
-        program.setTeacherImageInfo(editprogram.getTeacherImageInfo());
-        program.setProgramImageInfo(editprogram.getProgramImageInfo());
-
-        programRepository.save(program);
-        log.info("수정완료");
-        return ProgramDetailResponse.from(program);
-    }
-
-    /**
      * 프로그램 삭제 - 관리자
      */
     @Transactional
@@ -113,4 +87,34 @@ public class ProgramService {
         return ProgramResponse.from(program);
     }
 
+    /**
+     * 프로그램 추가하기- 관리자
+     */
+    @Transactional
+    public void createProgram(ProgramCategory programCategory, EnrollProgramRequest enrollProgramRequest) {
+
+        Program createProgram = Program.builder()
+                .title(enrollProgramRequest.title())
+                .content(enrollProgramRequest.content())
+                .place(enrollProgramRequest.place())
+                .teacherName(enrollProgramRequest.teacherName())
+                .phoneNumber(enrollProgramRequest.phoneNumber())
+                .programCategory(programCategory)
+                .build();
+
+        programRepository.save(createProgram);
+    }
+
+    /**
+     * 프로그램 수정하기. -> ex) 선생님 이름만 수정
+     */
+    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest) {
+        Program program = programRepository.findById(programId)
+                .orElseThrow(RuntimeException::new);
+
+        program.setTitle(updateProgramRequest.title());
+        program.setContent(updateProgramRequest.content());
+
+        programRepository.save(program);
+    }
 }
