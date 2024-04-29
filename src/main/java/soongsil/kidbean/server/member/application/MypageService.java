@@ -58,10 +58,10 @@ public class MypageService {
      * @param memberId 멤버Id
      * @return SolvedImageListResponse 푼 문제 리스트
      */
-    public SolvedImageListResponse findSolvedImage(Long memberId) {
+    public SolvedImageListResponse findSolvedImage(Long memberId, boolean isCorrect) {
         Member member = findMemberById(memberId);
 
-        List<SolvedImageInfo> solvedImageInfoList = quizSolvedRepository.findAllByMemberAndImageQuizIsNotNull(member).stream()
+        List<SolvedImageInfo> solvedImageInfoList = quizSolvedRepository.findAllByMemberAndIsCorrectAndImageQuizIsNotNull(member, isCorrect).stream()
                 .map(SolvedImageInfo::from)
                 .toList();
 

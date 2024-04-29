@@ -6,6 +6,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
@@ -20,8 +22,10 @@ public class MypageController {
 
     @GetMapping("/image/list")
     public ResponseEntity<ResponseTemplate<Object>> findSolvedImageList(
-            @AuthenticationPrincipal AuthUser user) {
-        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findSolvedImage(user.memberId())));
+            @AuthenticationPrincipal AuthUser user,
+            @RequestParam boolean isCorrect
+    ) {
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findSolvedImage(user.memberId(), isCorrect)));
     }
 
     @GetMapping("/image/{solvedId}")
