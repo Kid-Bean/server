@@ -53,7 +53,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Member member = getMember(Objects.requireNonNull(attributes));
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(member.getRole().getKey())),
+                Collections.singleton(new SimpleGrantedAuthority(member.getRoleKey())),
                 Objects.requireNonNull(attributes).getAttributes(),
                 attributes.getNameAttributeKey()
         );
