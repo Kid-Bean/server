@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.domain.type;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,5 +33,9 @@ public enum QuizCategory {
 
     public static QuizCategory valueOfCode(int categoryCode) {
         return BY_CODE.get(categoryCode);
+    }
+
+    public static List<QuizCategory> allValue() {
+        return List.of(values());
     }
 }

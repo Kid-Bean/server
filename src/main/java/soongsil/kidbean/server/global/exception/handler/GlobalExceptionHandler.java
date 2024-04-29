@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import soongsil.kidbean.server.auth.exception.LoginTypeNotSupportException;
+import soongsil.kidbean.server.auth.exception.TokenNotValidException;
 import soongsil.kidbean.server.global.exception.FileConvertFailException;
 import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
 import soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode;
@@ -73,6 +75,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<Object> handleMemberNotFound(final MemberNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(LoginTypeNotSupportException.class)
+    public ResponseEntity<Object> handleLoginTypeNotSupport(final LoginTypeNotSupportException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(TokenNotValidException.class)
+    public ResponseEntity<Object> handleTokenNotValid(final TokenNotValidException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
