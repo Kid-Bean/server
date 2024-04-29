@@ -42,6 +42,9 @@ public class Member {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Column(name = "create_date")
+    private LocalDate createDate;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -51,15 +54,23 @@ public class Member {
 
     @Builder
     public Member(String email, String name, OAuthType oAuthType, String socialId, Gender gender, LocalDate birthDate,
-                  Role role, Long score) {
+                  LocalDate createDate, Role role, Long score) {
         this.email = email;
         this.name = name;
         this.oAuthType = oAuthType;
         this.socialId = socialId;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.createDate = createDate;
         this.role = role;
         this.score = score;
+    }
+
+    public void uploadMember(String name, Gender gender, LocalDate birthDate, LocalDate createDate) {
+        this.name = name;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.createDate = createDate;
     }
 
     public void updateScore(Long score) {
