@@ -51,7 +51,28 @@ public class ImageQuizScore {
         this.quizCount = quizCount;
     }
 
+    public static ImageQuizScore makeInitImageQuizScore(Member member, QuizCategory quizCategory) {
+        return new ImageQuizScore(
+                member,
+                quizCategory,
+                0L,
+                0L
+        );
+    }
+
     public void updateScore(Level beforeLevel, Level afterLevel) {
         totalScore = totalScore - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
+    }
+
+    public ImageQuizScore addScore(int score) {
+        totalScore = totalScore + score;
+        return this;
+    }
+
+    public ImageQuizScore addCount(boolean isExist) {
+        if (!isExist) {
+            quizCount++;
+        }
+        return this;
     }
 }
