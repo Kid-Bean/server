@@ -58,40 +58,68 @@ public class AverageScoreScheduler {
         });
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 59 * * * *")
     @Transactional
     public void updateAverageScore() {
-        Map<AgeGroup, List<Member>> groupMember = memberRepository.findAllByRole(Role.MEMBER).stream()
-                .filter(member -> member.getBirthDate() != null)
-                .collect(Collectors.groupingBy(
-                        member -> AgeGroup.calculate(member.getBirthDate())
-                ));
+        Map<AgeGroup, List<Member>> groupMember = getGroupedMembersByRole();
 
         groupMember.forEach((ageGroup, members) -> {
-            List<QuizSolved> quizSolvedList = members.stream()
-                    .flatMap(member -> quizSolvedRepository
-                            .findAllByMemberAndIsCorrectTrueAndImageQuizIsNotNull(member)
-                            .stream())
-                    .toList();
+            List<QuizSolved> quizSolvedList = getDistinctQuizSolvedList(members);
 
             List<QuizCategory> quizCategories = QuizCategory.allValue();
 
             for (QuizCategory category : quizCategories) {
-                long sum = quizSolvedList.stream()
-                        .filter(quizSolved -> category == quizSolved.getImageQuiz().getQuizCategory())
-                        .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
-                        .sum();
+                List<QuizSolved> solvedList = filterSolvedListByCategory(quizSolvedList, category);
 
-                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroupAndQuizCategory(ageGroup, category);
+                long sum = calculateSum(solvedList);
+                long memberCount = getDistinctMemberCount(solvedList);
+
+                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroupAndQuizCategory(
+                        ageGroup, category);
 
                 if (optionalAverageScore.isPresent()) {
                     AverageScore averageScore = optionalAverageScore.get();
-                    averageScore.updateScoreAndCount(sum, members.size());
+                    averageScore.updateScoreAndCount(sum, memberCount);
                 } else {
-                    averageScoreRepository.save(new AverageScore(ageGroup, sum, members.size(), category));
+                    averageScoreRepository.save(new AverageScore(ageGroup, sum, memberCount, category));
                 }
             }
         });
+    }
+
+    private Map<AgeGroup, List<Member>> getGroupedMembersByRole() {
+        return memberRepository.findAllByRole(Role.MEMBER).stream()
+                .filter(member -> member.getBirthDate() != null)
+                .collect(Collectors.groupingBy(member -> AgeGroup.calculate(member.getBirthDate())));
+    }
+
+    private List<QuizSolved> getDistinctQuizSolvedList(List<Member> members) {
+        return members.stream()
+                .flatMap(member -> quizSolvedRepository
+                        .findAllByMemberAndIsCorrectTrue(member)
+                        .stream())
+                .distinct()
+                .toList();
+    }
+
+    private List<QuizSolved> filterSolvedListByCategory(List<QuizSolved> quizSolvedList, QuizCategory category) {
+        return quizSolvedList.stream()
+                .filter(quizSolved -> category == quizSolved.getQuizCategory())
+                .toList();
+    }
+
+    private long calculateSum(List<QuizSolved> solvedList) {
+        return solvedList.stream()
+                .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
+                .sum();
+    }
+
+    private long getDistinctMemberCount(List<QuizSolved> solvedList) {
+        return solvedList.stream()
+                .collect(Collectors.groupingBy(QuizSolved::getMember))
+                .keySet()
+                .stream()
+                .count();
     }
 
     @Transactional
