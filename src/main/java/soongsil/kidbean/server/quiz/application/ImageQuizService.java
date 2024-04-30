@@ -27,6 +27,7 @@ import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -176,7 +177,7 @@ public class ImageQuizService {
         // 이미지 수정이 되지 않는 것 default
         S3Info s3Info = imageQuiz.getS3Info();
 
-        if (!s3Url.getOriginalFilename().isEmpty()) {
+        if (!s3Url.isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
 
             String updateFolderName = QUIZ_NAME + request.quizCategory();
