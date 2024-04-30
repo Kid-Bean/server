@@ -15,6 +15,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+    
     private final MemberRepository memberRepository;
 
     @Override
