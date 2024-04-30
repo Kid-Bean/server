@@ -104,7 +104,7 @@ public class AverageScoreScheduler {
 
         memberList.forEach(member -> {
             member.updateScore(imageQuiz.getLevel(), level);
-            quizScoreRepository.findByMemberAndQuizCategoryAndQuizType(member, imageQuiz.getQuizCategory(), quizType)
+            quizScoreRepository.findByMemberAndQuizCategory(member, imageQuiz.getQuizCategory())
                     .ifPresent(quizScore -> quizScore.updateScore(imageQuiz.getLevel(), level));
         });
     }

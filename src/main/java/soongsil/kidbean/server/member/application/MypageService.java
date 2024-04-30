@@ -127,7 +127,7 @@ public class MypageService {
     public ImageQuizScoreResponse findImageQuizScore(Long memberId) {
         Member member = findMemberById(memberId);
 
-        List<MyScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMemberAndQuizType(member, QuizType.IMAGE_QUIZ)
+        List<MyScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMember(member)
                 .stream().map(MyScoreInfo::from)
                 .toList();
 

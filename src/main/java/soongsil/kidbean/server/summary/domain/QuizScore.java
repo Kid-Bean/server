@@ -43,25 +43,20 @@ public class QuizScore {
     @Column(name = "quiz_count")
     private Long quizCount;
 
-    @Column(name = "quiz_type")
-    private QuizType quizType;
-
     @Builder
-    public QuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount, QuizType quizType) {
+    public QuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount) {
         this.member = member;
         this.quizCategory = quizCategory;
         this.totalScore = totalScore;
         this.quizCount = quizCount;
-        this.quizType = quizType;
     }
 
-    public static QuizScore makeInitQuizScore(Member member, QuizCategory quizCategory, QuizType quizType) {
+    public static QuizScore makeInitQuizScore(Member member, QuizCategory quizCategory) {
         return new QuizScore(
                 member,
                 quizCategory,
                 0L,
-                0L,
-                quizType
+                0L
         );
     }
 
