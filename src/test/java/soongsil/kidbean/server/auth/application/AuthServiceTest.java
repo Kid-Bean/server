@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -51,8 +51,8 @@ class AuthServiceTest {
         LoginRequest loginRequest = new LoginRequest(accessToken);
 
         given(loginProviders.get(anyString())).willReturn(kakaoLoginProvider);
-        given(kakaoLoginProvider.getUserData(eq(accessToken))).willReturn(MEMBER);
-        given(memberRepository.findBySocialId(anyString())).willReturn(Optional.of(MEMBER));
+        given(kakaoLoginProvider.getUserData(eq(accessToken))).willReturn(MEMBER1);
+        given(memberRepository.findBySocialId(anyString())).willReturn(Optional.of(MEMBER1));
         given(jwtTokenProvider.createAccessToken(any(Member.class))).willReturn(accessToken);
         given(jwtTokenProvider.createRefreshToken(any(Member.class))).willReturn(refreshToken);
 
@@ -73,8 +73,8 @@ class AuthServiceTest {
         ReissueRequest reissueRequest = new ReissueRequest(validRefreshToken);
 
         given(jwtTokenProvider.validateToken(eq(validRefreshToken))).willReturn(true);
-        given(jwtTokenProvider.getMember(eq(validRefreshToken))).willReturn(MEMBER);
-        given(jwtTokenProvider.createAccessToken(eq(MEMBER))).willReturn(newAccessToken);
+        given(jwtTokenProvider.getMember(eq(validRefreshToken))).willReturn(MEMBER1);
+        given(jwtTokenProvider.createAccessToken(eq(MEMBER1))).willReturn(newAccessToken);
 
         // When
         var response = authService.reissueAccessToken(reissueRequest);

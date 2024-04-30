@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.List;
@@ -35,7 +35,7 @@ class WordQuizControllerTest extends CommonControllerTest {
     void getRandomWordQuiz() throws Exception {
 
         //given
-        Long memberId = MEMBER.getMemberId();
+        Long memberId = MEMBER1.getMemberId();
         WordQuizResponse wordQuizResponse = WordQuizResponse.from(WORD_QUIZ);
         List<Word> wordList = WORD_QUIZ.getWords();
 

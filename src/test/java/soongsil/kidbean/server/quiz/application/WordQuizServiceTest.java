@@ -2,7 +2,7 @@ package soongsil.kidbean.server.quiz.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.List;
@@ -38,15 +38,15 @@ class WordQuizServiceTest {
     void selectRandomWordQuiz() {
 
         //given
-        given(memberRepository.findById(MEMBER.getMemberId()))
-                .willReturn(Optional.of(MEMBER));
-        given(wordQuizRepository.countByMemberOrMember_Role(MEMBER, Role.ADMIN))
+        given(memberRepository.findById(MEMBER1.getMemberId()))
+                .willReturn(Optional.of(MEMBER1));
+        given(wordQuizRepository.countByMemberOrMember_Role(MEMBER1, Role.ADMIN))
                 .willReturn(1);
-        given(wordQuizRepository.findByMemberOrMember_Role(MEMBER, Role.ADMIN, PageRequest.of(0, 1)))
+        given(wordQuizRepository.findByMemberOrMember_Role(MEMBER1, Role.ADMIN, PageRequest.of(0, 1)))
                 .willReturn(new PageImpl<>(List.of(WORD_QUIZ)));
 
         //when
-        WordQuizResponse WordQuizResponse = wordQuizService.selectRandomWordQuiz(MEMBER.getMemberId());
+        WordQuizResponse WordQuizResponse = wordQuizService.selectRandomWordQuiz(MEMBER1.getMemberId());
 
         //then
         assertThat(WordQuizResponse.title()).isEqualTo(WORD_QUIZ.getTitle());

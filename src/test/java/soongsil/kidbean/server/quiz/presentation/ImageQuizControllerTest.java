@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
@@ -45,7 +45,7 @@ class ImageQuizControllerTest extends CommonControllerTest {
     @DisplayName("랜덤 이미지 생성 요청")
     void getRandomImageQuiz() throws Exception {
         //given
-        ImageQuizResponse imageQuizResponse = ImageQuizResponse.from(IMAGE_QUIZ_ANIMAL);
+        ImageQuizResponse imageQuizResponse = ImageQuizResponse.from(IMAGE_QUIZ_ANIMAL1);
         given(imageQuizService.selectRandomImageQuiz(any(Long.class)))
                 .willReturn(imageQuizResponse);
 
@@ -65,12 +65,12 @@ class ImageQuizControllerTest extends CommonControllerTest {
     void solveImageQuizzes() throws Exception {
         //given
         QuizSolvedListRequest request = new QuizSolvedListRequest(Collections.singletonList(
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer())
+                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer())
         ));
 
         given(imageQuizService.solveImageQuizzes(anyList(), any(Long.class)))
                 .willReturn(ImageQuizSolveScoreResponse.scoreFrom(
-                        Level.getPoint(IMAGE_QUIZ_ANIMAL.getLevel())));
+                        Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel())));
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/quiz/image/solve")
@@ -84,6 +84,6 @@ class ImageQuizControllerTest extends CommonControllerTest {
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.score")
-                        .value(String.valueOf(Level.getPoint(IMAGE_QUIZ_ANIMAL.getLevel()))));
+                        .value(String.valueOf(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()))));
     }
 }

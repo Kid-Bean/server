@@ -15,7 +15,6 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
@@ -87,8 +86,7 @@ public class ImageQuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
-        QuizCategory quizCategory = selectRandomCategory();
-        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member, quizCategory);
+        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member);
 
         ImageQuiz imageQuiz = pageHasImageQuiz(imageQuizPage)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
@@ -96,42 +94,19 @@ public class ImageQuizService {
         return ImageQuizResponse.from(imageQuiz);
     }
 
-    /**
-     * 랜덤 카테고리 선택
-     *
-     * @return 랜덤 카테고리
-     */
-    private QuizCategory selectRandomCategory() {
-        return QuizCategory.valueOfCode(RandomUtil.getPositiveInt() % 4);
-    }
+    private Page<ImageQuiz> generateRandomPageWithCategory(Member member) {
 
-    /**
-     * 랜덤 ImageQuiz를 Page로 감싸서 return
-     *
-     * @param member       멤버
-     * @param quizCategory 카테고리
-     * @return 풀 이미지 퀴즈가 있는 Page
-     */
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, QuizCategory quizCategory) {
-
-        int divVal = getImageQuizCount(member, quizCategory);
+        int divVal = getImageQuizCount(member);
         int idx = RandomUtil.getPositiveInt() % divVal;
 
         log.info("divVal: {}, idx: {}", divVal, idx);
 
         return imageQuizRepository.findImageQuizWithPage(
-                member, Role.ADMIN, quizCategory, PageRequest.of(idx, 1));
+                member, Role.ADMIN, PageRequest.of(idx, 1));
     }
 
-    /**
-     * 이미지 퀴즈 총 개수(admin + member가 올린 전체)
-     *
-     * @param member       멤버
-     * @param quizCategory 카테고리
-     * @return 해당 멤버와 관리자가 해당 카테고리에 등록한 이미지 퀴즈의 총 수
-     */
-    private Integer getImageQuizCount(Member member, QuizCategory quizCategory) {
-        return imageQuizRepository.countByMemberAndCategoryOrRole(member, quizCategory, Role.ADMIN);
+    private Integer getImageQuizCount(Member member) {
+        return imageQuizRepository.countByMemberAndCategoryOrRole(member, Role.ADMIN);
     }
 
     /**
