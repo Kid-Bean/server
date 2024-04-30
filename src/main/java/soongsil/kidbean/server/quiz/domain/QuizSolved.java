@@ -70,4 +70,8 @@ public class QuizSolved {
     public boolean isImageQuizMadeByAdmin() {
         return imageQuiz.getMember().getRole().equals(Role.ADMIN);
     }
+
+    public Boolean isImageQuiz() {
+        return this.getImageQuiz() == null;
+    }
 }

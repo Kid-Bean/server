@@ -15,14 +15,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ImageQuizScore {
+public class QuizScore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,14 +44,35 @@ public class ImageQuizScore {
     private Long quizCount;
 
     @Builder
-    public ImageQuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount) {
+    public QuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount) {
         this.member = member;
         this.quizCategory = quizCategory;
         this.totalScore = totalScore;
         this.quizCount = quizCount;
     }
 
+    public static QuizScore makeInitQuizScore(Member member, QuizCategory quizCategory) {
+        return new QuizScore(
+                member,
+                quizCategory,
+                0L,
+                0L
+        );
+    }
+
     public void updateScore(Level beforeLevel, Level afterLevel) {
         totalScore = totalScore - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
+    }
+
+    public QuizScore addScore(int score) {
+        totalScore = totalScore + score;
+        return this;
+    }
+
+    public QuizScore addCount(boolean isExist) {
+        if (!isExist) {
+            quizCount++;
+        }
+        return this;
     }
 }

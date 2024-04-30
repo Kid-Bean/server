@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.summary.domain.ImageQuizScore;
+import soongsil.kidbean.server.summary.domain.QuizScore;
 
 @Repository
-public interface ImageQuizScoreRepository extends JpaRepository<ImageQuizScore, Long> {
-    Optional<ImageQuizScore> findByMemberAndQuizCategory(Member member, QuizCategory quizCategory);
+public interface QuizScoreRepository extends JpaRepository<QuizScore, Long> {
+    Optional<QuizScore> findByMemberAndQuizCategory(Member member, QuizCategory quizCategory);
 
-    List<ImageQuizScore> findAllByMember(Member member);
+    List<QuizScore> findAllByMember(Member member);
 }
