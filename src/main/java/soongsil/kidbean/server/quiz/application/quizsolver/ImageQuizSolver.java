@@ -54,7 +54,7 @@ public class ImageQuizSolver implements QuizSolver {
         quizSolvedRepository.save(newQuizSolved);
 
         return newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(imageQuiz.getQuizCategory(),
-                getPoint(imageQuiz.getLevel())) : new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L);
+                getPoint(imageQuiz.getLevel()), false) : new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L, false);
     }
 
     private SolvedQuizInfo solveExistingImageQuizSolved(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
@@ -70,9 +70,9 @@ public class ImageQuizSolver implements QuizSolver {
 
         //이전에 오답이었고 현재 정답인 경우
         if (!exCorrect && isCorrect) {
-            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), getPoint(imageQuiz.getLevel()));
+            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), getPoint(imageQuiz.getLevel()), true);
         } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
-            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L);
+            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L, true);
         }
     }
 
