@@ -21,7 +21,7 @@ import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.summary.domain.AverageScore;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
-import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class AverageScoreScheduler {
 
     private final QuizSolvedRepository quizSolvedRepository;
     private final MemberRepository memberRepository;
-    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final QuizScoreRepository quizScoreRepository;
     private final AverageScoreRepository averageScoreRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -103,8 +103,8 @@ public class AverageScoreScheduler {
 
         memberList.forEach(member -> {
             member.updateScore(imageQuiz.getLevel(), level);
-            imageQuizScoreRepository.findByMemberAndQuizCategoryAndQuizType(member, imageQuiz.getQuizCategory(), quizType)
-                    .ifPresent(imageQuizScore -> imageQuizScore.updateScore(imageQuiz.getLevel(), level));
+            quizScoreRepository.findByMemberAndQuizCategoryAndQuizType(member, imageQuiz.getQuizCategory(), quizType)
+                    .ifPresent(quizScore -> quizScore.updateScore(imageQuiz.getLevel(), level));
         });
     }
 

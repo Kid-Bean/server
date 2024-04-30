@@ -38,7 +38,7 @@ import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
-import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Slf4j
 @Service
@@ -50,7 +50,7 @@ public class MypageService {
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final WordRepository wordRepository;
     private final MemberRepository memberRepository;
-    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final QuizScoreRepository imageQuizScoreRepository;
     private final AverageScoreRepository averageScoreRepository;
     private final UseWordRepository useWordRepository;
     private final MorphemeRepository morphemeRepository;

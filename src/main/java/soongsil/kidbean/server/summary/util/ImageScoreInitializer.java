@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.summary.util;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
 import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
 
 import java.util.ArrayList;
@@ -12,13 +11,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
-import soongsil.kidbean.server.summary.domain.AverageScore;
-import soongsil.kidbean.server.summary.domain.ImageQuizScore;
-import soongsil.kidbean.server.summary.domain.type.AgeGroup;
-import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
+import soongsil.kidbean.server.summary.domain.QuizScore;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,25 +21,25 @@ import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
 @LocalDummyDataInit
 public class ImageScoreInitializer implements ApplicationRunner {
 
-    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final QuizScoreRepository quizScoreRepository;
 
     @Override
     public void run(ApplicationArguments args) {
-        if (imageQuizScoreRepository.count() > 0) {
+        if (quizScoreRepository.count() > 0) {
             log.info("[ImageQuizScore]더미 데이터 존재");
         } else {
-            List<ImageQuizScore> imageQuizScores = new ArrayList<>();
+            List<QuizScore> imageQuizScores = new ArrayList<>();
             imageQuizScores.add(makeImageQuizScore(100L, QuizCategory.ANIMAL, 12L, DUMMY_MEMBER));
             imageQuizScores.add(makeImageQuizScore(120L, QuizCategory.PLANT, 12L, DUMMY_MEMBER));
             imageQuizScores.add(makeImageQuizScore(130L, QuizCategory.OBJECT, 13L, DUMMY_MEMBER));
             imageQuizScores.add(makeImageQuizScore(150L, QuizCategory.NONE, 14L, DUMMY_MEMBER));
 
-            imageQuizScoreRepository.saveAll(imageQuizScores);
+            quizScoreRepository.saveAll(imageQuizScores);
         }
     }
 
-    private ImageQuizScore makeImageQuizScore(Long totalScore, QuizCategory quizCategory, Long quizCount, Member member) {
-        return ImageQuizScore.builder()
+    private QuizScore makeImageQuizScore(Long totalScore, QuizCategory quizCategory, Long quizCount, Member member) {
+        return QuizScore.builder()
                 .member(DUMMY_MEMBER)
                 .totalScore(totalScore)
                 .quizCategory(quizCategory)

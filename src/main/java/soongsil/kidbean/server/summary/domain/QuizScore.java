@@ -18,12 +18,11 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ImageQuizScore {
+public class QuizScore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +47,7 @@ public class ImageQuizScore {
     private QuizType quizType;
 
     @Builder
-    public ImageQuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount, QuizType quizType) {
+    public QuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount, QuizType quizType) {
         this.member = member;
         this.quizCategory = quizCategory;
         this.totalScore = totalScore;
@@ -56,8 +55,8 @@ public class ImageQuizScore {
         this.quizType = quizType;
     }
 
-    public static ImageQuizScore makeInitImageQuizScore(Member member, QuizCategory quizCategory, QuizType quizType) {
-        return new ImageQuizScore(
+    public static QuizScore makeInitQuizScore(Member member, QuizCategory quizCategory, QuizType quizType) {
+        return new QuizScore(
                 member,
                 quizCategory,
                 0L,
@@ -70,12 +69,12 @@ public class ImageQuizScore {
         totalScore = totalScore - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
     }
 
-    public ImageQuizScore addScore(int score) {
+    public QuizScore addScore(int score) {
         totalScore = totalScore + score;
         return this;
     }
 
-    public ImageQuizScore addCount(boolean isExist) {
+    public QuizScore addCount(boolean isExist) {
         if (!isExist) {
             quizCount++;
         }

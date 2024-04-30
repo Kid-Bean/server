@@ -5,18 +5,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
-import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.summary.domain.ImageQuizScore;
-import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
+import soongsil.kidbean.server.summary.domain.QuizScore;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ImageQuizScoreService {
+public class QuizScoreService {
 
-    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final QuizScoreRepository quizScoreRepository;
 
     @Transactional
     public void addQuizScore(Member member, QuizSolved quizSolved, int addScore, boolean isExist,
@@ -30,14 +29,14 @@ public class ImageQuizScoreService {
             quizCategory = quizSolved.getImageQuiz().getQuizCategory();
         }
 
-        ImageQuizScore imageQuizScore = imageQuizScoreRepository.findByMemberAndQuizCategoryAndQuizType(member,
+        QuizScore quizScore = quizScoreRepository.findByMemberAndQuizCategoryAndQuizType(member,
                         quizCategory, quizType)
-                .orElseGet(() -> imageQuizScoreRepository.save(
-                        ImageQuizScore.makeInitImageQuizScore(member, quizCategory, quizType)));
+                .orElseGet(() -> quizScoreRepository.save(
+                        QuizScore.makeInitQuizScore(member, quizCategory, quizType)));
 
-        ImageQuizScore updateImageQuizScore = imageQuizScore.addScore(addScore)
+        QuizScore updateQuizScore = quizScore.addScore(addScore)
                 .addCount(isExist);
 
-        imageQuizScoreRepository.save(updateImageQuizScore);
+        quizScoreRepository.save(updateQuizScore);
     }
 }
