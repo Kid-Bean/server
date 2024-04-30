@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
@@ -43,20 +44,25 @@ public class ImageQuizScore {
     @Column(name = "quiz_count")
     private Long quizCount;
 
+    @Column(name = "quiz_type")
+    private QuizType quizType;
+
     @Builder
-    public ImageQuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount) {
+    public ImageQuizScore(Member member, QuizCategory quizCategory, Long totalScore, Long quizCount, QuizType quizType) {
         this.member = member;
         this.quizCategory = quizCategory;
         this.totalScore = totalScore;
         this.quizCount = quizCount;
+        this.quizType = quizType;
     }
 
-    public static ImageQuizScore makeInitImageQuizScore(Member member, QuizCategory quizCategory) {
+    public static ImageQuizScore makeInitImageQuizScore(Member member, QuizCategory quizCategory, QuizType quizType) {
         return new ImageQuizScore(
                 member,
                 quizCategory,
                 0L,
-                0L
+                0L,
+                quizType
         );
     }
 

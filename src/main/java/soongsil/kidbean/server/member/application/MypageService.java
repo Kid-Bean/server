@@ -22,6 +22,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizInfo;
+import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 import soongsil.kidbean.server.quiz.domain.Morpheme;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
@@ -126,7 +127,7 @@ public class MypageService {
     public ImageQuizScoreResponse findImageQuizScore(Long memberId) {
         Member member = findMemberById(memberId);
 
-        List<MyScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMember(member)
+        List<MyScoreInfo> myScoreInfo = imageQuizScoreRepository.findAllByMemberAndQuizType(member, QuizType.IMAGE_QUIZ)
                 .stream().map(MyScoreInfo::from)
                 .toList();
 

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.Level;
@@ -34,21 +35,26 @@ public class AverageScoreScheduler {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void updateImageQuizLevel() {
-        Map<ImageQuiz, List<QuizSolved>> groupByImageQuiz = quizSolvedRepository.findAllByImageQuizIsNotNull()
+        Map<Boolean, List<QuizSolved>> groupedByQuizType = quizSolvedRepository.findAll()
                 .stream()
                 .filter(QuizSolved::isImageQuizMadeByAdmin)
-                .collect(
-                        Collectors.groupingBy(QuizSolved::getImageQuiz)
-                );
+                .collect(Collectors.partitioningBy(QuizSolved::isImageQuiz));
 
-        groupByImageQuiz.forEach((imageQuiz, quizSolvedList) -> {
-            Long accuracy = calculateAccuracy(quizSolvedList);
-            Level level = Level.calculate(accuracy);
+        groupedByQuizType.forEach((isImageQuiz, quizSolvedList) -> {
+            Map<ImageQuiz, List<QuizSolved>> groupByQuiz = quizSolvedList.stream()
+                    .collect(Collectors.groupingBy(QuizSolved::getImageQuiz));
 
-            if (imageQuiz.isLevelUpdateNeed(level)) {
-                updateMemberTotalScore(imageQuiz, level);
-                updateLevel(imageQuiz, level);
-            }
+            groupByQuiz.forEach((quiz, solvedList) -> {
+                Long accuracy = calculateAccuracy(solvedList);
+                Level level = Level.calculate(accuracy);
+
+                QuizType quizType = isImageQuiz ? QuizType.IMAGE_QUIZ : QuizType.WORD_QUIZ;
+
+                if (quiz.isLevelUpdateNeed(level)) {
+                    updateMemberTotalScore(quiz, level, quizType);
+                    updateLevel(quiz, level);
+                }
+            });
         });
     }
 
@@ -88,7 +94,7 @@ public class AverageScoreScheduler {
     }
 
     @Transactional
-    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level) {
+    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level, QuizType quizType) {
         List<QuizSolved> quizSolvedList = quizSolvedRepository.findAllByImageQuizAndIsCorrectTrue(imageQuiz);
 
         Set<Member> memberList = quizSolvedList.stream()
@@ -97,7 +103,7 @@ public class AverageScoreScheduler {
 
         memberList.forEach(member -> {
             member.updateScore(imageQuiz.getLevel(), level);
-            imageQuizScoreRepository.findByMemberAndQuizCategory(member, imageQuiz.getQuizCategory())
+            imageQuizScoreRepository.findByMemberAndQuizCategoryAndQuizType(member, imageQuiz.getQuizCategory(), quizType)
                     .ifPresent(imageQuizScore -> imageQuizScore.updateScore(imageQuiz.getLevel(), level));
         });
     }
