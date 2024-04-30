@@ -103,11 +103,10 @@ public class WordQuizController {
     @Operation(summary = "WordQuiz 문제 수정하기", description = "WordQuiz 수정하기")
     @PutMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId,
             @Valid @RequestBody WordQuizUpdateRequest request) {
 
-        wordQuizService.updateWordQuiz(request, user.memberId(), quizId);
+        wordQuizService.updateWordQuiz(request, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -117,10 +116,9 @@ public class WordQuizController {
     @Operation(summary = "WordQuiz 문제 삭제하기", description = "WordQuiz 삭제하기")
     @DeleteMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        wordQuizService.deleteWordQuiz(user.memberId(), quizId);
+        wordQuizService.deleteWordQuiz(quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

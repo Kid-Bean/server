@@ -152,7 +152,7 @@ public class AnswerQuizService {
     }
 
     @Transactional
-    public void updateAnswerQuiz(AnswerQuizUpdateRequest request, Long memberId, Long quizId) {
+    public void updateAnswerQuiz(AnswerQuizUpdateRequest request, Long quizId) {
         AnswerQuiz answerQuiz = answerQuizRepository.findById(quizId)
                 .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
 
@@ -160,7 +160,7 @@ public class AnswerQuizService {
     }
 
     @Transactional
-    public void deleteAnswerQuiz(Long memberId, Long quizId) {
+    public void deleteAnswerQuiz(Long quizId) {
         AnswerQuiz answerQuiz = answerQuizRepository.findById(quizId)
                 .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_NOT_FOUND));
 

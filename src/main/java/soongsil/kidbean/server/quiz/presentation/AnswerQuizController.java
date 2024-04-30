@@ -70,7 +70,8 @@ public class AnswerQuizController {
 
     @Operation(summary = "추가한 AnswerQuiz 문제 리스트 가져오기", description = "AnswerQuiz 리스트 가져오기")
     @GetMapping("/member")
-    public ResponseEntity<ResponseTemplate<Object>> getAllAnswerQuizByMember(@AuthenticationPrincipal AuthUser user) {
+    public ResponseEntity<ResponseTemplate<Object>> getAllAnswerQuizByMember(
+            @AuthenticationPrincipal AuthUser user) {
 
         List<AnswerQuizMemberResponse> response = answerQuizService.getAllAnswerQuizByMember(user.memberId());
 
@@ -81,8 +82,9 @@ public class AnswerQuizController {
 
     @Operation(summary = "추가한 AnswerQuiz 문제 상세 정보 가져오기", description = "AnswerQuiz 상세 정보 가져오기")
     @GetMapping("/member/{quizId}")
-    public ResponseEntity<ResponseTemplate<Object>> getAnswerQuizById(@AuthenticationPrincipal AuthUser user,
-                                                                      @PathVariable Long quizId) {
+    public ResponseEntity<ResponseTemplate<Object>> getAnswerQuizById(
+            @AuthenticationPrincipal AuthUser user,
+            @PathVariable Long quizId) {
 
         AnswerQuizMemberDetailResponse response = answerQuizService.getAnswerQuizById(user.memberId(), quizId);
 
@@ -93,8 +95,9 @@ public class AnswerQuizController {
 
     @Operation(summary = "AnswerQuiz 등록하기", description = "AnswerQuiz 등록하기")
     @PostMapping("/member")
-    public ResponseEntity<ResponseTemplate<Object>> uploadAnswerQuiz(@AuthenticationPrincipal AuthUser user,
-                                                                     @Valid @RequestBody AnswerQuizUploadRequest request) {
+    public ResponseEntity<ResponseTemplate<Object>> uploadAnswerQuiz(
+            @AuthenticationPrincipal AuthUser user,
+            @Valid @RequestBody AnswerQuizUploadRequest request) {
 
         answerQuizService.uploadAnswerQuiz(request, user.memberId());
 
@@ -105,11 +108,11 @@ public class AnswerQuizController {
 
     @Operation(summary = "AnswerQuiz 문제 수정하기", description = "AnswerQuiz 수정하기")
     @PutMapping("/member/{quizId}")
-    public ResponseEntity<ResponseTemplate<Object>> updateAnswerQuiz(@AuthenticationPrincipal AuthUser user,
-                                                                     @PathVariable Long quizId,
-                                                                     @Valid @RequestBody AnswerQuizUpdateRequest request) {
+    public ResponseEntity<ResponseTemplate<Object>> updateAnswerQuiz(
+            @PathVariable Long quizId,
+            @Valid @RequestBody AnswerQuizUpdateRequest request) {
 
-        answerQuizService.updateAnswerQuiz(request, user.memberId(), quizId);
+        answerQuizService.updateAnswerQuiz(request, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -118,10 +121,10 @@ public class AnswerQuizController {
 
     @Operation(summary = "AnswerQuiz 문제 삭제하기", description = "AnswerQuiz 삭제하기")
     @DeleteMapping("/member/{quizId}")
-    public ResponseEntity<ResponseTemplate<Object>> deleteAnswerQuiz(@AuthenticationPrincipal AuthUser user,
-                                                                     @PathVariable Long quizId) {
+    public ResponseEntity<ResponseTemplate<Object>> deleteAnswerQuiz(
+            @PathVariable Long quizId) {
 
-        answerQuizService.deleteAnswerQuiz(user.memberId(), quizId);
+        answerQuizService.deleteAnswerQuiz(quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
