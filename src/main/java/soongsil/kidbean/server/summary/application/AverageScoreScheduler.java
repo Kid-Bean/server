@@ -81,7 +81,7 @@ public class AverageScoreScheduler {
                         .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
                         .sum();
 
-                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroup(ageGroup);
+                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroupAndQuizCategory(ageGroup, category);
 
                 if (optionalAverageScore.isPresent()) {
                     AverageScore averageScore = optionalAverageScore.get();
