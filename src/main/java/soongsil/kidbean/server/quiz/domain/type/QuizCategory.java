@@ -16,7 +16,7 @@ public enum QuizCategory {
     ANIMAL("동물", 1),
     PLANT("식물", 2),
     OBJECT("사물", 3),
-    FOOD("음식", 4)
+    FOOD("음식", 4),
     ;
 
     private final String categoryName;

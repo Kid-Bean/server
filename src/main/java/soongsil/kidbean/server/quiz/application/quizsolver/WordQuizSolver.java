@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.quiz.application.quizsolver.dto.SolvedQuizInfo;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
 import soongsil.kidbean.server.quiz.domain.type.Level;
@@ -30,7 +31,7 @@ public class WordQuizSolver implements QuizSolver {
      * @return Long 점수
      */
     @Override
-    public Long solveQuiz(QuizSolvedRequest solvedRequest, Member member) {
+    public SolvedQuizInfo solveQuiz(QuizSolvedRequest solvedRequest, Member member) {
 
         WordQuiz wordQuiz = wordQuizRepository.findById(solvedRequest.quizId())
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
@@ -47,15 +48,16 @@ public class WordQuizSolver implements QuizSolver {
         return quizSolvedRepository.existsByWordQuizAndMember(wordQuiz, member);
     }
 
-    private Long SolveNewWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
+    private SolvedQuizInfo SolveNewWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
 
         newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(wordQuiz.getAnswer()));
         quizSolvedRepository.save(newQuizSolved);
 
-        return newQuizSolved.getIsCorrect() ? getPoint(wordQuiz.getLevel()) : 0L;
+        return newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(wordQuiz.getQuizCategory(),
+                getPoint(wordQuiz.getLevel())) : new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L);
     }
 
-    private Long solveExistingWordQuizSolved(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
+    private SolvedQuizInfo solveExistingWordQuizSolved(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
 
         Member member = newQuizSolved.getMember();
         //이전에 맞았는지
@@ -69,9 +71,9 @@ public class WordQuizSolver implements QuizSolver {
 
         //이전에 오답이었고 현재 정답인 경우
         if (!exCorrect && isCorrect) {
-            return getPoint(wordQuiz.getLevel());
+            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), getPoint(wordQuiz.getLevel()));
         } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
-            return 0L;
+            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L);
         }
     }
 
