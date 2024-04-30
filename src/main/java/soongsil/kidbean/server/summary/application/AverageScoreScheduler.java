@@ -59,6 +59,7 @@ public class AverageScoreScheduler {
     }
 
     @Scheduled(cron = "0 0 * * * *")
+    @Transactional
     public void updateAverageScore() {
         Map<AgeGroup, List<Member>> groupMember = memberRepository.findAllByRole(Role.MEMBER).stream()
                 .filter(member -> member.getBirthDate() != null)
