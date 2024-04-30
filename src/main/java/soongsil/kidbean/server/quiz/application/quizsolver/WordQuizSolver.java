@@ -54,7 +54,7 @@ public class WordQuizSolver implements QuizSolver {
         quizSolvedRepository.save(newQuizSolved);
 
         return newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(wordQuiz.getQuizCategory(),
-                getPoint(wordQuiz.getLevel())) : new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L);
+                getPoint(wordQuiz.getLevel()), false) : new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L, false);
     }
 
     private SolvedQuizInfo solveExistingWordQuizSolved(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
@@ -71,9 +71,9 @@ public class WordQuizSolver implements QuizSolver {
 
         //이전에 오답이었고 현재 정답인 경우
         if (!exCorrect && isCorrect) {
-            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), getPoint(wordQuiz.getLevel()));
+            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), getPoint(wordQuiz.getLevel()), true);
         } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
-            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L);
+            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L, true);
         }
     }
 
