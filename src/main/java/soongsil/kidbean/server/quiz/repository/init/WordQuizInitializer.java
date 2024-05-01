@@ -60,6 +60,14 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
             WordQuizList.add(WordQuiz3);
 
+            WordQuiz WordQuiz4 = WordQuiz.builder()
+                    .title("동물")
+                    .answer("커피")
+                    .level(DIAMOND)
+                    .member(DUMMY_ADMIN)
+                    .build();
+            WordQuizList.add(WordQuiz4);
+
             List<Word> wordList = new ArrayList<>();
             wordList.add(new Word("엄마", WordQuiz1));
             wordList.add(new Word("아빠", WordQuiz1));
@@ -73,6 +81,10 @@ public class WordQuizInitializer implements ApplicationRunner {
             wordList.add(new Word("선인장", WordQuiz3));
             wordList.add(new Word("진달래", WordQuiz3));
             wordList.add(new Word("소나무", WordQuiz3));
+            wordList.add(new Word("호박벌", WordQuiz4));
+            wordList.add(new Word("강아지", WordQuiz4));
+            wordList.add(new Word("고양이", WordQuiz4));
+            wordList.add(new Word("커피", WordQuiz4));
 
             wordQuizRepository.saveAll(WordQuizList);
             wordRepository.saveAll(wordList);

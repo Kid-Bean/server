@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import soongsil.kidbean.server.member.domain.Member;
@@ -44,20 +43,17 @@ class ImageQuizServiceTest {
     @DisplayName("ImageQuizResponse 생성 테스트")
     void selectRandomImageQuiz() {
         //given
-        List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL1);
-        Page<ImageQuiz> imageQuizPage = new PageImpl<>(imageQuizList);
-
-        given(imageQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
-                .willReturn(imageQuizPage);
-        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(7);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
+        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(7);
+        given(imageQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(IMAGE_QUIZ_ANIMAL1)));
 
         //when
         ImageQuizSolveListResponse imageQuizSolveResponse = imageQuizService.selectRandomImageQuizList(1L, 5);
 
         //then
         assertThat(imageQuizSolveResponse.imageQuizSolveResponseList().get(0).quizId())
-                .isEqualTo(imageQuizList.get(0).getQuizId());
+                .isEqualTo(IMAGE_QUIZ_ANIMAL1.getQuizId());
     }
 
     @Test
