@@ -10,7 +10,6 @@ import soongsil.kidbean.server.quiz.application.quizscorer.QuizScorer;
 import soongsil.kidbean.server.quiz.application.quizscorer.QuizScorerFactory;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolver;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolverFactory;
-import soongsil.kidbean.server.quiz.application.quizsolver.dto.SolvedQuizInfo;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 
@@ -33,7 +32,7 @@ public class QuizSolvedService {
     public Long solveQuizzes(List<QuizSolvedRequest> quizSolvedRequestList, Member member, QuizType type) {
 
         QuizSolver solver = quizSolverFactory.getSolver(type);
-        QuizScorer scorer = quizScorerFactory.getSolver(type);
+        QuizScorer scorer = quizScorerFactory.getScorer(type);
 
         Long score = quizSolvedRequestList.stream()
                 .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))

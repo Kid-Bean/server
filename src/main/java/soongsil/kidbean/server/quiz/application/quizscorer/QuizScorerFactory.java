@@ -3,9 +3,6 @@ package soongsil.kidbean.server.quiz.application.quizscorer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
-import soongsil.kidbean.server.quiz.application.quizsolver.ImageQuizSolver;
-import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolver;
-import soongsil.kidbean.server.quiz.application.quizsolver.WordQuizSolver;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
 
 @Service
@@ -17,7 +14,7 @@ public class QuizScorerFactory {
         solverMap.put(QuizType.WORD_QUIZ, wordQuizScorer);
     }
 
-    public QuizScorer getSolver(QuizType type) {
+    public QuizScorer getScorer(QuizType type) {
         return solverMap.get(type);
     }
 }
