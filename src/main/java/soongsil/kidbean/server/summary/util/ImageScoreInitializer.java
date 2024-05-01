@@ -1,7 +1,6 @@
 package soongsil.kidbean.server.summary.util;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +11,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
-import soongsil.kidbean.server.quiz.repository.AnswerQuizRepository;
-import soongsil.kidbean.server.summary.domain.AverageScore;
 import soongsil.kidbean.server.summary.domain.ImageQuizScore;
-import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
 
 @Slf4j
@@ -43,7 +38,8 @@ public class ImageScoreInitializer implements ApplicationRunner {
         }
     }
 
-    private ImageQuizScore makeImageQuizScore(Long totalScore, QuizCategory quizCategory, Long quizCount, Member member) {
+    private ImageQuizScore makeImageQuizScore(Long totalScore, QuizCategory quizCategory, Long quizCount,
+                                              Member member) {
         return ImageQuizScore.builder()
                 .member(DUMMY_MEMBER)
                 .totalScore(totalScore)

@@ -25,7 +25,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveListResponse;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,14 +49,15 @@ class ImageQuizServiceTest {
 
         given(imageQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
                 .willReturn(imageQuizPage);
-        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(1);
+        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(7);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
 
         //when
-        ImageQuizResponse imageQuizResponse = imageQuizService.selectRandomImageQuiz(1L);
+        ImageQuizSolveListResponse imageQuizSolveResponse = imageQuizService.selectRandomImageQuizList(1L, 5);
 
         //then
-        assertThat(imageQuizResponse.quizId()).isEqualTo(imageQuizList.get(0).getQuizId());
+        assertThat(imageQuizSolveResponse.imageQuizSolveResponseList().get(0).quizId())
+                .isEqualTo(imageQuizList.get(0).getQuizId());
     }
 
     @Test

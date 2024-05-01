@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz.util;
+package soongsil.kidbean.server.quiz.repository.init;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +14,8 @@ import soongsil.kidbean.server.quiz.repository.WordRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_ADMIN;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
 import static soongsil.kidbean.server.quiz.domain.type.Level.DIAMOND;
 import static soongsil.kidbean.server.quiz.domain.type.Level.GOLD;
 import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;

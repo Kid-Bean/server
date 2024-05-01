@@ -1,7 +1,7 @@
-package soongsil.kidbean.server.quiz.util;
+package soongsil.kidbean.server.quiz.repository.init;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_ADMIN;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
 import static soongsil.kidbean.server.quiz.domain.type.QuizCategory.*;
 import static soongsil.kidbean.server.quiz.domain.type.Level.*;
 

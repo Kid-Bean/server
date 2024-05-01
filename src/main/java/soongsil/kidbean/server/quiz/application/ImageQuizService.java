@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.quiz.application;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,13 +18,14 @@ import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveListResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 import java.util.List;
-import java.util.Optional;
+import soongsil.kidbean.server.quiz.util.RandNumListUtil;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.application.vo.QuizType.IMAGE_QUIZ;
@@ -80,44 +80,36 @@ public class ImageQuizService {
      * @param memberId 문제를 풀 멤버의 id
      * @return 이미지 퀴즈 DTO
      */
-    public ImageQuizResponse selectRandomImageQuiz(Long memberId) {
+    public ImageQuizSolveListResponse selectRandomImageQuizList(Long memberId, Integer quizNum) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
-        Page<ImageQuiz> imageQuizPage = generateRandomPageWithCategory(member);
+        int totalQuizNum = getImageQuizCount(member);
 
-        ImageQuiz imageQuiz = pageHasImageQuiz(imageQuizPage)
-                .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
+        List<ImageQuizSolveResponse> imageQuizSolveResponseList =
+                RandNumListUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
+                        .map(quizIdx -> generateRandomPageWithCategory(member, quizIdx))
+                        .map(this::getImageQuizFromPage)
+                        .map(ImageQuizSolveResponse::from)
+                        .toList();
 
-        return ImageQuizResponse.from(imageQuiz);
+        return new ImageQuizSolveListResponse(imageQuizSolveResponseList);
     }
 
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member) {
-
-        int divVal = getImageQuizCount(member);
-        int idx = RandomUtil.getPositiveInt() % divVal;
-
-        log.info("divVal: {}, idx: {}", divVal, idx);
-
-        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(idx, 1));
+    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {
+        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
     }
 
     private Integer getImageQuizCount(Member member) {
         return imageQuizRepository.countByMemberOrAdmin(member);
     }
 
-    /**
-     * page가 ImageQuiz를 가지고 있는지 확인 후 Optional로 return
-     *
-     * @param imageQuizPage 찾는 이미지 퀴즈가 있는 페이지
-     * @return 이미지 퀴즈
-     */
-    private Optional<ImageQuiz> pageHasImageQuiz(Page<ImageQuiz> imageQuizPage) {
+    private ImageQuiz getImageQuizFromPage(Page<ImageQuiz> imageQuizPage) {
         if (imageQuizPage.hasContent()) {
-            return Optional.of(imageQuizPage.getContent().get(0));
+            return imageQuizPage.getContent().get(0);
         } else {
-            return Optional.empty();
+            throw new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND);
         }
     }
 

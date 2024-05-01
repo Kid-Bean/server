@@ -14,7 +14,7 @@ import soongsil.kidbean.server.program.repository.ProgramRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
 import static soongsil.kidbean.server.program.domain.type.ProgramCategory.ACADEMY;
 import static soongsil.kidbean.server.program.domain.type.ProgramCategory.HOSPITAL;
 

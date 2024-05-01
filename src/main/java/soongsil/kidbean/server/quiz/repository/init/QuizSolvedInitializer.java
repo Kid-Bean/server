@@ -1,10 +1,9 @@
-package soongsil.kidbean.server.quiz.util;
+package soongsil.kidbean.server.quiz.repository.init;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
-import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_1;
-import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_2;
-import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_3;
-import static soongsil.kidbean.server.quiz.util.ImageQuizInitializer.IMAGE_QUIZ_4;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.IMAGE_QUIZ_1;
+import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.IMAGE_QUIZ_2;
+import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.IMAGE_QUIZ_3;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
