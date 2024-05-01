@@ -66,7 +66,7 @@ class AuthServiceTest {
 
     @Test
     void reissueAccessTokenTest() {
-        // Given
+        //given
         String validRefreshToken = "valid-refresh-token";
         String newAccessToken = "new-access-token";
 
@@ -76,10 +76,10 @@ class AuthServiceTest {
         given(jwtTokenProvider.getMember(eq(validRefreshToken))).willReturn(MEMBER1);
         given(jwtTokenProvider.createAccessToken(eq(MEMBER1))).willReturn(newAccessToken);
 
-        // When
+        //when
         var response = authService.reissueAccessToken(reissueRequest);
 
-        // Then
+        //then
         assertThat(response.accessToken()).isEqualTo(newAccessToken);
     }
 }

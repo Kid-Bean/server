@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
@@ -48,11 +47,9 @@ class ImageQuizServiceTest {
         List<ImageQuiz> imageQuizList = List.of(IMAGE_QUIZ_ANIMAL1);
         Page<ImageQuiz> imageQuizPage = new PageImpl<>(imageQuizList);
 
-        given(imageQuizRepository.findImageQuizWithPage(
-                any(Member.class), any(Role.class), any(Pageable.class)))
+        given(imageQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
                 .willReturn(imageQuizPage);
-        given(imageQuizRepository.countByMemberAndCategoryOrRole(
-                any(Member.class), any(Role.class))).willReturn(1);
+        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(1);
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
 
         //when

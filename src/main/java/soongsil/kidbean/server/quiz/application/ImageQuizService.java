@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
@@ -101,12 +100,11 @@ public class ImageQuizService {
 
         log.info("divVal: {}, idx: {}", divVal, idx);
 
-        return imageQuizRepository.findImageQuizWithPage(
-                member, Role.ADMIN, PageRequest.of(idx, 1));
+        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(idx, 1));
     }
 
     private Integer getImageQuizCount(Member member) {
-        return imageQuizRepository.countByMemberAndCategoryOrRole(member, Role.ADMIN);
+        return imageQuizRepository.countByMemberOrAdmin(member);
     }
 
     /**

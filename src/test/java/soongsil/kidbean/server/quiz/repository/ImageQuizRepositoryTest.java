@@ -21,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
@@ -52,7 +51,7 @@ class ImageQuizRepositoryTest {
         //given
 
         //when
-        Integer totalCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER1, Role.ADMIN);
+        Integer totalCnt = imageQuizRepository.countByMemberOrAdmin(MEMBER1);
 
         //then
         assertThat(totalCnt).isEqualTo(3);
@@ -64,8 +63,7 @@ class ImageQuizRepositoryTest {
         //given
 
         //when
-        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findImageQuizWithPage(
-                MEMBER1, Role.ADMIN, PageRequest.of(0, 1));
+        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findSinglePageByMember(MEMBER1, PageRequest.of(0, 1));
 
         //then
         assertThat(imageQuizPage.getTotalPages()).isEqualTo(3);

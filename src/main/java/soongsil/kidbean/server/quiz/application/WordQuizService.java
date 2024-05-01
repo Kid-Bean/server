@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.Word;
@@ -82,7 +81,7 @@ public class WordQuizService {
         int divVal = getWordQuizCount(member);
         int idx = RandomUtil.getPositiveInt() % divVal;
 
-        return wordQuizRepository.findByMemberOrMember_Role(member, Role.ADMIN, PageRequest.of(idx, 1));
+        return wordQuizRepository.findSinglePageByMember(member, PageRequest.of(idx, 1));
     }
 
     /**
@@ -92,7 +91,7 @@ public class WordQuizService {
      * @return WordQuiz의 수
      */
     private Integer getWordQuizCount(Member member) {
-        return wordQuizRepository.countByMemberOrMember_Role(member, Role.ADMIN);
+        return wordQuizRepository.countByMemberOrAdmin(member);
     }
 
     /**

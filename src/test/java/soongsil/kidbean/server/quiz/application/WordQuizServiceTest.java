@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordResponse;
@@ -38,11 +37,9 @@ class WordQuizServiceTest {
     void selectRandomWordQuiz() {
 
         //given
-        given(memberRepository.findById(MEMBER1.getMemberId()))
-                .willReturn(Optional.of(MEMBER1));
-        given(wordQuizRepository.countByMemberOrMember_Role(MEMBER1, Role.ADMIN))
-                .willReturn(1);
-        given(wordQuizRepository.findByMemberOrMember_Role(MEMBER1, Role.ADMIN, PageRequest.of(0, 1)))
+        given(memberRepository.findById(MEMBER1.getMemberId())).willReturn(Optional.of(MEMBER1));
+        given(wordQuizRepository.countByMemberOrAdmin(MEMBER1)).willReturn(1);
+        given(wordQuizRepository.findSinglePageByMember(MEMBER1, PageRequest.of(0, 1)))
                 .willReturn(new PageImpl<>(List.of(WORD_QUIZ)));
 
         //when
