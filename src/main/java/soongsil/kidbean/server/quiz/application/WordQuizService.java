@@ -25,7 +25,7 @@ import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
 
 import java.util.List;
-import soongsil.kidbean.server.quiz.util.RandNumListUtil;
+import soongsil.kidbean.server.quiz.util.RandNumUtil;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.application.vo.QuizType.WORD_QUIZ;
@@ -56,7 +56,7 @@ public class WordQuizService {
         int totalQuizNum = getWordQuizCount(member);
 
         List<WordQuizSolveResponse> wordQuizSolveResponseList =
-                RandNumListUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
+                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
                         .map(quizIdx -> generateRandomWordQuizPage(member, quizIdx))
                         .map(this::getWordQuizFromPage)
                         .map(WordQuizSolveResponse::from)

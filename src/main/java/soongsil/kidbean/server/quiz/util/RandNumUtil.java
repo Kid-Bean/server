@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * 원하는 개수의 난수를 생성
  */
-public class RandNumListUtil {
+public class RandNumUtil {
 
     private static final Random random = new Random();
 

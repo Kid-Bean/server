@@ -25,7 +25,7 @@ import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 import java.util.List;
-import soongsil.kidbean.server.quiz.util.RandNumListUtil;
+import soongsil.kidbean.server.quiz.util.RandNumUtil;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.application.vo.QuizType.IMAGE_QUIZ;
@@ -88,7 +88,7 @@ public class ImageQuizService {
         int totalQuizNum = getImageQuizCount(member);
 
         List<ImageQuizSolveResponse> imageQuizSolveResponseList =
-                RandNumListUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
+                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
                         .map(quizIdx -> generateRandomPageWithCategory(member, quizIdx))
                         .map(this::getImageQuizFromPage)
                         .map(ImageQuizSolveResponse::from)
