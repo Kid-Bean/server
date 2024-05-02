@@ -24,7 +24,8 @@ public record EnrollProgramRequest(
         @NotNull(message = "전화번호를 입력해주세요")
         String phoneNumber,
         @NotNull(message = "내용을 입력해주세요")
-        String content
+        String content,
+        ProgramCategory programCategory
 
 ) {
 

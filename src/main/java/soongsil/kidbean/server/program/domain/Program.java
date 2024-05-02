@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.program.domain.type.Date;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
 @Entity
@@ -78,7 +79,7 @@ public class Program {
         this.member = member;
     }
 
-    public Program(S3Info programImageInfo, S3Info teacherImageInfo) {
+    public void setS3Info(S3Info programImageInfo, S3Info teacherImageInfo) {
         this.programImageInfo = programImageInfo;
         this.teacherImageInfo = teacherImageInfo;
     }
@@ -87,8 +88,11 @@ public class Program {
     public Program(String title, String content, S3Info programImageInfo, S3Info teacherImageInfo) {
         this.title = title;
         this.content = content;
-        this.programImageInfo=programImageInfo;
-        this.teacherImageInfo=teacherImageInfo;
+        this.programImageInfo = programImageInfo;
+        this.teacherImageInfo = teacherImageInfo;
     }
+
+
+
 
 }

@@ -1,13 +1,15 @@
 package soongsil.kidbean.server.program.application;
 
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import soongsil.kidbean.server.member.repository.MemberRepository;
+import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.global.application.S3Uploader;
+import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
@@ -16,7 +18,6 @@ import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
-import soongsil.kidbean.server.program.repository.StarRepository;
 
 import java.util.List;
 
@@ -26,9 +27,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ProgramService {
 
-    private final StarRepository starRepository;
     private final ProgramRepository programRepository;
-    private final MemberRepository memberRepository;
+
+    private static final String COMMON_URL = "kidbean.s3.ap-northeast-2.amazonaws.com";
+    private static final String PROGRAM_IMAGE_NAME = "program/";
+    private static final String TEACHER_IMAGE_NAME = "teacher/";
+    private final S3Uploader s3Uploader;
 
     /**
      * 프로그램 상세 조회
@@ -37,7 +41,7 @@ public class ProgramService {
      * @return response
      */
     @Transactional
-    public ProgramDetailResponse getProgramInfo(Long programId) {
+    public ProgramDetailResponse getProgramInfo(Long programId, List<Day> date) {
 
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
@@ -60,24 +64,6 @@ public class ProgramService {
         return ProgramListResponse.from(programResponseList);
     }
 
-//    /**
-//     * image upload
-//     * @param multipartFile
-//     * @return
-//     */
-//    private S3Info uploadFile( MultipartFile multipartFile) {
-//        S3Uploader s3Uploader;
-//        String folderName = s3Uploader.upload(multipartFile);
-//        String uploadUrl = s3Uploader.upload(multipartFile, folderName);
-//        String fileName = uploadUrl.split(folderName + "/")[1];
-//
-//        return S3Info.builder()
-//                .folderName(folderName)
-//                .fileName(fileName)
-//                .s3Url(uploadUrl)
-//                .build();
-//    }
-
     /**
      * 프로그램 삭제 - 관리자
      */
@@ -95,7 +81,30 @@ public class ProgramService {
      * 프로그램 추가하기- 관리자
      */
     @Transactional
-    public void createProgram(ProgramCategory programCategory, EnrollProgramRequest enrollProgramRequest) {
+    public void createProgram(ProgramCategory programCategory,
+                              EnrollProgramRequest enrollProgramRequest, MultipartFile s3Url) {
+
+        String programFolderName = PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory();
+        String teacherFolderName = TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory();
+
+        String programUploadUrl = s3Uploader.upload(s3Url, programFolderName);
+        String teacherUploadUrl = s3Uploader.upload(s3Url, teacherFolderName);
+
+        String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
+        String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
+
+
+        S3Info programImageInfo = S3Info.builder()
+                .s3Url(programUploadUrl)
+                .fileName(programGeneratedPath)
+                .folderName(PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory())
+                .build();
+
+        S3Info teacherImageInfo = S3Info.builder()
+                .s3Url(teacherUploadUrl)
+                .fileName(teacherGeneratedPath)
+                .folderName(TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory())
+                .build();
 
         Program createProgram = Program.builder()
                 .title(enrollProgramRequest.title())
@@ -104,6 +113,8 @@ public class ProgramService {
                 .teacherName(enrollProgramRequest.teacherName())
                 .phoneNumber(enrollProgramRequest.phoneNumber())
                 .programCategory(programCategory)
+                .programImageInfo(programImageInfo)
+                .teacherImageInfo(teacherImageInfo)
                 .build();
 
         programRepository.save(createProgram);
@@ -112,13 +123,40 @@ public class ProgramService {
     /**
      * 프로그램 수정하기. -> ex) 선생님 이름만 수정
      */
-    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest) {
+    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest, MultipartFile s3Url) {
         Program program = programRepository.findById(programId).orElseThrow(RuntimeException::new);
 
-        //하나로 합치기 가능
-        program.setTitle(updateProgramRequest.title());
-        program.setContent(updateProgramRequest.content());
 
-        programRepository.save(program); // save 안해도 set 때문에 자동으로 해결
+        if (s3Url != null && !s3Url.isEmpty()) {
+            String programFolderName = PROGRAM_IMAGE_NAME + program.getProgramCategory();
+            String teacherFolderName = TEACHER_IMAGE_NAME + program.getProgramCategory();
+
+            String programUploadUrl = s3Uploader.upload(s3Url, programFolderName);
+            String teacherUploadUrl = s3Uploader.upload(s3Url, teacherFolderName);
+
+            String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
+            String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
+
+            S3Info programImageInfo = S3Info.builder()
+                    .s3Url(programUploadUrl)
+                    .fileName(programGeneratedPath)
+                    .folderName(programFolderName)
+                    .build();
+
+            S3Info teacherImageInfo = S3Info.builder()
+                    .s3Url(teacherUploadUrl)
+                    .fileName(teacherGeneratedPath)
+                    .folderName(teacherFolderName)
+                    .build();
+
+            program.setTitle(updateProgramRequest.title());
+            program.setContent(updateProgramRequest.content());
+            program.setPlace(updateProgramRequest.place());
+            program.setTeacherName(updateProgramRequest.teacherName());
+            program.setPhoneNumber(updateProgramRequest.phoneNumber());
+            program.setS3Info(programImageInfo, teacherImageInfo);
+
+            programRepository.save(program); // save 안해도 set 때문에 자동으로 해결
+        }
     }
 }
