@@ -20,7 +20,7 @@ public class StarController {
     private final StarService starService;
 
     //추가
-    @PatchMapping("/star/{programId}")
+    @PostMapping("program/star/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> saveStar(
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId) {
@@ -33,7 +33,7 @@ public class StarController {
     }
 
     //삭제
-    @DeleteMapping("/star/{programId}")
+    @DeleteMapping("program/star/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteStar(
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId) {
@@ -46,7 +46,7 @@ public class StarController {
     }
 
     //조회
-    @PostMapping("/star/{programId}")
+    @GetMapping("program/star/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> getStars(
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId) {
