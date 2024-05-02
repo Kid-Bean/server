@@ -71,6 +71,7 @@ public class Member {
         this.gender = gender;
         this.birthDate = birthDate;
         this.createDate = createDate;
+    }
 
     public String getRoleKey() {
         return this.role.getKey();
