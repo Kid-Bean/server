@@ -112,12 +112,11 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 수정하기", description = "ImageQuiz 수정하기")
     @PutMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId,
             @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
             @RequestPart MultipartFile s3Url) {
 
-        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, user.memberId(), quizId, s3Url);
+        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, quizId, s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -127,10 +126,9 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 삭제하기", description = "ImageQuiz 삭제하기")
     @DeleteMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        imageQuizService.deleteImageQuiz(user.memberId(), quizId);
+        imageQuizService.deleteImageQuiz(quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

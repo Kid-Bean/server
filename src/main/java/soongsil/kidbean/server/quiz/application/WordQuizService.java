@@ -99,7 +99,7 @@ public class WordQuizService {
     }
 
     @Transactional
-    public void updateWordQuiz(WordQuizUpdateRequest request, Long memberId, Long quizId) {
+    public void updateWordQuiz(WordQuizUpdateRequest request, Long quizId) {
         WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
@@ -128,6 +128,11 @@ public class WordQuizService {
         }
     }
 
+    @Transactional
+    public void deleteWordQuiz(Long quizId) {
+        WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+      
     private int getWordQuizCount(Member member) {
         return wordQuizRepository.countByMemberOrAdmin(member);
     }
