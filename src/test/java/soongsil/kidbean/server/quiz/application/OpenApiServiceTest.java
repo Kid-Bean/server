@@ -1,69 +1,57 @@
 package soongsil.kidbean.server.quiz.application;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.List;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import org.apache.http.HttpHeaders;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import soongsil.kidbean.server.quiz.application.config.MockWebClientConfig;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import soongsil.kidbean.server.quiz.application.client.OpenApiClient;
 import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO;
 import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence.MorphemeVO;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.BDDMockito.given;
 
-
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(MockWebClientConfig.class)
-@ActiveProfiles("test")
-@SpringBootTest(classes = {OpenApiService.class})
+@ExtendWith(MockitoExtension.class)
 public class OpenApiServiceTest {
 
-    @Autowired
+    @Mock
+    private OpenApiClient openApiClient;
+
+    @InjectMocks
     private OpenApiService openApiService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    @Autowired
-    private MockWebServer mockWebServer;
-
-    @AfterAll
-    void tearDown() throws IOException {
-        mockWebServer.shutdown();
-    }
-
     @Test
-    void analyzeAnswerTest() throws Exception {
+    void analyzeAnswerTest() {
         //given
-        String answerText = "test text";
+        String testAnswer = "테스트 문장입니다.";
         ApiResponseVO mockResponse = makeMockResponse();
 
-        mockWebServer.enqueue(new MockResponse()
-                .setResponseCode(200)
-                .setBody(objectMapper.writeValueAsString(mockResponse))
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+        given(openApiClient.analyzeText(anyMap())).willReturn(mockResponse);
 
         //when
-        OpenApiResponse openApiResponse = openApiService.analyzeAnswer(answerText);
+        OpenApiResponse response = openApiService.analyzeAnswer(testAnswer);
 
         //then
-        assertThat(openApiResponse.useWordVOList().size()).isEqualTo(2);
+        assertThat(response.morphemeVOList()).isNotEmpty();
+        assertThat(response.useWordVOList()).isNotEmpty();
+        assertThat(response.morphemeVOList().size()).isEqualTo(2);
+        assertThat(response.useWordVOList().size()).isEqualTo(2);
+        assertThat(response.useWordVOList().get(0).word()).isEqualTo("test");
+        assertThat(response.useWordVOList().get(0).count()).isEqualTo(1);
     }
 
     private ApiResponseVO makeMockResponse() {
+
         MorphemeVO morpheme1 = new MorphemeVO("test", "NNG");
         MorphemeVO morpheme2 = new MorphemeVO("text", "NNG");
+
         ApiResponseVO.ReturnObject.Sentence sentence1 = new ApiResponseVO.ReturnObject.Sentence(List.of(morpheme1));
         ApiResponseVO.ReturnObject.Sentence sentence2 = new ApiResponseVO.ReturnObject.Sentence(List.of(morpheme2));
+
         ApiResponseVO.ReturnObject returnObject = new ApiResponseVO.ReturnObject(List.of(sentence1, sentence2));
 
         return new ApiResponseVO(returnObject);

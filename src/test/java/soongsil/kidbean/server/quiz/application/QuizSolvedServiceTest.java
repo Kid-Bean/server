@@ -2,8 +2,8 @@ package soongsil.kidbean.server.quiz.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.Collections;
@@ -47,20 +47,20 @@ class QuizSolvedServiceTest {
     public void solveImageQuizzes1() {
         //given
         QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer());
+                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
         ImageQuizSolver imageQuizSolver = new ImageQuizSolver(imageQuizRepository, quizSolvedRepository);
 
         given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId()))
-                .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
+        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId()))
+                .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
         //이전에 풀었던 문제
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL, MEMBER, true))
+        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(true);
+        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL1, MEMBER1, true))
                 .willReturn(true);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER, QuizType.IMAGE_QUIZ);
+                Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
 
         //then
         assertThat(totalScore).isEqualTo(0L);
@@ -71,21 +71,21 @@ class QuizSolvedServiceTest {
     public void solveImageQuizzes2() {
         //given
         QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer());
+                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
         ImageQuizSolver imageQuizSolver = new ImageQuizSolver(imageQuizRepository, quizSolvedRepository);
 
         given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL, MEMBER, true))
+        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
+        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(true);
+        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL1, MEMBER1, true))
                 .willReturn(false);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER, QuizType.IMAGE_QUIZ);
+                Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
 
         //then
-        assertThat(totalScore).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL.getLevel()));
+        assertThat(totalScore).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
     }
 
     @Test
@@ -93,19 +93,19 @@ class QuizSolvedServiceTest {
     public void solveImageQuizzes3() {
         //given
         QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL.getQuizId(), IMAGE_QUIZ_ANIMAL.getAnswer());
+                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
         ImageQuizSolver imageQuizSolver = new ImageQuizSolver(imageQuizRepository, quizSolvedRepository);
 
         given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL));
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL, MEMBER)).willReturn(false);
+        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
+        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(false);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER, QuizType.IMAGE_QUIZ);
+                Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
 
         //then
-        assertThat(totalScore).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL.getLevel()));
+        assertThat(totalScore).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
     }
 
     @Test
@@ -119,13 +119,13 @@ class QuizSolvedServiceTest {
         given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
         //이전에 풀었던 문제
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER, true))
+        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(true);
+        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER1, true))
                 .willReturn(true);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER, QuizType.WORD_QUIZ);
+                Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
 
         //then
         assertThat(totalScore).isEqualTo(0L);
@@ -141,13 +141,13 @@ class QuizSolvedServiceTest {
 
         given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER)).willReturn(true);
-        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER, true))
+        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(true);
+        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER1, true))
                 .willReturn(false);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER, QuizType.WORD_QUIZ);
+                Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
 
         //then
         assertThat(totalScore).isEqualTo(Level.getPoint(WORD_QUIZ.getLevel()));
@@ -163,11 +163,11 @@ class QuizSolvedServiceTest {
 
         given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER)).willReturn(false);
+        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(false);
 
         //when
         Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER, QuizType.WORD_QUIZ);
+                Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
 
         //then
         assertThat(totalScore).isEqualTo(Level.getPoint(WORD_QUIZ.getLevel()));

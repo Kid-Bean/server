@@ -1,9 +1,10 @@
 package soongsil.kidbean.server.quiz.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.QuizCategory.*;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.ADMIN;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER2;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL2;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_NONE;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_OBJECT;
@@ -19,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import soongsil.kidbean.server.member.domain.type.Role;
+import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
@@ -37,9 +38,10 @@ class ImageQuizRepositoryTest {
     @BeforeAll
     void setUp() {
         List<ImageQuiz> imageQuizList =
-                List.of(IMAGE_QUIZ_ANIMAL, IMAGE_QUIZ_ANIMAL2, IMAGE_QUIZ_PLANT, IMAGE_QUIZ_OBJECT, IMAGE_QUIZ_NONE);
+                List.of(IMAGE_QUIZ_ANIMAL1, IMAGE_QUIZ_ANIMAL2, IMAGE_QUIZ_PLANT, IMAGE_QUIZ_OBJECT, IMAGE_QUIZ_NONE);
+        List<Member> memberList = List.of(MEMBER1, MEMBER2, ADMIN);
 
-        memberRepository.save(MEMBER);
+        memberRepository.saveAll(memberList);
         imageQuizRepository.saveAll(imageQuizList);
     }
 
@@ -49,16 +51,10 @@ class ImageQuizRepositoryTest {
         //given
 
         //when
-        Integer animalCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, ANIMAL, Role.MEMBER);
-        Integer plantCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, PLANT, Role.MEMBER);
-        Integer objectCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, OBJECT, Role.MEMBER);
-        Integer noneCnt = imageQuizRepository.countByMemberAndCategoryOrRole(MEMBER, NONE, Role.MEMBER);
+        Integer totalCnt = imageQuizRepository.countByMemberOrAdmin(MEMBER1);
 
         //then
-        assertThat(animalCnt).isEqualTo(2);
-        assertThat(plantCnt).isEqualTo(1);
-        assertThat(objectCnt).isEqualTo(1);
-        assertThat(noneCnt).isEqualTo(1);
+        assertThat(totalCnt).isEqualTo(3);
     }
 
     @Test
@@ -67,10 +63,9 @@ class ImageQuizRepositoryTest {
         //given
 
         //when
-        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findImageQuizWithPage(
-                MEMBER, Role.ADMIN, ANIMAL, PageRequest.of(0, 1));
+        Page<ImageQuiz> imageQuizPage = imageQuizRepository.findSinglePageByMember(MEMBER1, PageRequest.of(0, 1));
 
         //then
-        assertThat(imageQuizPage.getTotalPages()).isEqualTo(2);
+        assertThat(imageQuizPage.getTotalPages()).isEqualTo(3);
     }
 }

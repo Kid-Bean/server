@@ -10,6 +10,7 @@ import soongsil.kidbean.server.quiz.domain.type.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 
 @Getter
 @Entity
@@ -20,6 +21,10 @@ public class WordQuiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_id")
     private Long quizId;
+
+    @Column(name = "category")
+    @Enumerated(EnumType.STRING)
+    private QuizCategory quizCategory;
 
     @Column(name = "title", length = 30)
     private String title;
@@ -38,7 +43,9 @@ public class WordQuiz {
     private List<Word> words = new ArrayList<>();
 
     @Builder
-    public WordQuiz(String title, String answer, Level level, Member member, List<Word> words) {
+    public WordQuiz(QuizCategory quizCategory, String title, String answer, Level level, Member member,
+                    List<Word> words) {
+        this.quizCategory = quizCategory;
         this.title = title;
         this.answer = answer;
         this.level = level;

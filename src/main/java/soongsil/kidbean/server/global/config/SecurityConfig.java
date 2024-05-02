@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth // 요청에 대한 인증 설정
-                        .requestMatchers("/logout", "/auth/refresh-token").hasRole(MEMBER)
+                        .requestMatchers("/logout").hasRole(MEMBER)
                         .anyRequest().authenticated())  //이외의 요청은 전부 인증 필요
                 .oauth2Login(oauth2 -> {
                     log.info("oauth2 configure");

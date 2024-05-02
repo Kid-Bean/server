@@ -62,6 +62,10 @@ public class Member {
         this.score = score;
     }
 
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
+
     public void updateScore(Long score) {
         this.score = score;
     }

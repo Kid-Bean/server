@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
+import soongsil.kidbean.server.quiz.application.client.OpenApiClient;
 import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO;
 import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence;
 import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence.MorphemeVO;
@@ -22,7 +22,7 @@ import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 @RequiredArgsConstructor
 public class OpenApiService {
 
-    private final WebClient webClient;
+    private final OpenApiClient openApiClient;
 
     /**
      * 제출된 정답 String을 분석
@@ -32,7 +32,7 @@ public class OpenApiService {
      */
     public OpenApiResponse analyzeAnswer(String answerText) {
 
-        ApiResponseVO responseBody = useWebClient(answerText);
+        ApiResponseVO responseBody = useOpenApiClient(answerText);
 
         List<MorphemeVO> morphemeVOList = parseMorphemes(responseBody);
         List<UseWordVO> useWordVOList = parseWordAnalysis(morphemeVOList);
@@ -43,18 +43,11 @@ public class OpenApiService {
                 .build();
     }
 
-    private ApiResponseVO useWebClient(String answerText) {
-
-        String analysisCode = "morp"; // 언어 분석 코드 - 형태소 분석
+    private ApiResponseVO useOpenApiClient(String answerText) {
+        String analysisCode = "morp";
         Map<String, Object> request = makeBaseRequest(analysisCode, answerText);
 
-        //Blocking 방식으로 처리
-        return webClient
-                .post()
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(ApiResponseVO.class)
-                .block();
+        return openApiClient.analyzeText(request);
     }
 
     private static Map<String, Object> makeBaseRequest(String analysisCode, String text) {

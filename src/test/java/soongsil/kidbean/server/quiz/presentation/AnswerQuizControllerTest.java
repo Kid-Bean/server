@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +46,7 @@ class AnswerQuizControllerTest extends CommonControllerTest {
     void getRandomAnswerQuiz() throws Exception {
 
         //given
-        Long memberId = MEMBER.getMemberId();
+        Long memberId = MEMBER1.getMemberId();
         AnswerQuizResponse answerQuizResponse = AnswerQuizResponse.from(ANSWER_QUIZ);
         given(answerQuizService.selectRandomAnswerQuiz(memberId))
                 .willReturn(answerQuizResponse);
@@ -70,7 +70,7 @@ class AnswerQuizControllerTest extends CommonControllerTest {
         AnswerQuizSolveScoreResponse response = new AnswerQuizSolveScoreResponse(returnScore);
 
         given(answerQuizService.submitAnswerQuiz(
-                eq(request), any(MultipartFile.class), eq(MEMBER.getMemberId()))).willReturn(response);
+                eq(request), any(MultipartFile.class), eq(MEMBER1.getMemberId()))).willReturn(response);
 
         MockMultipartFile file = new MockMultipartFile("record", "filename.txt", "text/plain", "some xml".getBytes());
         MockMultipartFile jsonFile = new MockMultipartFile(

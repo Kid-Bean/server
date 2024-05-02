@@ -1,34 +1,26 @@
 package soongsil.kidbean.server.auth.dto.response;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class KakaoUserResponse {
-    private Long id;
-    private Properties properties;
-    private KakaoAccount kakaoAccount;
+@JsonNaming(SnakeCaseStrategy.class)
+public record KakaoUserResponse(
+        Long id,
+        Properties properties,
+        KakaoAccount kakaoAccount
+) {
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class Properties {
-        private String nickname;
+    @JsonNaming(SnakeCaseStrategy.class)
+    public record Properties(
+            String nickname
+    ) {
+
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class KakaoAccount {
-        private String email;
+    public record KakaoAccount(
+            String email
+    ) {
     }
 }

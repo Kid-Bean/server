@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.quiz.application.quizsolver.dto.SolvedQuizInfo;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.Level;
@@ -30,7 +31,7 @@ public class ImageQuizSolver implements QuizSolver {
      * @return Long 점수
      */
     @Override
-    public Long solveQuiz(QuizSolvedRequest solvedRequest, Member member) {
+    public SolvedQuizInfo solveQuiz(QuizSolvedRequest solvedRequest, Member member) {
 
         ImageQuiz imageQuiz = imageQuizRepository.findById(solvedRequest.quizId())
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
@@ -47,15 +48,16 @@ public class ImageQuizSolver implements QuizSolver {
         return quizSolvedRepository.existsByImageQuizAndMember(imageQuiz, member);
     }
 
-    private Long solveNewImageQuiz(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
+    private SolvedQuizInfo solveNewImageQuiz(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
 
         newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(imageQuiz.getAnswer()));
         quizSolvedRepository.save(newQuizSolved);
 
-        return newQuizSolved.getIsCorrect() ? getPoint(imageQuiz.getLevel()) : 0L;
+        return newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(imageQuiz.getQuizCategory(),
+                getPoint(imageQuiz.getLevel())) : new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L);
     }
 
-    private Long solveExistingImageQuizSolved(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
+    private SolvedQuizInfo solveExistingImageQuizSolved(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
 
         Member member = newQuizSolved.getMember();
         boolean exCorrect = quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(imageQuiz, member, true);
@@ -68,9 +70,9 @@ public class ImageQuizSolver implements QuizSolver {
 
         //이전에 오답이었고 현재 정답인 경우
         if (!exCorrect && isCorrect) {
-            return getPoint(imageQuiz.getLevel());
+            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), getPoint(imageQuiz.getLevel()));
         } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
-            return 0L;
+            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L);
         }
     }
 
