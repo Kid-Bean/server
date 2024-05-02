@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.quiz.util;
+package soongsil.kidbean.server.quiz.repository.init;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +14,8 @@ import soongsil.kidbean.server.quiz.repository.WordRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.util.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_ADMIN;
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
 import static soongsil.kidbean.server.quiz.domain.type.Level.DIAMOND;
 import static soongsil.kidbean.server.quiz.domain.type.Level.GOLD;
 import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;
@@ -60,6 +60,14 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
             WordQuizList.add(WordQuiz3);
 
+            WordQuiz WordQuiz4 = WordQuiz.builder()
+                    .title("동물")
+                    .answer("커피")
+                    .level(DIAMOND)
+                    .member(DUMMY_ADMIN)
+                    .build();
+            WordQuizList.add(WordQuiz4);
+
             List<Word> wordList = new ArrayList<>();
             wordList.add(new Word("엄마", WordQuiz1));
             wordList.add(new Word("아빠", WordQuiz1));
@@ -73,6 +81,10 @@ public class WordQuizInitializer implements ApplicationRunner {
             wordList.add(new Word("선인장", WordQuiz3));
             wordList.add(new Word("진달래", WordQuiz3));
             wordList.add(new Word("소나무", WordQuiz3));
+            wordList.add(new Word("호박벌", WordQuiz4));
+            wordList.add(new Word("강아지", WordQuiz4));
+            wordList.add(new Word("고양이", WordQuiz4));
+            wordList.add(new Word("커피", WordQuiz4));
 
             wordQuizRepository.saveAll(WordQuizList);
             wordRepository.saveAll(wordList);

@@ -22,7 +22,7 @@ import soongsil.kidbean.server.global.vo.S3Info;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(AwsS3MockConfig.class)
+@Import({AwsS3MockConfig.class})
 @SpringBootTest(classes = {S3Uploader.class})
 class S3UploaderTest {
 

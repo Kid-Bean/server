@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ;
 
 import java.util.List;
@@ -54,15 +54,15 @@ class AnswerQuizServiceTest {
     @DisplayName("랜덤 WordQuiz 선택")
     void selectRandomWordQuiz() {
         //given
-        given(memberRepository.findById(MEMBER.getMemberId()))
-                .willReturn(Optional.of(MEMBER));
-        given(answerQuizRepository.countByMemberOrMember_Role(MEMBER, Role.ADMIN))
+        given(memberRepository.findById(MEMBER1.getMemberId()))
+                .willReturn(Optional.of(MEMBER1));
+        given(answerQuizRepository.countByMemberOrMember_Role(MEMBER1, Role.ADMIN))
                 .willReturn(1);
-        given(answerQuizRepository.findByMemberOrMember_Role(MEMBER, Role.ADMIN, PageRequest.of(0, 1)))
+        given(answerQuizRepository.findByMemberOrMember_Role(MEMBER1, Role.ADMIN, PageRequest.of(0, 1)))
                 .willReturn(new PageImpl<>(List.of(ANSWER_QUIZ)));
 
         //when
-        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(MEMBER.getMemberId());
+        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(MEMBER1.getMemberId());
 
         //then
         assertThat(answerQuizResponse.question()).isEqualTo(ANSWER_QUIZ.getQuestion());
@@ -82,13 +82,13 @@ class AnswerQuizServiceTest {
         AnswerQuizSolvedRequest answerQuizSolvedRequest =
                 new AnswerQuizSolvedRequest(ANSWER_QUIZ.getQuizId(), submitAnswer);
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
         given(answerQuizRepository.findById(anyLong())).willReturn(Optional.of(ANSWER_QUIZ));
         given(openApiService.analyzeAnswer(submitAnswer)).willReturn(openApiResponse);
 
         //when
         AnswerQuizSolveScoreResponse response = answerQuizService.submitAnswerQuiz(
-                answerQuizSolvedRequest, multipartFile, MEMBER.getMemberId());
+                answerQuizSolvedRequest, multipartFile, MEMBER1.getMemberId());
 
         //then
         verify(answerQuizSolvedService, times(1))

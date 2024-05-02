@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolver;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolverFactory;
+import soongsil.kidbean.server.quiz.application.quizsolver.dto.SolvedQuizInfo;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 
@@ -32,10 +33,17 @@ public class QuizSolvedService {
 
         Long score = quizSolvedRequestList.stream()
                 .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))
+                .map(solvedQuizInfo -> this.addPerQuizScore(solvedQuizInfo, member))
                 .reduce(0L, Long::sum);
 
         member.updateScore(member.getScore() + score);
 
         return score;
+    }
+
+    private Long addPerQuizScore(SolvedQuizInfo solvedQuizInfo, Member member) {
+        //TODO 여기에 해당 각각의 카테고리 별 점수 테이블에 점수와 카테고리를 넣는 알고리즘
+
+        return solvedQuizInfo.score();
     }
 }

@@ -1,6 +1,6 @@
 package soongsil.kidbean.server.global.application.config;
 
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +19,6 @@ public class CommonControllerTest {
     public void setUp() {
 
         // AuthUser.getSocialId() 에서 NullPointerException 방지를 위한 Authentication 생성
-        AuthenticationUtil.makeAuthentication(MEMBER);
+        AuthenticationUtil.makeAuthentication(MEMBER1);
     }
 }
