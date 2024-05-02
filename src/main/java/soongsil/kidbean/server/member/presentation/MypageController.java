@@ -58,6 +58,12 @@ public class MypageController {
         return ResponseEntity.ok(ResponseTemplate.from(mypageService.solvedAnswerQuizDetail(solvedId)));
     }
 
+    @GetMapping("/voice/use-word/list")
+    public ResponseEntity<ResponseTemplate<Object>> findAllUseWordList(
+            @AuthenticationPrincipal AuthUser user) {
+        return ResponseEntity.ok(ResponseTemplate.from(mypageService.findAllUseWordList(user.memberId())));
+    }
+
     @GetMapping("/image/result")
     public ResponseEntity<ResponseTemplate<Object>> findImageQuizScoreInfo(
             @AuthenticationPrincipal AuthUser user) {

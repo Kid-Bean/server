@@ -12,4 +12,11 @@ public record UseWordInfo(
                 useWord.getCount()
         );
     }
+
+    public static UseWordInfo of(String wordName, Long count) {
+        return new UseWordInfo(
+                wordName,
+                count
+        );
+    }
 }
