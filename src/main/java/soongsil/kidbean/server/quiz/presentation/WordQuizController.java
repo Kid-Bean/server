@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
@@ -23,7 +24,7 @@ import soongsil.kidbean.server.quiz.dto.request.WordQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.WordQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveListResponse;
 
 import java.util.List;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveScoreResponse;
@@ -40,13 +41,16 @@ public class WordQuizController {
 
     @Operation(summary = "WordQuiz 문제 불러오기", description = "WordQuiz 문제 불러오기")
     @GetMapping("/solve")
-    public ResponseEntity<ResponseTemplate<Object>> getRandomWordQuiz(@AuthenticationPrincipal AuthUser user) {
+    public ResponseEntity<ResponseTemplate<Object>> getRandomWordQuiz(
+            @AuthenticationPrincipal AuthUser user,
+            @RequestParam(defaultValue = "3") Integer quizNum) {
 
-        WordQuizResponse WordQuizResponse = wordQuizService.selectRandomWordQuiz(user.memberId());
+        WordQuizSolveListResponse wordQuizSolveListResponse = wordQuizService.selectRandomWordQuiz(user.memberId(),
+                quizNum);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(WordQuizResponse));
+                .body(ResponseTemplate.from(wordQuizSolveListResponse));
     }
 
     @Operation(summary = "WordQuiz 문제 풀기", description = "푼 WordQuiz 문제를 제출")
@@ -103,11 +107,10 @@ public class WordQuizController {
     @Operation(summary = "WordQuiz 문제 수정하기", description = "WordQuiz 수정하기")
     @PutMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId,
             @Valid @RequestBody WordQuizUpdateRequest request) {
 
-        wordQuizService.updateWordQuiz(request, user.memberId(), quizId);
+        wordQuizService.updateWordQuiz(request, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -117,10 +120,9 @@ public class WordQuizController {
     @Operation(summary = "WordQuiz 문제 삭제하기", description = "WordQuiz 삭제하기")
     @DeleteMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        wordQuizService.deleteWordQuiz(user.memberId(), quizId);
+        wordQuizService.deleteWordQuiz(quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -5,14 +5,14 @@ import lombok.Builder;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
 
 @Builder
-public record WordQuizResponse(
+public record WordQuizSolveResponse(
         Long quizId,
         String title,
         String answer,
         List<WordResponse> words
 ) {
-    public static WordQuizResponse from(WordQuiz WordQuiz) {
-        return WordQuizResponse.builder()
+    public static WordQuizSolveResponse from(WordQuiz WordQuiz) {
+        return WordQuizSolveResponse.builder()
                 .quizId(WordQuiz.getQuizId())
                 .answer(WordQuiz.getAnswer())
                 .title(WordQuiz.getTitle())

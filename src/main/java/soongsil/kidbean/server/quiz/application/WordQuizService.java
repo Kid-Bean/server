@@ -1,7 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.Word;
@@ -19,14 +17,15 @@ import soongsil.kidbean.server.quiz.dto.request.WordQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.WordQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizMemberResponse;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveListResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveResponse;
 import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveScoreResponse;
 import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
 
 import java.util.List;
-import java.util.Optional;
+import soongsil.kidbean.server.quiz.util.RandNumUtil;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quiz.application.vo.QuizType.WORD_QUIZ;
@@ -49,16 +48,21 @@ public class WordQuizService {
      * @param memberId 문제를 풀 멤버
      * @return 랜덤 문제가 들어 있는 DTO
      */
-    public WordQuizResponse selectRandomWordQuiz(Long memberId) {
+    public WordQuizSolveListResponse selectRandomWordQuiz(Long memberId, Integer quizNum) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-        Page<WordQuiz> WordQuizPage = generateRandomWordQuizPage(member);
 
-        WordQuiz WordQuiz = pageHasWordQuiz(WordQuizPage)
-                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+        int totalQuizNum = getWordQuizCount(member);
 
-        return WordQuizResponse.from(WordQuiz);
+        List<WordQuizSolveResponse> wordQuizSolveResponseList =
+                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
+                        .map(quizIdx -> generateRandomWordQuizPage(member, quizIdx))
+                        .map(this::getWordQuizFromPage)
+                        .map(WordQuizSolveResponse::from)
+                        .toList();
+
+        return new WordQuizSolveListResponse(wordQuizSolveResponseList);
     }
 
     @Transactional
@@ -69,44 +73,6 @@ public class WordQuizService {
 
         return WordQuizSolveScoreResponse.scoreFrom(
                 quizSolvedService.solveQuizzes(quizSolvedRequestList, member, WORD_QUIZ));
-    }
-
-    /**
-     * 랜덤 WordQuiz를 생성
-     *
-     * @param member 문제를 풀 멤버
-     * @return 랜덤 WordQuiz가 있는 Page
-     */
-    private Page<WordQuiz> generateRandomWordQuizPage(Member member) {
-
-        int divVal = getWordQuizCount(member);
-        int idx = RandomUtil.getPositiveInt() % divVal;
-
-        return wordQuizRepository.findByMemberOrMember_Role(member, Role.ADMIN, PageRequest.of(idx, 1));
-    }
-
-    /**
-     * 해당 멤버 또는 role이 어드민으로 등록된 사람이 등록한 WordQuiz의 수 return
-     *
-     * @param member 문제를 풀고자 하는 멤버
-     * @return WordQuiz의 수
-     */
-    private Integer getWordQuizCount(Member member) {
-        return wordQuizRepository.countByMemberOrMember_Role(member, Role.ADMIN);
-    }
-
-    /**
-     * 해당 페이지에 WordQuiz가 있는지 확인 후 Optional로 감싸 return
-     *
-     * @param WordQuizPage WordQuiz가 있는 Page
-     * @return WordQuiz가 있는 Optional
-     */
-    private Optional<WordQuiz> pageHasWordQuiz(Page<WordQuiz> WordQuizPage) {
-        if (WordQuizPage.hasContent()) {
-            return Optional.of(WordQuizPage.getContent().get(0));
-        } else {
-            return Optional.empty();
-        }
     }
 
     public WordQuizMemberDetailResponse getWordQuizById(Long memberId, Long quizId) {
@@ -133,7 +99,7 @@ public class WordQuizService {
     }
 
     @Transactional
-    public void updateWordQuiz(WordQuizUpdateRequest request, Long memberId, Long quizId) {
+    public void updateWordQuiz(WordQuizUpdateRequest request, Long quizId) {
         WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
@@ -142,6 +108,14 @@ public class WordQuizService {
         updateWords(request, wordList);
 
         wordQuiz.updateWordQuiz(request.title(), request.answer());
+    }
+
+    @Transactional
+    public void deleteWordQuiz(Long memberId, Long quizId) {
+        WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
+                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+
+        wordQuizRepository.delete(wordQuiz);
     }
 
     private static void updateWords(WordQuizUpdateRequest request, List<Word> wordList) {
@@ -155,10 +129,23 @@ public class WordQuizService {
     }
 
     @Transactional
-    public void deleteWordQuiz(Long memberId, Long quizId) {
+    public void deleteWordQuiz(Long quizId) {
         WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+      
+    private int getWordQuizCount(Member member) {
+        return wordQuizRepository.countByMemberOrAdmin(member);
+    }
 
-        wordQuizRepository.delete(wordQuiz);
+    private Page<WordQuiz> generateRandomWordQuizPage(Member member, int quizIdx) {
+        return wordQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
+    }
+
+    private WordQuiz getWordQuizFromPage(Page<WordQuiz> WordQuizPage) {
+        if (WordQuizPage.hasContent()) {
+            return WordQuizPage.getContent().get(0);
+        } else {
+            throw new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND);
+        }
     }
 }

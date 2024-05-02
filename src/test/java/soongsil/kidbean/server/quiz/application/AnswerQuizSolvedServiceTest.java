@@ -20,7 +20,7 @@ import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +58,7 @@ class AnswerQuizSolvedServiceTest {
 
         //when
         answerQuizSolvedService.enrollNewAnswerQuizSolved(
-                ANSWER_QUIZ, submitAnswer, MEMBER, openApiResponse, multipartFile);
+                ANSWER_QUIZ, submitAnswer, MEMBER1, openApiResponse, multipartFile);
 
         //then
         verify(answerQuizSolvedRepository).save(any(AnswerQuizSolved.class));

@@ -4,13 +4,13 @@ import lombok.Builder;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
 @Builder
-public record ImageQuizResponse(
+public record ImageQuizSolveResponse(
         Long quizId,
         String answer,
         String s3Url
 ) {
-    public static ImageQuizResponse from(ImageQuiz imageQuiz) {
-        return ImageQuizResponse.builder()
+    public static ImageQuizSolveResponse from(ImageQuiz imageQuiz) {
+        return ImageQuizSolveResponse.builder()
                 .answer(imageQuiz.getAnswer())
                 .quizId(imageQuiz.getQuizId())
                 .s3Url(imageQuiz.getS3Info().getS3Url())
