@@ -13,17 +13,17 @@ import java.util.ArrayList;
 
 
 public record EnrollProgramRequest(
-        Long programId,
+        //day->List
 
-        @NotNull (message = "선생님 이름을 입력해주세요")
+        @NotNull(message = "선생님 이름을 입력해주세요")
         String teacherName,
-        @NotNull (message = "제목을 입력해주세요")
+        @NotNull(message = "제목을 입력해주세요")
         String title,
-        @NotNull (message = "장소를 입력해주세요")
+        @NotNull(message = "장소를 입력해주세요")
         String place,
-        @NotNull (message = "전화번호를 입력해주세요")
+        @NotNull(message = "전화번호를 입력해주세요")
         String phoneNumber,
-        @NotNull (message = "내용을 입력해주세요")
+        @NotNull(message = "내용을 입력해주세요")
         String content
 
 ) {

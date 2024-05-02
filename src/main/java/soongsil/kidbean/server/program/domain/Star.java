@@ -2,9 +2,11 @@ package soongsil.kidbean.server.program.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
+
 
 @Entity
 @Getter
@@ -23,4 +25,11 @@ public class Star {
     @JoinColumn(name = "program_id")
     @OneToOne(fetch = FetchType.LAZY)
     private Program program;
+
+    @Builder
+    public Star(Long starId, Member memberId, Program programId) {
+        this.starId = starId;
+        this.member = memberId;
+        this.program = programId;
+    }
 }
