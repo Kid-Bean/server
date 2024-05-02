@@ -22,6 +22,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizInfo;
+import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 import soongsil.kidbean.server.quiz.domain.Morpheme;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
@@ -37,7 +38,7 @@ import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
-import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Slf4j
 @Service
@@ -49,7 +50,7 @@ public class MypageService {
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final WordRepository wordRepository;
     private final MemberRepository memberRepository;
-    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final QuizScoreRepository imageQuizScoreRepository;
     private final AverageScoreRepository averageScoreRepository;
     private final UseWordRepository useWordRepository;
     private final MorphemeRepository morphemeRepository;
@@ -58,10 +59,10 @@ public class MypageService {
      * @param memberId 멤버Id
      * @return SolvedImageListResponse 푼 문제 리스트
      */
-    public SolvedImageListResponse findSolvedImage(Long memberId) {
+    public SolvedImageListResponse findSolvedImage(Long memberId, boolean isCorrect) {
         Member member = findMemberById(memberId);
 
-        List<SolvedImageInfo> solvedImageInfoList = quizSolvedRepository.findAllByMemberAndImageQuizIsNotNull(member).stream()
+        List<SolvedImageInfo> solvedImageInfoList = quizSolvedRepository.findAllByMemberAndIsCorrectAndImageQuizIsNotNull(member, isCorrect).stream()
                 .map(SolvedImageInfo::from)
                 .toList();
 

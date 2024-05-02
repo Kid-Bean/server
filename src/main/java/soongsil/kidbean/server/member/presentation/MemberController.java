@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
@@ -22,10 +26,10 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/info/{memberId}")
+    @GetMapping("/info")
     public ResponseEntity<ResponseTemplate<Object>> findMemberInfo(
-            @PathVariable(name = "memberId") Long memberId) {
-        return ResponseEntity.ok(ResponseTemplate.from(memberService.findMemberInfo(memberId)));
+            @AuthenticationPrincipal AuthUser user) {
+        return ResponseEntity.ok(ResponseTemplate.from(memberService.findMemberInfo(user.memberId())));
     }
 
     @Operation(summary = "Member 입력하기", description = "아이 정보 입력하기")
