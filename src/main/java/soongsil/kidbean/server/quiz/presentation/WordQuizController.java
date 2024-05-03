@@ -45,8 +45,8 @@ public class WordQuizController {
             @AuthenticationPrincipal AuthUser user,
             @RequestParam(defaultValue = "3") Integer quizNum) {
 
-        WordQuizSolveListResponse wordQuizSolveListResponse = wordQuizService.selectRandomWordQuiz(user.memberId(),
-                quizNum);
+        WordQuizSolveListResponse wordQuizSolveListResponse =
+                wordQuizService.selectRandomWordQuiz(user.memberId(), quizNum);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
