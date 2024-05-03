@@ -36,12 +36,11 @@ class WordQuizControllerTest extends CommonControllerTest {
     void getRandomWordQuiz() throws Exception {
 
         //given
-        Long memberId = MEMBER1.getMemberId();
         WordQuizSolveListResponse wordQuizSolveListResponse = new WordQuizSolveListResponse(
                 List.of(WordQuizSolveResponse.from(WORD_QUIZ)));
         List<Word> wordList = WORD_QUIZ.getWords();
 
-        given(wordQuizService.selectRandomWordQuiz(memberId, 3))
+        given(wordQuizService.selectRandomWordQuiz(MEMBER1.getMemberId(), 3))
                 .willReturn(wordQuizSolveListResponse);
 
         //when
