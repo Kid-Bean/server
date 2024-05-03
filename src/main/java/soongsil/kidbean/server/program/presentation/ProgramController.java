@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.program.application.ProgramService;
-import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
@@ -23,8 +22,6 @@ import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
-
-import java.util.List;
 
 import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE;
 
@@ -51,15 +48,15 @@ public class ProgramController {
 
     //상세조회
     @GetMapping("/programs/{programId}")
-    public ResponseEntity<ProgramDetailResponse> getProgramInfo(@PathVariable Long programId) {
+    public ResponseEntity<ProgramDetailResponse> getProgramInfo(
+            @PathVariable Long programId) {
+
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
-        List<Day> date = dayRepository.findAllByProgram(program);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(programService.getProgramInfo(programId, date));
+                .body(programService.getProgramInfo(programId));
     }
 
 
@@ -79,7 +76,7 @@ public class ProgramController {
     public ResponseEntity<ResponseTemplate<Object>> editProgramInfo(
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId,
-            @Valid @RequestBody UpdateProgramRequest updateProgramRequest,
+            @Valid @RequestPart UpdateProgramRequest updateProgramRequest,
             @RequestPart MultipartFile s3Url) {
 
         programService.editProgramInfo(programId, updateProgramRequest, s3Url);
@@ -94,11 +91,10 @@ public class ProgramController {
     @PostMapping("/program")
     public ResponseEntity<ResponseTemplate<Object>> createProgram(
             @AuthenticationPrincipal AuthUser user,
-            @RequestBody ProgramCategory programCategory,
-            @Valid @RequestBody EnrollProgramRequest enrollProgramRequest,
+            @Valid @RequestPart EnrollProgramRequest enrollProgramRequest,
             @RequestPart MultipartFile s3Url){
 
-        programService.createProgram(programCategory, enrollProgramRequest,s3Url);
+        programService.createProgram(enrollProgramRequest,s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

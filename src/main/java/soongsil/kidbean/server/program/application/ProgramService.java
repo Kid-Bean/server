@@ -17,9 +17,11 @@ import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
+import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class ProgramService {
     private static final String PROGRAM_IMAGE_NAME = "program/";
     private static final String TEACHER_IMAGE_NAME = "teacher/";
     private final S3Uploader s3Uploader;
+    private final DayRepository dayRepository;
 
     /**
      * 프로그램 상세 조회
@@ -41,12 +44,18 @@ public class ProgramService {
      * @return response
      */
     @Transactional
-    public ProgramDetailResponse getProgramInfo(Long programId, List<Day> date) {
+    public ProgramDetailResponse getProgramInfo(Long programId) {
 
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
-        return ProgramDetailResponse.from(program);
+        List<Day> date = dayRepository.findAllByProgram(program);
+        //enum에서 가져옴
+        List<String> dates = date.stream()
+                .map(day -> day.getDate().getDate())
+                .collect(Collectors.toList());
+
+        return ProgramDetailResponse.of(program,dates);
     }
 
     /**
@@ -81,8 +90,7 @@ public class ProgramService {
      * 프로그램 추가하기- 관리자
      */
     @Transactional
-    public void createProgram(ProgramCategory programCategory,
-                              EnrollProgramRequest enrollProgramRequest, MultipartFile s3Url) {
+    public void createProgram(EnrollProgramRequest enrollProgramRequest, MultipartFile s3Url) {
 
         String programFolderName = PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory();
         String teacherFolderName = TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory();
@@ -106,13 +114,14 @@ public class ProgramService {
                 .folderName(TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory())
                 .build();
 
+        //to-entity
         Program createProgram = Program.builder()
                 .title(enrollProgramRequest.title())
                 .content(enrollProgramRequest.content())
                 .place(enrollProgramRequest.place())
                 .teacherName(enrollProgramRequest.teacherName())
                 .phoneNumber(enrollProgramRequest.phoneNumber())
-                .programCategory(programCategory)
+                .programCategory(enrollProgramRequest.programCategory())
                 .programImageInfo(programImageInfo)
                 .teacherImageInfo(teacherImageInfo)
                 .build();
@@ -149,14 +158,17 @@ public class ProgramService {
                     .folderName(teacherFolderName)
                     .build();
 
-            program.setTitle(updateProgramRequest.title());
-            program.setContent(updateProgramRequest.content());
-            program.setPlace(updateProgramRequest.place());
-            program.setTeacherName(updateProgramRequest.teacherName());
-            program.setPhoneNumber(updateProgramRequest.phoneNumber());
-            program.setS3Info(programImageInfo, teacherImageInfo);
+            Program updateProgram = Program.builder()
+                    .title(updateProgramRequest.title())
+                    .content(updateProgramRequest.content())
+                    .place(updateProgramRequest.place())
+                    .teacherName(updateProgramRequest.teacherName())
+                    .phoneNumber(updateProgramRequest.phoneNumber())
+                    .programImageInfo(programImageInfo)
+                    .teacherImageInfo(teacherImageInfo)
+                    .build();
 
-            programRepository.save(program); // save 안해도 set 때문에 자동으로 해결
+            programRepository.save(updateProgram); // save 안해도 set 때문에 자동으로 해결
         }
     }
 }

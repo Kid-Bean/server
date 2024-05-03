@@ -54,7 +54,7 @@ public class Program {
     })
     private S3Info programImageInfo;
 
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "uploader_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
@@ -84,6 +84,7 @@ public class Program {
         this.teacherImageInfo = teacherImageInfo;
     }
 
+
     @Builder
     public Program(String title, String content, S3Info programImageInfo, S3Info teacherImageInfo) {
         this.title = title;
@@ -92,7 +93,21 @@ public class Program {
         this.teacherImageInfo = teacherImageInfo;
     }
 
+    public void setProgramInfo(String title,
+                               String place,
+                               String content,
+                               S3Info teacherImageInfo,
+                               S3Info programImageInfo,
+                               String teacherName,
+                               String phoneNumber){
 
-
+        this.programImageInfo = programImageInfo;
+        this.teacherImageInfo = teacherImageInfo;
+        this.title = title;
+        this.content = content;
+        this.teacherName = teacherName;
+        this.phoneNumber = phoneNumber;
+        this.place = place;
+    }
 
 }

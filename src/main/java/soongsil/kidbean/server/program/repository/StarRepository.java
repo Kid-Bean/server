@@ -8,6 +8,7 @@ import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StarRepository extends JpaRepository<Star, Long> {
@@ -16,5 +17,5 @@ public interface StarRepository extends JpaRepository<Star, Long> {
 
     List<Star> findAllByMemberAndProgram(Member member, Program program);
 
-    Star findByMemberAndProgram(Member member, Program program);
+    Optional<Star> findByMemberAndProgram(Member member, Program program);
 }

@@ -1,19 +1,13 @@
 package soongsil.kidbean.server.program.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.program.domain.Program;
-import soongsil.kidbean.server.program.domain.type.ProgramCategory;
-import soongsil.kidbean.server.quiz.domain.WordQuiz;
-import soongsil.kidbean.server.quiz.domain.type.Level;
 
-import java.util.ArrayList;
+import soongsil.kidbean.server.program.domain.type.ProgramCategory;
+
+import java.util.List;
 
 
 public record EnrollProgramRequest(
-        //day->List
 
         @NotNull(message = "선생님 이름을 입력해주세요")
         String teacherName,
@@ -25,8 +19,8 @@ public record EnrollProgramRequest(
         String phoneNumber,
         @NotNull(message = "내용을 입력해주세요")
         String content,
-        ProgramCategory programCategory
-
+        ProgramCategory programCategory,
+        List<String> date
 ) {
 
 }

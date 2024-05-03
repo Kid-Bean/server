@@ -54,7 +54,10 @@ public class StarService {
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
-        Star star = starRepository.findByMemberAndProgram(member, program);
+        //repository optional 처리 -> null checking
+        Star star = starRepository.findByMemberAndProgram(member, program)
+                        .orElseThrow(()-> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        //예외전환
 
         starRepository.delete(star);
     }

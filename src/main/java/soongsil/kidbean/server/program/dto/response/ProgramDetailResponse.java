@@ -3,6 +3,8 @@ package soongsil.kidbean.server.program.dto.response;
 import lombok.Builder;
 import soongsil.kidbean.server.program.domain.Program;
 
+import java.util.List;
+
 
 @Builder
 public record ProgramDetailResponse(
@@ -13,10 +15,11 @@ public record ProgramDetailResponse(
         String phoneNumber,
         String content,
         String programImageUrl,
-        String teacherImageUrl
+        String teacherImageUrl,
+        List<String> date
 ) {
 
-    public static ProgramDetailResponse from(Program program) {
+    public static ProgramDetailResponse of(Program program,List<String> dates) {
 
         return ProgramDetailResponse
                 .builder()
@@ -28,6 +31,7 @@ public record ProgramDetailResponse(
                 .content(program.getContent())
                 .programImageUrl(program.getProgramImageInfo().getS3Url())
                 .teacherImageUrl(program.getTeacherImageInfo().getS3Url())
+                .date(dates)
                 .build();
     }
 }
