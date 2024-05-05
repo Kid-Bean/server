@@ -7,169 +7,88 @@ import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_A
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.Collections;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import soongsil.kidbean.server.quiz.application.quizscorer.ImageQuizScorer;
+import soongsil.kidbean.server.quiz.application.quizscorer.QuizScorerFactory;
+import soongsil.kidbean.server.quiz.application.quizscorer.WordQuizScorer;
 import soongsil.kidbean.server.quiz.application.quizsolver.ImageQuizSolver;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolverFactory;
 import soongsil.kidbean.server.quiz.application.quizsolver.WordQuizSolver;
+import soongsil.kidbean.server.quiz.application.quizsolver.dto.SolvedQuizInfo;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
-import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
-import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
-import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 
 @ExtendWith(MockitoExtension.class)
 class QuizSolvedServiceTest {
 
-    @Mock
-    private QuizSolvedRepository quizSolvedRepository;
-
-    @Mock
-    private ImageQuizRepository imageQuizRepository;
-
-    @Mock
-    private WordQuizRepository wordQuizRepository;
+    @InjectMocks
+    private QuizSolvedService quizSolvedService;
 
     @Mock
     private QuizSolverFactory quizSolverFactory;
 
-    @InjectMocks
-    private QuizSolvedService quizSolvedService;
+    @Mock
+    private ImageQuizSolver imageQuizSolver;
+
+    @Mock
+    private WordQuizSolver wordQuizSolver;
+
+    @Mock
+    private QuizScorerFactory quizScorerFactory;
+
+    @Mock
+    private ImageQuizScorer imageQuizScorer;
+
+    @Mock
+    private WordQuizScorer wordQuizScorer;
 
     @Test
-    @DisplayName("이미 푼 맞은 ImageQuiz 풀었을 때")
-    public void solveImageQuizzes1() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
-        ImageQuizSolver imageQuizSolver = new ImageQuizSolver(imageQuizRepository, quizSolvedRepository);
-
-        given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId()))
-                .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
-        //이전에 풀었던 문제
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL1, MEMBER1, true))
-                .willReturn(true);
-
-        //when
-        Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
-
-        //then
-        assertThat(totalScore).isEqualTo(0L);
-    }
-
-    @Test
-    @DisplayName("이미 푼 틀린 ImageQuiz 풀었을 때")
-    public void solveImageQuizzes2() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
-        ImageQuizSolver imageQuizSolver = new ImageQuizSolver(imageQuizRepository, quizSolvedRepository);
-
-        given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL1, MEMBER1, true))
-                .willReturn(false);
-
-        //when
-        Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
-
-        //then
-        assertThat(totalScore).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
-    }
-
-    @Test
-    @DisplayName("풀지 않은 ImageQuiz 풀었을 때")
-    public void solveImageQuizzes3() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
-        ImageQuizSolver imageQuizSolver = new ImageQuizSolver(imageQuizRepository, quizSolvedRepository);
-
-        given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(false);
-
-        //when
-        Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
-
-        //then
-        assertThat(totalScore).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
-    }
-
-    @Test
-    @DisplayName("이미 푼 맞은 WordQuiz 풀었을 때")
-    public void solveWordQuizzes1() {
+    @DisplayName("WordQuiz 풀기")
+    void solveQuizzes() {
         //given
         QuizSolvedRequest request =
                 new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
-        WordQuizSolver wordQuizSolver = new WordQuizSolver(wordQuizRepository, quizSolvedRepository);
+        SolvedQuizInfo solvedQuizInfo =
+                new SolvedQuizInfo(WORD_QUIZ.getQuizCategory(), Level.getPoint(WORD_QUIZ.getLevel()), false);
 
         given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
-        given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        //이전에 풀었던 문제
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER1, true))
-                .willReturn(true);
+        given(wordQuizSolver.solveQuiz(request, MEMBER1)).willReturn(solvedQuizInfo);
+        given(quizScorerFactory.getScorer(QuizType.WORD_QUIZ)).willReturn(wordQuizScorer);
+        given(wordQuizScorer.addPerQuizScore(solvedQuizInfo, MEMBER1)).willReturn(Level.getPoint(WORD_QUIZ.getLevel()));
 
         //when
-        Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
+        Long score = quizSolvedService.solveQuizzes(Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
 
         //then
-        assertThat(totalScore).isEqualTo(0L);
+        assertThat(score).isEqualTo(Level.getPoint(WORD_QUIZ.getLevel()));
     }
 
     @Test
-    @DisplayName("이미 푼 틀린 WordQuiz 풀었을 때")
-    public void solveWordQuizzes2() {
+    @DisplayName("ImageQuiz 풀기")
+    void solveQuizzes2() {
         //given
         QuizSolvedRequest request =
-                new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
-        WordQuizSolver wordQuizSolver = new WordQuizSolver(wordQuizRepository, quizSolvedRepository);
+                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
+        SolvedQuizInfo solvedQuizInfo =
+                new SolvedQuizInfo(IMAGE_QUIZ_ANIMAL1.getQuizCategory(), Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()),
+                        false);
 
-        given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
-        given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER1, true))
-                .willReturn(false);
-
-        //when
-        Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
-
-        //then
-        assertThat(totalScore).isEqualTo(Level.getPoint(WORD_QUIZ.getLevel()));
-    }
-
-    @Test
-    @DisplayName("풀지 않은 WordQuiz 풀었을 때")
-    public void solveWordQuizzes3() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
-        WordQuizSolver wordQuizSolver = new WordQuizSolver(wordQuizRepository, quizSolvedRepository);
-
-        given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
-        given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(false);
+        given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
+        given(imageQuizSolver.solveQuiz(request, MEMBER1)).willReturn(solvedQuizInfo);
+        given(quizScorerFactory.getScorer(QuizType.IMAGE_QUIZ)).willReturn(imageQuizScorer);
+        given(imageQuizScorer.addPerQuizScore(solvedQuizInfo, MEMBER1)).willReturn(
+                Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
 
         //when
-        Long totalScore = quizSolvedService.solveQuizzes(
-                Collections.singletonList(request), MEMBER1, QuizType.WORD_QUIZ);
+        Long score = quizSolvedService.solveQuizzes(Collections.singletonList(request), MEMBER1, QuizType.IMAGE_QUIZ);
 
         //then
-        assertThat(totalScore).isEqualTo(Level.getPoint(WORD_QUIZ.getLevel()));
+        assertThat(score).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
     }
 }
