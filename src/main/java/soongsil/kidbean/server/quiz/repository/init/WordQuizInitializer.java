@@ -8,6 +8,7 @@ import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.quiz.domain.Word;
 import soongsil.kidbean.server.quiz.domain.WordQuiz;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.repository.WordQuizRepository;
 import soongsil.kidbean.server.quiz.repository.WordRepository;
 
@@ -16,13 +17,11 @@ import java.util.List;
 
 import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_ADMIN;
 import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
-import static soongsil.kidbean.server.quiz.domain.type.Level.DIAMOND;
-import static soongsil.kidbean.server.quiz.domain.type.Level.GOLD;
-import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;
+import static soongsil.kidbean.server.quiz.domain.type.Level.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@Order(2)
+@Order(3)
 @LocalDummyDataInit
 public class WordQuizInitializer implements ApplicationRunner {
 
@@ -37,6 +36,7 @@ public class WordQuizInitializer implements ApplicationRunner {
             List<WordQuiz> WordQuizList = new ArrayList<>();
 
             WordQuiz WordQuiz1 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("가족")
                     .answer("자동차")
                     .level(SILVER)
@@ -45,71 +45,81 @@ public class WordQuizInitializer implements ApplicationRunner {
 
 
             WordQuiz WordQuiz2 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.ANIMAL)
                     .title("동물")
                     .answer("자")
                     .level(GOLD)
-                    .member(DUMMY_ADMIN)
+                    .member(DUMMY_MEMBER)
                     .build();
 
 
             WordQuiz WordQuiz3 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.PLANT)
                     .title("식물")
                     .answer("물병")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .level(GOLD)
+                    .member(DUMMY_MEMBER)
                     .build();
 
 
             WordQuiz WordQuiz4 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.FOOD)
                     .title("음식")
                     .answer("비행기")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .level(SILVER)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz5 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.FOOD)
                     .title("과일")
                     .answer("시계")
                     .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz6 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.FOOD)
                     .title("음식")
                     .answer("물고기")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .level(BRONZE)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz7 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("신체")
                     .answer("코끼리")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .level(SILVER)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz8 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("인물")
                     .answer("학교")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .level(PLATINUM)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz9 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("동물")
                     .answer("기차")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .level(SILVER)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz10 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("날씨")
                     .answer("우산")
                     .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
+                    .member(DUMMY_MEMBER)
                     .build();
 
             WordQuiz WordQuiz11 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("운송수단")
                     .answer("고양이")
                     .level(DIAMOND)
@@ -117,34 +127,39 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz12 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("모양")
                     .answer("신발")
-                    .level(DIAMOND)
+                    .level(GOLD)
                     .member(DUMMY_ADMIN)
                     .build();
 
             WordQuiz WordQuiz13 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("우주")
                     .answer("동그라미")
-                    .level(DIAMOND)
+                    .level(PLATINUM)
                     .member(DUMMY_ADMIN)
                     .build();
 
             WordQuiz WordQuiz14 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("동물")
                     .answer("사과")
-                    .level(DIAMOND)
+                    .level(BRONZE)
                     .member(DUMMY_ADMIN)
                     .build();
 
             WordQuiz WordQuiz15 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("사물")
                     .answer("손")
-                    .level(DIAMOND)
+                    .level(GOLD)
                     .member(DUMMY_ADMIN)
                     .build();
 
             WordQuiz WordQuiz16 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("기계")
                     .answer("선풍기")
                     .level(DIAMOND)
@@ -152,6 +167,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz17 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("모양")
                     .answer("태양")
                     .level(DIAMOND)
@@ -159,20 +175,23 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz18 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("기계")
                     .answer("다람쥐")
-                    .level(DIAMOND)
+                    .level(SILVER)
                     .member(DUMMY_ADMIN)
                     .build();
 
             WordQuiz WordQuiz19 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("가족")
                     .answer("보석")
-                    .level(DIAMOND)
+                    .level(PLATINUM)
                     .member(DUMMY_ADMIN)
                     .build();
 
             WordQuiz WordQuiz20 = WordQuiz.builder()
+                    .quizCategory(QuizCategory.NONE)
                     .title("시간")
                     .answer("아빠")
                     .level(DIAMOND)
@@ -199,14 +218,6 @@ public class WordQuizInitializer implements ApplicationRunner {
             WordQuizList.add(WordQuiz18);
             WordQuizList.add(WordQuiz19);
             WordQuizList.add(WordQuiz20);
-
-            WordQuiz WordQuiz4 = WordQuiz.builder()
-                    .title("동물")
-                    .answer("커피")
-                    .level(DIAMOND)
-                    .member(DUMMY_ADMIN)
-                    .build();
-            WordQuizList.add(WordQuiz4);
 
             List<Word> wordList = new ArrayList<>();
             wordList.add(new Word("엄마", WordQuiz1));
@@ -312,6 +323,7 @@ public class WordQuizInitializer implements ApplicationRunner {
             wordList.add(new Word("아침", WordQuiz20));
             wordList.add(new Word("점심", WordQuiz20));
             wordList.add(new Word("저녁", WordQuiz20));
+
             wordQuizRepository.saveAll(WordQuizList);
             wordRepository.saveAll(wordList);
         }
