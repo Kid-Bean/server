@@ -30,7 +30,7 @@ public class S3Uploader {
     private String bucket;
 
     //MultipartFile을 전달받아 File로 전환한 후 S3에 업로드 후 url return
-    public String upload(MultipartFile multipartFile, String folderName) {
+    public S3Info upload(MultipartFile multipartFile, String folderName) {
         File uploadFile;
 
         try {
@@ -40,7 +40,14 @@ public class S3Uploader {
             throw new FileConvertFailException(FILE_CONVERT_FAIL);
         }
 
-        return upload(uploadFile, folderName);
+        String uploadUrl = upload(uploadFile, folderName);
+        String fileName = uploadFile.getName();
+
+        return S3Info.builder()
+                .s3Url(uploadUrl)
+                .fileName(fileName)
+                .folderName(folderName)
+                .build();
     }
 
     //S3 버킷에 있는 파일을 삭제

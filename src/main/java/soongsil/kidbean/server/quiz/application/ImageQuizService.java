@@ -36,12 +36,16 @@ import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMA
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+
+
 public class ImageQuizService {
 
     private final ImageQuizRepository imageQuizRepository;
     private final MemberRepository memberRepository;
     private final QuizSolvedService quizSolvedService;
     private final S3Uploader s3Uploader;
+
+    private final static String QUIZ_BASE_FOLDER = "quiz/";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
@@ -96,43 +100,31 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile s3Url) {
+    public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile multipartFile) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         ImageQuiz imageQuiz = request.toImageQuiz(member);
-        S3Info s3Info = createS3Info(s3Url, request.quizCategory());
+        S3Info s3Info = uploadS3Info(multipartFile, request.quizCategory());
         imageQuiz.setS3Info(s3Info);
 
         imageQuizRepository.save(imageQuiz);
     }
 
     @Transactional
-    public void updateImageQuiz(ImageQuizUpdateRequest request, Long quizId, MultipartFile s3Url) {
+    public void updateImageQuiz(ImageQuizUpdateRequest request, Long quizId, MultipartFile multipartFile) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         // 이미지 수정이 되지 않는 것 default
         S3Info s3Info = imageQuiz.getS3Info();
 
-        if (!s3Url.isEmpty()) {
+        if (!multipartFile.isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
-            s3Info = createS3Info(s3Url, request.quizCategory());
+            s3Info = uploadS3Info(multipartFile, request.quizCategory());
         }
 
         imageQuiz.updateImageQuiz(request.title(), request.answer(), request.quizCategory(), s3Info);
-    }
-
-    private S3Info createS3Info(MultipartFile file, QuizCategory quizCategory) {
-        String folderName = "quiz/" + quizCategory;
-        String uploadUrl = s3Uploader.upload(file, folderName);
-        String generatedPath = uploadUrl.split("/kidbean.s3.ap-northeast-2.amazonaws.com/" + folderName + "/")[1];
-
-        return S3Info.builder()
-                .s3Url(uploadUrl)
-                .fileName(generatedPath)
-                .folderName(folderName)
-                .build();
     }
 
     @Transactional
@@ -142,6 +134,11 @@ public class ImageQuizService {
 
         s3Uploader.deleteFile(imageQuiz.getS3Info());
         imageQuizRepository.delete(imageQuiz);
+    }
+
+    private S3Info uploadS3Info(MultipartFile file, QuizCategory quizCategory) {
+        String folderName = QUIZ_BASE_FOLDER + quizCategory;
+        return s3Uploader.upload(file, folderName);
     }
 
     private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {
