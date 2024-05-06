@@ -27,3 +27,11 @@ cloud:
       auto: false
     stack:
       auto: false
+
+kakao:
+  feign:
+    base-url: http://localhost:12356
+
+openApi:
+  url: http://localhost:15359
+  accessKey: thisistestaccesskey

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quiz.application.vo.QuizType;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.type.Level;
@@ -20,7 +21,7 @@ import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.summary.domain.AverageScore;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
-import soongsil.kidbean.server.summary.repository.ImageQuizScoreRepository;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -29,66 +30,100 @@ public class AverageScoreScheduler {
 
     private final QuizSolvedRepository quizSolvedRepository;
     private final MemberRepository memberRepository;
-    private final ImageQuizScoreRepository imageQuizScoreRepository;
+    private final QuizScoreRepository quizScoreRepository;
     private final AverageScoreRepository averageScoreRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void updateImageQuizLevel() {
-        Map<ImageQuiz, List<QuizSolved>> groupByImageQuiz = quizSolvedRepository.findAllByImageQuizIsNotNull()
+        Map<Boolean, List<QuizSolved>> groupedByQuizType = quizSolvedRepository.findAll()
                 .stream()
                 .filter(QuizSolved::isImageQuizMadeByAdmin)
-                .collect(
-                        Collectors.groupingBy(QuizSolved::getImageQuiz)
-                );
+                .collect(Collectors.partitioningBy(QuizSolved::isImageQuiz));
 
-        groupByImageQuiz.forEach((imageQuiz, quizSolvedList) -> {
-            Long accuracy = calculateAccuracy(quizSolvedList);
-            Level level = Level.calculate(accuracy);
+        groupedByQuizType.forEach((isImageQuiz, quizSolvedList) -> {
+            Map<ImageQuiz, List<QuizSolved>> groupByQuiz = quizSolvedList.stream()
+                    .collect(Collectors.groupingBy(QuizSolved::getImageQuiz));
 
-            if (imageQuiz.isLevelUpdateNeed(level)) {
-                updateMemberTotalScore(imageQuiz, level);
-                updateLevel(imageQuiz, level);
-            }
+            groupByQuiz.forEach((quiz, solvedList) -> {
+                Long accuracy = calculateAccuracy(solvedList);
+                Level level = Level.calculate(accuracy);
+
+                QuizType quizType = isImageQuiz ? QuizType.IMAGE_QUIZ : QuizType.WORD_QUIZ;
+
+                if (quiz.isLevelUpdateNeed(level)) {
+                    updateMemberTotalScore(quiz, level, quizType);
+                    updateLevel(quiz, level);
+                }
+            });
         });
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 59 * * * *")
+    @Transactional
     public void updateAverageScore() {
-        Map<AgeGroup, List<Member>> groupMember = memberRepository.findAllByRole(Role.MEMBER).stream()
-                .filter(member -> member.getBirthDate() != null)
-                .collect(Collectors.groupingBy(
-                        member -> AgeGroup.calculate(member.getBirthDate())
-                ));
+        Map<AgeGroup, List<Member>> groupMember = getGroupedMembersByRole();
 
         groupMember.forEach((ageGroup, members) -> {
-            List<QuizSolved> quizSolvedList = members.stream()
-                    .flatMap(member -> quizSolvedRepository
-                            .findAllByMemberAndIsCorrectTrueAndImageQuizIsNotNull(member)
-                            .stream())
-                    .toList();
+            List<QuizSolved> quizSolvedList = getDistinctQuizSolvedList(members);
 
             List<QuizCategory> quizCategories = QuizCategory.allValue();
 
             for (QuizCategory category : quizCategories) {
-                long sum = quizSolvedList.stream()
-                        .filter(quizSolved -> category == quizSolved.getImageQuiz().getQuizCategory())
-                        .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
-                        .sum();
+                List<QuizSolved> solvedList = filterSolvedListByCategory(quizSolvedList, category);
 
-                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroup(ageGroup);
+                long sum = calculateSum(solvedList);
+                long memberCount = getDistinctMemberCount(solvedList);
+
+                Optional<AverageScore> optionalAverageScore = averageScoreRepository.findByAgeGroupAndQuizCategory(
+                        ageGroup, category);
 
                 if (optionalAverageScore.isPresent()) {
                     AverageScore averageScore = optionalAverageScore.get();
-                    averageScore.updateScoreAndCount(sum, members.size());
+                    averageScore.updateScoreAndCount(sum, memberCount);
                 } else {
-                    averageScoreRepository.save(new AverageScore(ageGroup, sum, members.size(), category));
+                    averageScoreRepository.save(new AverageScore(ageGroup, sum, memberCount, category));
                 }
             }
         });
     }
 
+    private Map<AgeGroup, List<Member>> getGroupedMembersByRole() {
+        return memberRepository.findAllByRole(Role.MEMBER).stream()
+                .filter(member -> member.getBirthDate() != null)
+                .collect(Collectors.groupingBy(member -> AgeGroup.calculate(member.getBirthDate())));
+    }
+
+    private List<QuizSolved> getDistinctQuizSolvedList(List<Member> members) {
+        return members.stream()
+                .flatMap(member -> quizSolvedRepository
+                        .findAllByMemberAndIsCorrectTrue(member)
+                        .stream())
+                .distinct()
+                .toList();
+    }
+
+    private List<QuizSolved> filterSolvedListByCategory(List<QuizSolved> quizSolvedList, QuizCategory category) {
+        return quizSolvedList.stream()
+                .filter(quizSolved -> category == quizSolved.getQuizCategory())
+                .toList();
+    }
+
+    private long calculateSum(List<QuizSolved> solvedList) {
+        return solvedList.stream()
+                .mapToLong(quizSolved -> Level.getPoint(quizSolved.getImageQuiz().getLevel()))
+                .sum();
+    }
+
+    private long getDistinctMemberCount(List<QuizSolved> solvedList) {
+        return solvedList.stream()
+                .collect(Collectors.groupingBy(QuizSolved::getMember))
+                .keySet()
+                .stream()
+                .count();
+    }
+
     @Transactional
-    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level) {
+    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level, QuizType quizType) {
         List<QuizSolved> quizSolvedList = quizSolvedRepository.findAllByImageQuizAndIsCorrectTrue(imageQuiz);
 
         Set<Member> memberList = quizSolvedList.stream()
@@ -97,8 +132,8 @@ public class AverageScoreScheduler {
 
         memberList.forEach(member -> {
             member.updateScore(imageQuiz.getLevel(), level);
-            imageQuizScoreRepository.findByMemberAndQuizCategory(member, imageQuiz.getQuizCategory())
-                    .ifPresent(imageQuizScore -> imageQuizScore.updateScore(imageQuiz.getLevel(), level));
+            quizScoreRepository.findByMemberAndQuizCategory(member, imageQuiz.getQuizCategory())
+                    .ifPresent(quizScore -> quizScore.updateScore(imageQuiz.getLevel(), level));
         });
     }
 

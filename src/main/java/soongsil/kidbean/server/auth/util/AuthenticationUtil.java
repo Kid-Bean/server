@@ -32,7 +32,7 @@ public class AuthenticationUtil {
                 .memberId(member.getMemberId())
                 .socialId(member.getSocialId())
                 .email(member.getEmail())
-                .roles(Collections.singletonList(member.getRole().getKey()))
+                .roles(Collections.singletonList(member.getRoleKey()))
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장

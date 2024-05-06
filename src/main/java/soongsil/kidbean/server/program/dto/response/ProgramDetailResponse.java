@@ -5,7 +5,6 @@ import soongsil.kidbean.server.program.domain.Program;
 
 import java.util.List;
 
-
 @Builder
 public record ProgramDetailResponse(
         Long programId,

@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.List;
@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.quiz.application.WordQuizService;
 import soongsil.kidbean.server.quiz.domain.Word;
-import soongsil.kidbean.server.quiz.dto.response.WordQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveListResponse;
+import soongsil.kidbean.server.quiz.dto.response.WordQuizSolveResponse;
 
 @WebMvcTest(WordQuizController.class)
 class WordQuizControllerTest extends CommonControllerTest {
@@ -35,12 +36,12 @@ class WordQuizControllerTest extends CommonControllerTest {
     void getRandomWordQuiz() throws Exception {
 
         //given
-        Long memberId = MEMBER.getMemberId();
-        WordQuizResponse wordQuizResponse = WordQuizResponse.from(WORD_QUIZ);
+        WordQuizSolveListResponse wordQuizSolveListResponse = new WordQuizSolveListResponse(
+                List.of(WordQuizSolveResponse.from(WORD_QUIZ)));
         List<Word> wordList = WORD_QUIZ.getWords();
 
-        given(wordQuizService.selectRandomWordQuiz(memberId))
-                .willReturn(wordQuizResponse);
+        given(wordQuizService.selectRandomWordQuiz(MEMBER1.getMemberId(), 3))
+                .willReturn(wordQuizSolveListResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/quiz/word/solve"))
@@ -48,10 +49,13 @@ class WordQuizControllerTest extends CommonControllerTest {
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.results.title").value(WORD_QUIZ.getTitle()))
-                .andExpect(jsonPath("$.results.quizId").value(WORD_QUIZ.getQuizId()))
-                .andExpect(jsonPath("$.results.words[0].content").value(wordList.get(0).getContent()))
-                .andExpect(jsonPath("$.results.words[1].content").value(wordList.get(1).getContent()))
-                .andExpect(jsonPath("$.results.words[2].content").value(wordList.get(2).getContent()));
+                .andExpect(jsonPath("$.results.wordQuizSolveResponseList[0].title").value(WORD_QUIZ.getTitle()))
+                .andExpect(jsonPath("$.results.wordQuizSolveResponseList[0].quizId").value(WORD_QUIZ.getQuizId()))
+                .andExpect(jsonPath("$.results.wordQuizSolveResponseList[0].words[0].content")
+                        .value(wordList.get(0).getContent()))
+                .andExpect(jsonPath("$.results.wordQuizSolveResponseList[0].words[1].content")
+                        .value(wordList.get(1).getContent()))
+                .andExpect(jsonPath("$.results.wordQuizSolveResponseList[0].words[2].content")
+                        .value(wordList.get(2).getContent()));
     }
 }

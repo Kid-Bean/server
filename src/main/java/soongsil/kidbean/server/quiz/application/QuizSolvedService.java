@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.quiz.application.quizscorer.QuizScorer;
+import soongsil.kidbean.server.quiz.application.quizscorer.QuizScorerFactory;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolver;
 import soongsil.kidbean.server.quiz.application.quizsolver.QuizSolverFactory;
 import soongsil.kidbean.server.quiz.application.vo.QuizType;
@@ -18,6 +20,7 @@ import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 public class QuizSolvedService {
 
     private final QuizSolverFactory quizSolverFactory;
+    private final QuizScorerFactory quizScorerFactory;
 
     /**
      * 문제를 풀어서 얻은 점수를 return 각각의 문제들은 QuizSolved에 정답을 표기하여 저장
@@ -29,9 +32,11 @@ public class QuizSolvedService {
     public Long solveQuizzes(List<QuizSolvedRequest> quizSolvedRequestList, Member member, QuizType type) {
 
         QuizSolver solver = quizSolverFactory.getSolver(type);
+        QuizScorer scorer = quizScorerFactory.getScorer(type);
 
         Long score = quizSolvedRequestList.stream()
                 .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))
+                .map(solvedQuizInfo -> scorer.addPerQuizScore(solvedQuizInfo, member))
                 .reduce(0L, Long::sum);
 
         member.updateScore(member.getScore() + score);

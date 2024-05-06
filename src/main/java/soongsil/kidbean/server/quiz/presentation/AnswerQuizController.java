@@ -69,10 +69,11 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "추가한 AnswerQuiz 문제 리스트 가져오기", description = "AnswerQuiz 리스트 가져오기")
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<ResponseTemplate<Object>> getAllAnswerQuizByMember(@PathVariable Long memberId) {
+    @GetMapping("/member")
+    public ResponseEntity<ResponseTemplate<Object>> getAllAnswerQuizByMember(
+            @AuthenticationPrincipal AuthUser user) {
 
-        List<AnswerQuizMemberResponse> response = answerQuizService.getAllAnswerQuizByMember(memberId);
+        List<AnswerQuizMemberResponse> response = answerQuizService.getAllAnswerQuizByMember(user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -80,11 +81,12 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "추가한 AnswerQuiz 문제 상세 정보 가져오기", description = "AnswerQuiz 상세 정보 가져오기")
-    @GetMapping("/member/{memberId}/{quizId}")
-    public ResponseEntity<ResponseTemplate<Object>> getAnswerQuizById(@PathVariable Long memberId,
-                                                                      @PathVariable Long quizId) {
+    @GetMapping("/member/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> getAnswerQuizById(
+            @AuthenticationPrincipal AuthUser user,
+            @PathVariable Long quizId) {
 
-        AnswerQuizMemberDetailResponse response = answerQuizService.getAnswerQuizById(memberId, quizId);
+        AnswerQuizMemberDetailResponse response = answerQuizService.getAnswerQuizById(user.memberId(), quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -92,11 +94,12 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "AnswerQuiz 등록하기", description = "AnswerQuiz 등록하기")
-    @PostMapping("/member/{memberId}")
-    public ResponseEntity<ResponseTemplate<Object>> uploadAnswerQuiz(@PathVariable Long memberId,
-                                                                     @Valid @RequestBody AnswerQuizUploadRequest request) {
+    @PostMapping("/member")
+    public ResponseEntity<ResponseTemplate<Object>> uploadAnswerQuiz(
+            @AuthenticationPrincipal AuthUser user,
+            @Valid @RequestBody AnswerQuizUploadRequest request) {
 
-        answerQuizService.uploadAnswerQuiz(request, memberId);
+        answerQuizService.uploadAnswerQuiz(request, user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -104,12 +107,12 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "AnswerQuiz 문제 수정하기", description = "AnswerQuiz 수정하기")
-    @PutMapping("/member/{memberId}/{quizId}")
-    public ResponseEntity<ResponseTemplate<Object>> updateAnswerQuiz(@PathVariable Long memberId,
-                                                                     @PathVariable Long quizId,
-                                                                     @Valid @RequestBody AnswerQuizUpdateRequest request) {
+    @PutMapping("/member/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> updateAnswerQuiz(
+            @PathVariable Long quizId,
+            @Valid @RequestBody AnswerQuizUpdateRequest request) {
 
-        answerQuizService.updateAnswerQuiz(request, memberId, quizId);
+        answerQuizService.updateAnswerQuiz(request, quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -117,11 +120,11 @@ public class AnswerQuizController {
     }
 
     @Operation(summary = "AnswerQuiz 문제 삭제하기", description = "AnswerQuiz 삭제하기")
-    @DeleteMapping("/member/{memberId}/{quizId}")
-    public ResponseEntity<ResponseTemplate<Object>> deleteAnswerQuiz(@PathVariable Long memberId,
-                                                                     @PathVariable Long quizId) {
+    @DeleteMapping("/member/{quizId}")
+    public ResponseEntity<ResponseTemplate<Object>> deleteAnswerQuiz(
+            @PathVariable Long quizId) {
 
-        answerQuizService.deleteAnswerQuiz(memberId, quizId);
+        answerQuizService.deleteAnswerQuiz(quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

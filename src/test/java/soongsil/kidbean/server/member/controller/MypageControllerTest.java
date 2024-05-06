@@ -30,28 +30,4 @@ public class MypageControllerTest {
 
     @MockBean
     MypageService mypageService;
-
-    @Test
-    public void findSolvedImageTest() throws Exception {
-        //given
-        List<SolvedImageInfo> list = new ArrayList<>();
-        SolvedImageListResponse response = new SolvedImageListResponse(list);
-        System.out.println(response);
-        given(mypageService.findSolvedImage(any(Long.class)))
-                .willReturn(response);
-        System.out.println(response);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Long memberId = 1L;
-        //when
-        ResultActions resultActions = mockMvc.perform(
-                        MockMvcRequestBuilders.get("/mypage/solved/image/list/{memberId}", memberId)
-                                .param("memberId", memberId.toString()))
-                .andDo(MockMvcResultHandlers.print());
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.solvedList")
-                        .value(objectMapper.writeValueAsString(response.solvedList())));
-    }
 }

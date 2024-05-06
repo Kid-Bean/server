@@ -1,5 +1,7 @@
 package soongsil.kidbean.server.auth.application;
 
+import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import soongsil.kidbean.server.auth.dto.OAuthAttributes;
 import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
@@ -47,10 +50,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 of(socialType, userNameAttributeName, oAuth2User.getAttributes());
 
         //Member 반환
-        Member member = getMember(Objects.requireNonNull(attributes), socialType);
+        Member member = getMember(Objects.requireNonNull(attributes));
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(member.getRole().getKey())),
+                Collections.singleton(new SimpleGrantedAuthority(member.getRoleKey())),
                 Objects.requireNonNull(attributes).getAttributes(),
                 attributes.getNameAttributeKey()
         );
@@ -64,16 +67,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     /**
-     * SocialType 과 attributes 에 있는 소셜 로그인 식별값 id를 통해 회원을 찾아 반환
+     * attributes 에 있는 소셜 로그인 식별값 id를 통해 회원을 찾아 반환 회원이 없다면 exception
      */
-    private Member getMember(OAuthAttributes attributes, OAuthType oAuthType) {
+    private Member getMember(OAuthAttributes attributes) {
 
-        //socialId와 oAuthType 으로 유저 존재 확인
-        return memberRepository.findByEmail(attributes.getEmail())
-                .orElseGet(() ->
-                        memberRepository.save(
-                                attributes.toEntity(oAuthType)
-                        )
-                );
+        //socialId로 유저 존재 확인
+        return memberRepository.findByEmail(attributes.getSocialId())
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
     }
 }

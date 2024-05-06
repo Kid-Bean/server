@@ -1,6 +1,6 @@
 package soongsil.kidbean.server.quiz.fixture;
 
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD1;
 import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD2;
 import static soongsil.kidbean.server.quiz.fixture.WordFixture.WORD3;
@@ -16,7 +16,7 @@ public class WordQuizFixture {
     public static final WordQuiz WORD_QUIZ = WordQuiz.builder()
             .title("WordQuiz")
             .level(Level.BRONZE)
-            .member(MEMBER)
+            .member(MEMBER1)
             .answer("answer")
             .words(List.of(WORD1, WORD2, WORD3, WORD4))
             .build();

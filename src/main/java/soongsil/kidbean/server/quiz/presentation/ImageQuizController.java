@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +26,7 @@ import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizResponse;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveListResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
 
 import java.util.List;
@@ -70,14 +70,15 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 가져오기", description = "랜덤 ImageQuiz 가져오기")
     @GetMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> getRandomImageQuiz(
-            @AuthenticationPrincipal AuthUser user) {
+            @AuthenticationPrincipal AuthUser user,
+            @RequestParam(defaultValue = "5") Integer quizNum) {
 
-        ImageQuizResponse imageQuizResponse =
-                imageQuizService.selectRandomImageQuiz(user.memberId());
+        ImageQuizSolveListResponse imageQuizSolveListResponse =
+                imageQuizService.selectRandomImageQuizList(user.memberId(), quizNum);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(imageQuizResponse));
+                .body(ResponseTemplate.from(imageQuizSolveListResponse));
     }
 
     @Operation(summary = "ImageQuiz 문제 풀기", description = "푼 ImageQuiz 문제를 제출")
@@ -111,12 +112,11 @@ public class ImageQuizController {
     @Operation(summary = "ImageQuiz 문제 수정하기", description = "ImageQuiz 수정하기")
     @PutMapping("/member/{quizId}")
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId,
             @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
             @RequestPart MultipartFile s3Url) {
 
-        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, user.memberId(), quizId, s3Url);
+        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, quizId, s3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -127,10 +127,9 @@ public class ImageQuizController {
     @DeleteMapping("/member/{quizId}")
 
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long quizId) {
 
-        imageQuizService.deleteImageQuiz(user.memberId(), quizId);
+        imageQuizService.deleteImageQuiz(quizId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
