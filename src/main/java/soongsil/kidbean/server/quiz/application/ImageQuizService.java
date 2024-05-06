@@ -43,9 +43,6 @@ public class ImageQuizService {
     private final QuizSolvedService quizSolvedService;
     private final S3Uploader s3Uploader;
 
-    private static final String COMMON_URL = "kidbean.s3.ap-northeast-2.amazonaws.com";
-    private static final String QUIZ_NAME = "quiz/";
-
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
@@ -127,9 +124,9 @@ public class ImageQuizService {
     }
 
     private S3Info createS3Info(MultipartFile file, QuizCategory quizCategory) {
-        String folderName = QUIZ_NAME + quizCategory;
+        String folderName = "quiz/" + quizCategory;
         String uploadUrl = s3Uploader.upload(file, folderName);
-        String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
+        String generatedPath = uploadUrl.split("/kidbean.s3.ap-northeast-2.amazonaws.com/" + folderName + "/")[1];
 
         return S3Info.builder()
                 .s3Url(uploadUrl)
