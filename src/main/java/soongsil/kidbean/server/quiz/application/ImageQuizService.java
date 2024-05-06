@@ -136,9 +136,9 @@ public class ImageQuizService {
         imageQuizRepository.delete(imageQuiz);
     }
 
-    private S3Info uploadS3Info(MultipartFile file, QuizCategory quizCategory) {
+    private S3Info uploadS3Info(MultipartFile multipartFile, QuizCategory quizCategory) {
         String folderName = QUIZ_BASE_FOLDER + quizCategory;
-        return s3Uploader.upload(file, folderName);
+        return s3Uploader.upload(multipartFile, folderName);
     }
 
     private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {

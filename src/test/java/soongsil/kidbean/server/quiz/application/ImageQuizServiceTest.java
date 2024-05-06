@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
+import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
@@ -117,10 +118,8 @@ class ImageQuizServiceTest {
                 "This is the file content".getBytes() // 파일 컨텐츠
         );
 
-        String s3Url = "https://kidbean.s3.ap-northeast-2.amazonaws.com/quiz/NONE/filename.jpg";
-
         given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
-        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(s3Url);
+        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(any(S3Info.class));
 
         // when
         imageQuizService.uploadImageQuiz(request, 1L, file);

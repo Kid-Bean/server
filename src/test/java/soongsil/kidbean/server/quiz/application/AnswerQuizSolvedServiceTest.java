@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.quiz.application;
 
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.quiz.application.vo.ApiResponseVO.ReturnObject.Sentence.MorphemeVO;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
@@ -18,7 +16,8 @@ import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 
-import static org.mockito.BDDMockito.given;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ;
@@ -52,9 +51,6 @@ class AnswerQuizSolvedServiceTest {
                 .morphemeVOList(List.of(new MorphemeVO("엄마", "NNB")))
                 .useWordVOList(List.of(new UseWordVO("엄마", 1L)))
                 .build();
-
-        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(
-                "s3://" + folderName + "/" + fileName);
 
         //when
         answerQuizSolvedService.enrollNewAnswerQuizSolved(
