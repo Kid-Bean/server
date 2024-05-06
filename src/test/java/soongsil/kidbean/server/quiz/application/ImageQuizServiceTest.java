@@ -130,4 +130,14 @@ class ImageQuizServiceTest {
         verify(s3Uploader, times(1)).upload(any(MultipartFile.class), anyString());
         verify(imageQuizRepository, times(1)).save(any(ImageQuiz.class));
     }
+
+    @Test
+    @DisplayName("ImageQuiz 수정하기")
+    void updateImageQuiz() {
+        // given
+
+        // when
+
+        // then
+    }
 }

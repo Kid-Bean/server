@@ -5,12 +5,14 @@ import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 
 public record SolvedAnswerQuizInfo(
         Long solvedId,
-        LocalDateTime solvedTime
+        LocalDateTime solvedTime,
+        String title
 ) {
     public static SolvedAnswerQuizInfo from(AnswerQuizSolved answerQuizSolved) {
         return new SolvedAnswerQuizInfo(
                 answerQuizSolved.getSolvedId(),
-                answerQuizSolved.getSolvedTime()
+                answerQuizSolved.getSolvedTime(),
+                answerQuizSolved.getAnswerQuiz().getTitle()
         );
     }
 }

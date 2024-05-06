@@ -2,16 +2,15 @@ package soongsil.kidbean.server.program.domain;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.program.domain.type.Date;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Program {
 
@@ -41,21 +40,21 @@ public class Program {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "s3Url", column = @Column(name = "teacher_s3_url", length = 200)),
+            @AttributeOverride(name = "imageUrl", column = @Column(name = "teacher_image_url", length = 200)),
             @AttributeOverride(name = "fileName", column = @Column(name = "teacher_file_name", length = 200)),
             @AttributeOverride(name = "folderName", column = @Column(name = "teacher_folder_name", length = 100))
     })
-    private S3Info teacherS3Info;
+    private S3Info teacherImageInfo;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "s3Url", column = @Column(name = "program_s3_url", length = 200)),
+            @AttributeOverride(name = "s3Url", column = @Column(name = "program_image_url", length = 200)),
             @AttributeOverride(name = "fileName", column = @Column(name = "program_file_name", length = 200)),
             @AttributeOverride(name = "folderName", column = @Column(name = "program_folder_name", length = 100))
     })
-    private S3Info programS3Info;
+    private S3Info programImageInfo;
 
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "uploader_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
@@ -75,8 +74,40 @@ public class Program {
         this.phoneNumber = phoneNumber;
         this.content = content;
         this.programCategory = programCategory;
-        this.teacherS3Info = teacherImageInfo;
-        this.programS3Info = programImageInfo;
+        this.teacherImageInfo = teacherImageInfo;
+        this.programImageInfo = programImageInfo;
         this.member = member;
     }
+
+    public void setS3Info(S3Info programImageInfo, S3Info teacherImageInfo) {
+        this.programImageInfo = programImageInfo;
+        this.teacherImageInfo = teacherImageInfo;
+    }
+
+
+    @Builder
+    public Program(String title, String content, S3Info programImageInfo, S3Info teacherImageInfo) {
+        this.title = title;
+        this.content = content;
+        this.programImageInfo = programImageInfo;
+        this.teacherImageInfo = teacherImageInfo;
+    }
+
+    public void setProgramInfo(String title,
+                               String place,
+                               String content,
+                               S3Info teacherImageInfo,
+                               S3Info programImageInfo,
+                               String teacherName,
+                               String phoneNumber){
+
+        this.programImageInfo = programImageInfo;
+        this.teacherImageInfo = teacherImageInfo;
+        this.title = title;
+        this.content = content;
+        this.teacherName = teacherName;
+        this.phoneNumber = phoneNumber;
+        this.place = place;
+    }
+
 }
