@@ -13,6 +13,7 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
+import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
@@ -102,17 +103,9 @@ public class ImageQuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
-        String folderName = QUIZ_NAME + request.quizCategory();
-        String uploadUrl = s3Uploader.upload(s3Url, folderName);
-        String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
-
         ImageQuiz imageQuiz = request.toImageQuiz(member);
-        imageQuiz.setS3Info(
-                S3Info.builder()
-                        .s3Url(uploadUrl)
-                        .fileName(generatedPath)
-                        .folderName(QUIZ_NAME + request.quizCategory())
-                        .build());
+        S3Info s3Info = createS3Info(s3Url, request.quizCategory());
+        imageQuiz.setS3Info(s3Info);
 
         imageQuizRepository.save(imageQuiz);
     }
@@ -127,20 +120,22 @@ public class ImageQuizService {
 
         if (!s3Url.isEmpty()) {
             s3Uploader.deleteFile(imageQuiz.getS3Info());
-
-            String updateFolderName = QUIZ_NAME + request.quizCategory();
-            String updateUrl = s3Uploader.upload(s3Url, updateFolderName);
-
-            String generatedPath = updateUrl.split("/" + COMMON_URL + "/" + updateFolderName + "/")[1];
-
-            s3Info = S3Info.builder()
-                    .s3Url(updateUrl)
-                    .fileName(generatedPath)
-                    .folderName(QUIZ_NAME + request.quizCategory())
-                    .build();
+            s3Info = createS3Info(s3Url, request.quizCategory());
         }
 
         imageQuiz.updateImageQuiz(request.title(), request.answer(), request.quizCategory(), s3Info);
+    }
+
+    private S3Info createS3Info(MultipartFile file, QuizCategory quizCategory) {
+        String folderName = QUIZ_NAME + quizCategory;
+        String uploadUrl = s3Uploader.upload(file, folderName);
+        String generatedPath = uploadUrl.split("/" + COMMON_URL + "/" + folderName + "/")[1];
+
+        return S3Info.builder()
+                .s3Url(uploadUrl)
+                .fileName(generatedPath)
+                .folderName(folderName)
+                .build();
     }
 
     @Transactional
