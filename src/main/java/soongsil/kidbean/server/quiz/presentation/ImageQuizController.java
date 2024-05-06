@@ -125,6 +125,7 @@ public class ImageQuizController {
 
     @Operation(summary = "ImageQuiz 문제 삭제하기", description = "ImageQuiz 삭제하기")
     @DeleteMapping("/member/{quizId}")
+
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(
             @PathVariable Long quizId) {
 

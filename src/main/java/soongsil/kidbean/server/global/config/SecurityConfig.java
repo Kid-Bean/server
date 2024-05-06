@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +21,8 @@ import soongsil.kidbean.server.auth.filter.JwtFilter;
 import soongsil.kidbean.server.auth.filter.JwtAccessDeniedHandler;
 import soongsil.kidbean.server.auth.filter.JwtAuthenticationEntryPoint;
 
+import static soongsil.kidbean.server.member.domain.type.Role.ADMIN;
+
 @Slf4j
 @Profile("!test")
 @Configuration
@@ -33,6 +36,7 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     private static final String MEMBER = "MEMBER";
+    private static final String ADMIN = "ADMIN";
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
@@ -55,7 +59,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth // 요청에 대한 인증 설정
-                        .requestMatchers("/logout").hasRole(MEMBER)
+                        .requestMatchers("/logout", "/auth/refresh-token").hasRole(MEMBER)
+                        .requestMatchers(HttpMethod.PATCH, "/programs/{programId}").hasRole(ADMIN) //수정
+                        .requestMatchers(HttpMethod.DELETE, "/programs/{programId}").hasRole(ADMIN) //삭제
+                        .requestMatchers(HttpMethod.POST, "/program?category={category}").hasRole(ADMIN) //추가
                         .anyRequest().authenticated())  //이외의 요청은 전부 인증 필요
                 .oauth2Login(oauth2 -> {
                     log.info("oauth2 configure");
