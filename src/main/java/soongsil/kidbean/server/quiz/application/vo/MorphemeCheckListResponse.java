@@ -16,7 +16,7 @@ public record MorphemeCheckListResponse(
 
     }
 
-    public MorphemeCheckListResponse of(Map<MorphemeCheckEnum, Boolean> checkList) {
+    public MorphemeCheckListResponse from(Map<MorphemeCheckEnum, Boolean> checkList) {
         List<MorphemeCheckListInfo> morphemeCheckListInfoList = checkList.entrySet().stream()
                 .map(entry -> new MorphemeCheckListInfo(
                         entry.getKey().getContent(),
