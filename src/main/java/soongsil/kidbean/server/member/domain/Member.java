@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import soongsil.kidbean.server.global.domain.BaseTimeEntity;
 import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
@@ -17,7 +18,7 @@ import soongsil.kidbean.server.quiz.domain.type.Level;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +45,6 @@ public class Member {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "create_date")
-    private LocalDate createDate;
-
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -56,23 +54,21 @@ public class Member {
 
     @Builder
     public Member(String email, String name, OAuthType oAuthType, String socialId, Gender gender, LocalDate birthDate,
-                  LocalDate createDate, Role role, Long score) {
+                  Role role, Long score) {
         this.email = email;
         this.name = name;
         this.oAuthType = oAuthType;
         this.socialId = socialId;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.createDate = createDate;
         this.role = role;
         this.score = score;
     }
 
-    public void uploadMember(String name, Gender gender, LocalDate birthDate, LocalDate createDate) {
+    public void uploadMember(String name, Gender gender, LocalDate birthDate) {
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.createDate = createDate;
     }
 
     public String getRoleKey() {

@@ -35,6 +35,6 @@ public class MemberService {
     @Transactional
     public void uploadMemberInfo(MemberInfoRequest request, Long memberId) {
         Member member = findMemberById(memberId);
-        member.uploadMember(request.name(), request.gender(), request.birthDate(), LocalDate.now());
+        member.uploadMember(request.name(), request.gender(), request.birthDate());
     }
 }
