@@ -1,13 +1,5 @@
 package soongsil.kidbean.server.quiz.repository.init;
 
-import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
-import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.IMAGE_QUIZ_ANIMAL1;
-import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.IMAGE_QUIZ_ANIMAL3;
-import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.IMAGE_QUIZ_FOOD1;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -16,6 +8,12 @@ import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
+import static soongsil.kidbean.server.quiz.repository.init.ImageQuizInitializer.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +36,6 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .imageQuiz(IMAGE_QUIZ_ANIMAL1)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
-                    .solvedTime(LocalDateTime.now())
                     .reply("사과")
                     .build());
 
@@ -46,7 +43,6 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .imageQuiz(IMAGE_QUIZ_FOOD1)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
-                    .solvedTime(LocalDateTime.now())
                     .reply("배")
                     .build());
 
@@ -54,7 +50,6 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .imageQuiz(IMAGE_QUIZ_ANIMAL3)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
-                    .solvedTime(LocalDateTime.now())
                     .reply("귤")
                     .build());
 
@@ -62,7 +57,6 @@ public class QuizSolvedInitializer implements ApplicationRunner {
                     .imageQuiz(IMAGE_QUIZ_ANIMAL3)
                     .isCorrect(false)
                     .member(DUMMY_MEMBER)
-                    .solvedTime(LocalDateTime.now())
                     .reply("포도")
                     .build());
 

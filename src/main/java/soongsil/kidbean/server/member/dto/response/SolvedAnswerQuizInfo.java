@@ -11,7 +11,7 @@ public record SolvedAnswerQuizInfo(
     public static SolvedAnswerQuizInfo from(AnswerQuizSolved answerQuizSolved) {
         return new SolvedAnswerQuizInfo(
                 answerQuizSolved.getSolvedId(),
-                answerQuizSolved.getSolvedTime(),
+                answerQuizSolved.getCreatedDate(),
                 answerQuizSolved.getAnswerQuiz().getTitle()
         );
     }
