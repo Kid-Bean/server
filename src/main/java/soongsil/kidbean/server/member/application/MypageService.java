@@ -28,15 +28,16 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizInfo;
+import soongsil.kidbean.server.quiz.application.AnalyzeMorphemeService;
+import soongsil.kidbean.server.quiz.application.OpenApiService;
+import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
-import soongsil.kidbean.server.quiz.domain.Morpheme;
 import soongsil.kidbean.server.quiz.domain.QuizSolved;
 import soongsil.kidbean.server.quiz.domain.UseWord;
 import soongsil.kidbean.server.quiz.domain.Word;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode;
-import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
@@ -58,7 +59,10 @@ public class MypageService {
     private final QuizScoreRepository imageQuizScoreRepository;
     private final AverageScoreRepository averageScoreRepository;
     private final UseWordRepository useWordRepository;
-    private final MorphemeRepository morphemeRepository;
+    private final AnalyzeMorphemeService analyzeMorphemeService;
+    private final OpenApiService openApiService;
+
+    private static final Integer SORT_NUMBER = 5;
 
     /**
      * @param memberId 멤버Id
@@ -127,10 +131,11 @@ public class MypageService {
 
     public SolvedAnswerDetailResponse solvedAnswerQuizDetail(Long solvedId) {
         AnswerQuizSolved answerQuizSolved = findAnswerQuizSolvedById(solvedId);
-        List<Morpheme> morphemeList = morphemeRepository.findAllByAnswerQuizSolved(answerQuizSolved);
-        List<UseWord> useWordList = useWordRepository.findAllByAnswerQuizSolved(answerQuizSolved);
+        OpenApiResponse openApiResponse = openApiService.analyzeAnswer(answerQuizSolved.getSentenceAnswer());
 
-        return SolvedAnswerDetailResponse.of(answerQuizSolved, morphemeList, useWordList);
+        analyzeMorphemeService.createMorphemeCheckList(openApiResponse.morphemeVOList());
+
+        return SolvedAnswerDetailResponse.of(answerQuizSolved, openApiResponse.morphemeVOList());
     }
 
     public ImageQuizScoreResponse findImageQuizScore(Long memberId) {
@@ -176,7 +181,7 @@ public class MypageService {
                 .sorted(Comparator.comparingLong(UseWordInfo::count).reversed())
                 .toList();
 
-        return UseWordList.from(sortTop10UseWord(sortedReversedUseWOrdInfo));
+        return UseWordList.from(sortTop5UseWord(sortedReversedUseWOrdInfo));
     }
 
     private List<UseWordInfo> calculateCountOfUseWordFromMember(Member member) {
@@ -192,9 +197,9 @@ public class MypageService {
                 .toList();
     }
 
-    private List<UseWordInfo> sortTop10UseWord(List<UseWordInfo> sortedList) {
+    private List<UseWordInfo> sortTop5UseWord(List<UseWordInfo> sortedList) {
         return sortedList.stream()
-                .limit(10)
+                .limit(SORT_NUMBER)
                 .toList();
     }
 }
