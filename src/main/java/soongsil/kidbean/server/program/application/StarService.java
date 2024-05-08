@@ -34,16 +34,15 @@ public class StarService {
         Program starProgram = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
-        if (starRepository.existsByMemberAndProgram(starMember, starProgram)) {
-
-        }
-
-        Star star = Star.builder()
+        if(!starRepository.existsByMemberAndProgram(starMember, starProgram)){
+            Star star = Star.builder()
                 .memberId(starMember)
                 .programId(starProgram)
                 .build();
 
-        starRepository.save(star);
+            starRepository.save(star);
+        }
+
     }
 
     // 즐겨찾기 삭제

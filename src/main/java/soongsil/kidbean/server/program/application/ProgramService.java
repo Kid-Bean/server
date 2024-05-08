@@ -9,16 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
+import soongsil.kidbean.server.program.domain.Star;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
 import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
+import soongsil.kidbean.server.program.dto.response.StarResponse;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
+import soongsil.kidbean.server.program.repository.StarRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +41,9 @@ public class ProgramService {
     private static final String TEACHER_IMAGE_NAME = "teacher/";
     private final S3Uploader s3Uploader;
     private final DayRepository dayRepository;
+    private final StarRepository starRepository;
+    private final StarService starService;
+    private final MemberRepository memberRepository;
 
     /**
      * 프로그램 상세 조회
@@ -55,19 +63,22 @@ public class ProgramService {
                 .map(day -> day.getDate().getDate())
                 .collect(Collectors.toList());
 
-        return ProgramDetailResponse.of(program,dates);
+        return ProgramDetailResponse.of(program, dates);
     }
 
     /**
      * 카테고리에 따른 프로그램 목록 조회
      */
     @Transactional
-    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory, Pageable pageable) {
+    public ProgramListResponse getProgramListInfo(Long memberId,ProgramCategory programCategory, Pageable pageable) {
 
         Page<Program> programPage = programRepository.findAllByProgramCategory(programCategory, pageable);
 
         List<ProgramResponse> programResponseList = programPage.stream()
-                .map(ProgramResponse::from)
+                .map(program -> {
+                            List<StarResponse> starId = starService.getStars(memberId, program.getProgramId());
+                            return ProgramResponse.of(program, (Star) starId);
+                })
                 .toList();
 
         return ProgramListResponse.from(programResponseList);
@@ -77,13 +88,16 @@ public class ProgramService {
      * 프로그램 삭제 - 관리자
      */
     @Transactional
-    public ProgramResponse deleteProgram(Long programId) {
+    public ProgramResponse deleteProgram(Long programId,Long starId) {
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
+        Star star = starRepository.findById(starId)
+                        .orElseThrow(RuntimeException::new);
+
         programRepository.delete(program);
 
-        return ProgramResponse.from(program);
+        return ProgramResponse.of(program,star);
     }
 
     /**

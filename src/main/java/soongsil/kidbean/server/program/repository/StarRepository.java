@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface StarRepository extends JpaRepository<Star, Long> {
 
+
+
     boolean existsByMemberAndProgram(Member member, Program program);
 
     List<Star> findAllByMemberAndProgram(Member member, Program program);

@@ -14,6 +14,7 @@ import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.program.application.ProgramService;
 import soongsil.kidbean.server.program.domain.Program;
+import soongsil.kidbean.server.program.domain.Star;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
@@ -37,13 +38,15 @@ public class ProgramController {
 
     //목록조회 -> 페이징 진행
     @GetMapping("/programs")
-    public ResponseEntity<ProgramListResponse> getProgramListInfo(@RequestParam ProgramCategory programcategory
-            , @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<ProgramListResponse> getProgramListInfo(
+            @RequestParam ProgramCategory programcategory,
+            @AuthenticationPrincipal AuthUser user,
+            @RequestParam(defaultValue = "0") int page) {
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(programService.getProgramListInfo(programcategory, pageRequest));
+                .body(programService.getProgramListInfo(user.memberId() ,programcategory, pageRequest));
     }
 
     //상세조회
@@ -61,14 +64,15 @@ public class ProgramController {
 
 
     //삭제
-    @DeleteMapping("/programs/{programId}")
+    @DeleteMapping("/programs/{programId}/{starId}")
     public ResponseEntity<ProgramResponse> deleteProgram(
             @AuthenticationPrincipal AuthUser user,
-            @PathVariable Long programId) {
+            @PathVariable Long programId,
+            @PathVariable Long starId) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(programService.deleteProgram(programId));
+                .body(programService.deleteProgram(programId,starId));
     }
 
     //수정
