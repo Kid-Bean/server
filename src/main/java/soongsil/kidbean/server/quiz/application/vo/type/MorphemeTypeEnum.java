@@ -6,16 +6,16 @@ import java.util.List;
 
 public enum MorphemeTypeEnum {
 
-    NOUN("명사", Arrays.asList("NNP", "NNG", "NNB")),
-    EF("종결어미", Arrays.asList("EF")),
-    VV("동사", Arrays.asList("VV")),
-    VA("형용사", Arrays.asList("VA")),
-    JKS("주격조사", Arrays.asList("JKS")),
-    NP("대명사", Arrays.asList("NP")),
-    NNB("의존 명사", Arrays.asList("NNB")),
-    EC("연결 어미", Arrays.asList("EC")),
-    MA("부사", Arrays.asList("MAG", "MAJ")),
-    JX_JC("보조사", Arrays.asList("JX", "JC")),
+    NOUN("명사", List.of("NNP", "NNG", "NNB")),
+    EF("종결어미", List.of("EF")),
+    VV("동사", List.of("VV")),
+    VA("형용사", List.of("VA")),
+    JKS("주격조사", List.of("JKS")),
+    NP("대명사", List.of("NP")),
+    NNB("의존 명사", List.of("NNB")),
+    EC("연결 어미", List.of("EC")),
+    MA("부사", List.of("MAG", "MAJ")),
+    JX_JC("보조사", List.of("JX", "JC")),
     EMPTY("기타", Collections.EMPTY_LIST),
     ;
 
