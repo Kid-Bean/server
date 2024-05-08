@@ -1,17 +1,6 @@
 package soongsil.kidbean.server.quiz.application;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
-import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,11 +18,22 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveListResponse;
 import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
 
 @ExtendWith(MockitoExtension.class)
 class ImageQuizServiceTest {
@@ -134,9 +134,38 @@ class ImageQuizServiceTest {
     @DisplayName("ImageQuiz 수정하기")
     void updateImageQuiz() {
         // given
+        ImageQuizUpdateRequest request = ImageQuizUpdateRequest.builder()
+                .title("테스트 제목 수정")
+                .answer("테스트 정답 수정")
+                .quizCategory(QuizCategory.NONE)
+                .build();
+
+        // MultipartFile 생성
+        MockMultipartFile file = new MockMultipartFile(
+                "file", // form의 input file name
+                "filename.jpg", // 파일명
+                "text/plain", // 컨텐츠 타입
+                "This is the file content".getBytes() // 파일 컨텐츠
+        );
+
+        S3Info s3Info = S3Info.builder()
+                .s3Url("http://example.com/quiz/NONE/filename.jpg")
+                .fileName("filename.jpg")
+                .folderName("quiz/NONE")
+                .build();
+
+        ImageQuiz imageQuiz = mock(ImageQuiz.class);
+
+        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(imageQuiz));
+        given(imageQuiz.getS3Info()).willReturn(s3Info);
+        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(s3Info);
 
         // when
+        imageQuizService.updateImageQuiz(request, IMAGE_QUIZ_ANIMAL1.getQuizId(), file);
 
         // then
+        verify(imageQuizRepository).findById(IMAGE_QUIZ_ANIMAL1.getQuizId());
+        verify(s3Uploader, times(1)).upload(any(MultipartFile.class), anyString());
+        verify(s3Uploader).deleteFile(s3Info);
     }
 }
