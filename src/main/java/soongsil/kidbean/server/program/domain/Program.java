@@ -47,7 +47,7 @@ public class Program {
             @AttributeOverride(name = "fileName", column = @Column(name = "teacher_file_name", length = 200)),
             @AttributeOverride(name = "folderName", column = @Column(name = "teacher_folder_name", length = 100))
     })
-    private S3Info teacherImageInfo;
+    private S3Info teacherS3Url;
 
     @Embedded
     @AttributeOverrides({
@@ -55,7 +55,7 @@ public class Program {
             @AttributeOverride(name = "fileName", column = @Column(name = "program_file_name", length = 200)),
             @AttributeOverride(name = "folderName", column = @Column(name = "program_folder_name", length = 100))
     })
-    private S3Info programImageInfo;
+    private S3Info programS3Url;
 
     @JoinColumn(name = "uploader_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,8 +69,8 @@ public class Program {
                    String phoneNumber,
                    String content,
                    ProgramCategory programCategory,
-                   S3Info teacherImageInfo,
-                   S3Info programImageInfo,
+                   S3Info teacherS3Url,
+                   S3Info programS3Url,
                    Member member) {
         this.teacherName = teacherName;
         this.title = title;
@@ -79,36 +79,36 @@ public class Program {
         this.phoneNumber = phoneNumber;
         this.content = content;
         this.programCategory = programCategory;
-        this.teacherImageInfo = teacherImageInfo;
-        this.programImageInfo = programImageInfo;
+        this.teacherS3Url = teacherS3Url;
+        this.programS3Url = programS3Url;
         this.member = member;
     }
 
-    public void setS3Info(S3Info programImageInfo, S3Info teacherImageInfo) {
-        this.programImageInfo = programImageInfo;
-        this.teacherImageInfo = teacherImageInfo;
+    public void setS3Info(S3Info programS3Url, S3Info teacherS3Url) {
+        this.programS3Url = programS3Url;
+        this.teacherS3Url = teacherS3Url;
     }
 
 
     @Builder
-    public Program(String title, String content, S3Info programImageInfo, S3Info teacherImageInfo) {
+    public Program(String title, String content, S3Info programS3Url, S3Info teacherS3Url) {
         this.title = title;
         this.content = content;
-        this.programImageInfo = programImageInfo;
-        this.teacherImageInfo = teacherImageInfo;
+        this.programS3Url = programS3Url;
+        this.teacherS3Url = teacherS3Url;
     }
 
     public void setProgramInfo(String title,
                                String titleInfo,
                                String place,
                                String content,
-                               S3Info teacherImageInfo,
-                               S3Info programImageInfo,
+                               S3Info teacherS3Url,
+                               S3Info programS3Url,
                                String teacherName,
                                String phoneNumber){
 
-        this.programImageInfo = programImageInfo;
-        this.teacherImageInfo = teacherImageInfo;
+        this.programS3Url = programS3Url;
+        this.teacherS3Url = teacherS3Url;
         this.title = title;
         this.titleInfo = titleInfo;
         this.content = content;
