@@ -65,13 +65,14 @@ public class ProgramController {
 
     //삭제
     @DeleteMapping("/programs/{programId}")
-    public ResponseEntity<ProgramDetailResponse> deleteProgram(
+    public ResponseEntity<ResponseTemplate<Object>> deleteProgram(
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId) {
 
+        programService.deleteProgram(programId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(programService.deleteProgram(programId));
+                .body(EMPTY_RESPONSE);
     }
 
     //수정

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
@@ -90,18 +91,12 @@ public class ProgramService {
      * 프로그램 삭제 - 관리자
      */
     @Transactional
-    public ProgramDetailResponse deleteProgram(Long programId) {
+    public void deleteProgram(Long programId) {
         Program program = programRepository.findById(programId)
                 .orElseThrow(RuntimeException::new);
 
-        List<Day> date = dayRepository.findAllByProgram(program);
+        programRepository.delete(program);
 
-        //enum에서 가져옴
-        List<String> dates = date.stream()
-                .map(day -> day.getDate().getDate())
-                .collect(Collectors.toList());
-
-        return ProgramDetailResponse.of(program, dates);
     }
 
     /**
