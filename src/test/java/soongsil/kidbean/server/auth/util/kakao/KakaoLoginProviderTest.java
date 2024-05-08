@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import soongsil.kidbean.server.auth.dto.response.KakaoUserResponse;
 import soongsil.kidbean.server.auth.dto.response.KakaoUserResponse.KakaoAccount;
 import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
+import soongsil.kidbean.server.auth.presentation.AuthController;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.member.domain.Member;
 
@@ -31,7 +32,7 @@ public class KakaoLoginProviderTest {
     private KakaoLoginProvider kakaoLoginProvider;
 
     @MockBean
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -39,6 +40,9 @@ public class KakaoLoginProviderTest {
     //나중에 뺄 수 있는 방법 찾아보기
     @MockBean
     S3Uploader s3Uploader;
+
+    @MockBean
+    private AuthController authController;
 
     private WireMockServer wireMockServer;
 
