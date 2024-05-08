@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
+import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,72 +35,90 @@ public class ProgramInitializer implements ApplicationRunner {
         } else {
             List<Program> programList = new ArrayList<>();
 
-            programList.add(Program.builder()
-                    .place("숭실대")
-                    .title("숭실")
+            Program program1= Program.builder()
+                    .place("1번출구")
+                    .title("1타강사")
+                    .titleInfo("1번 입니다")
                     .phoneNumber("010-1234-1234")
-                    .content("숭실")
+                    .content("1번은 바로 1타강사")
                     .programCategory(ACADEMY)
                     .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .teacherName("숭실")
+                    .teacherName("숭실인1")
                     .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
                     .member(DUMMY_MEMBER)
-                    .build());
-            programList.add(Program.builder()
-                    .place("숭실대")
-                    .title("숭실")
+                    .build();
+            programList.add(program1);
+
+            Program program2= Program.builder()
+                    .place("2번출구")
+                    .title("2타강사")
+                    .titleInfo("2번 입니다")
                     .phoneNumber("010-1234-1234")
-                    .content("숭실")
+                    .content("2번은 바로 2타강사")
+                    .programCategory(ACADEMY)
+                    .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
+                    .teacherName("숭실인2")
+                    .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
+                    .member(DUMMY_MEMBER)
+                    .build();
+            programList.add(program2);
+
+
+            Program program3= Program.builder()
+                    .place("3번출구")
+                    .title("3타강사")
+                    .titleInfo("3번 입니다")
+                    .phoneNumber("010-1234-1234")
+                    .content("3번은 바로 3타강사")
+                    .programCategory(ACADEMY)
+                    .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
+                    .teacherName("숭실인3")
+                    .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
+                    .member(DUMMY_MEMBER)
+                    .build();
+            programList.add(program3);
+
+            Program program4= Program.builder()
+                    .place("1번출구")
+                    .title("1타의사")
+                    .titleInfo("1번 입니다")
+                    .phoneNumber("010-1234-1234")
+                    .content("1번은 바로 1타의사")
                     .programCategory(HOSPITAL)
                     .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .teacherName("숭실")
+                    .teacherName("숭실인4")
                     .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
                     .member(DUMMY_MEMBER)
-                    .build());
-            programList.add(Program.builder()
-                    .place("숭실대")
-                    .title("숭실")
+                    .build();
+            programList.add(program4);
+
+            Program program5= Program.builder()
+                    .place("2번출구")
+                    .title("2타의사")
+                    .titleInfo("2번 입니다")
                     .phoneNumber("010-1234-1234")
-                    .content("숭실")
-                    .programCategory(ACADEMY)
-                    .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .teacherName("숭실")
-                    .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .member(DUMMY_MEMBER)
-                    .build());
-            programList.add(Program.builder()
-                    .place("숭실대")
-                    .title("숭실")
-                    .phoneNumber("010-1234-1234")
-                    .content("숭실")
+                    .content("2번은 바로 2타강사")
                     .programCategory(HOSPITAL)
                     .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .teacherName("숭실")
+                    .teacherName("숭실인5")
                     .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
                     .member(DUMMY_MEMBER)
-                    .build());
-            programList.add(Program.builder()
-                    .place("숭실대")
-                    .title("숭실")
+                    .build();
+            programList.add(program5);
+
+            Program program6= Program.builder()
+                    .place("3번출구")
+                    .title("3타의사")
+                    .titleInfo("3번 입니다")
                     .phoneNumber("010-1234-1234")
-                    .content("숭실")
-                    .programCategory(ACADEMY)
+                    .content("3번은 바로 3타의사")
+                    .programCategory(HOSPITAL)
                     .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .teacherName("숭실")
+                    .teacherName("숭실인6")
                     .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
                     .member(DUMMY_MEMBER)
-                    .build());
-            programList.add(Program.builder()
-                    .place("숭실대")
-                    .title("숭실")
-                    .phoneNumber("010-1234-1234")
-                    .content("숭실")
-                    .programCategory(ACADEMY)
-                    .programImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .teacherName("숭실")
-                    .teacherImageInfo(new S3Info("imageURL", "fileName", "folderName"))
-                    .member(DUMMY_MEMBER)
-                    .build());
+                    .build();
+            programList.add(program6);
 
             programRepository.saveAll(programList);
         }

@@ -80,9 +80,10 @@ public class ProgramController {
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId,
             @Valid @RequestPart UpdateProgramRequest updateProgramRequest,
-            @RequestPart MultipartFile s3Url) {
+            @RequestPart MultipartFile programS3Url,
+            @RequestPart MultipartFile teacherS3Url) {
 
-        programService.editProgramInfo(programId, updateProgramRequest, s3Url);
+        programService.editProgramInfo(programId, updateProgramRequest, programS3Url, teacherS3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -95,10 +96,11 @@ public class ProgramController {
     public ResponseEntity<ResponseTemplate<Object>> createProgram(
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestPart EnrollProgramRequest enrollProgramRequest,
-            @RequestPart MultipartFile s3Url
+            @RequestPart MultipartFile programS3Url,
+            @RequestPart MultipartFile teacherS3Url
     ){
 
-        programService.createProgram(enrollProgramRequest,s3Url);
+        programService.createProgram(enrollProgramRequest,programS3Url,teacherS3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

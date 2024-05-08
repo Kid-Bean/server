@@ -108,12 +108,14 @@ public class ProgramService {
      * 프로그램 추가하기- 관리자
      */
     @Transactional
-    public void createProgram(EnrollProgramRequest enrollProgramRequest, MultipartFile s3Url) {
+    public void createProgram(EnrollProgramRequest enrollProgramRequest,
+                              MultipartFile programS3Url,
+                              MultipartFile teacherS3Url) {
 
         if(enrollProgramRequest.programCategory() == HOSPITAL){
 
-            String programFolderName = PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory();
-            String programUploadUrl = s3Uploader.upload(s3Url, programFolderName);
+            String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
+            String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
             String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
             S3Info programImageInfo = S3Info.builder()
                     .s3Url(programUploadUrl)
@@ -123,6 +125,7 @@ public class ProgramService {
 
             Program createProgram = Program.builder()
                     .title(enrollProgramRequest.title())
+                    .titleInfo(enrollProgramRequest.titleInfo())
                     .content(enrollProgramRequest.content())
                     .place(enrollProgramRequest.place())
                     .teacherName(enrollProgramRequest.teacherName())
@@ -133,9 +136,55 @@ public class ProgramService {
 
             programRepository.save(createProgram);
 
+        }else {
+            String programFolderName = PROGRAM_IMAGE_NAME + "ACADEMY";
+            String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
+            String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
+            S3Info programImageInfo = S3Info.builder()
+                    .s3Url(programUploadUrl)
+                    .fileName(programGeneratedPath)
+                    .folderName(PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory())
+                    .build();
+
+            Program createProgram = Program.builder()
+                    .title(enrollProgramRequest.title())
+                    .titleInfo(enrollProgramRequest.titleInfo())
+                    .content(enrollProgramRequest.content())
+                    .place(enrollProgramRequest.place())
+                    .teacherName(enrollProgramRequest.teacherName())
+                    .phoneNumber(enrollProgramRequest.phoneNumber())
+                    .programCategory(enrollProgramRequest.programCategory())
+                    .programImageInfo(programImageInfo)
+                    .build();
+
+            programRepository.save(createProgram);
+        }
+
+        if(enrollProgramRequest.programCategory() == HOSPITAL){
+            String teacherFolderName = TEACHER_IMAGE_NAME + "HOSPITAL";
+            String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
+            String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
+
+            S3Info teacherImageInfo = S3Info.builder()
+                    .s3Url(teacherUploadUrl)
+                    .fileName(teacherGeneratedPath)
+                    .folderName(TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory())
+                    .build();
+
+            Program createProgram = Program.builder()
+                    .title(enrollProgramRequest.title())
+                    .content(enrollProgramRequest.content())
+                    .place(enrollProgramRequest.place())
+                    .teacherName(enrollProgramRequest.teacherName())
+                    .phoneNumber(enrollProgramRequest.phoneNumber())
+                    .programCategory(enrollProgramRequest.programCategory())
+                    .teacherImageInfo(teacherImageInfo)
+                    .build();
+
+            programRepository.save(createProgram);
         }else{
-            String teacherFolderName = TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory();
-            String teacherUploadUrl = s3Uploader.upload(s3Url, teacherFolderName);
+            String teacherFolderName = TEACHER_IMAGE_NAME + "ACADEMY";
+            String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
             String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
 
             S3Info teacherImageInfo = S3Info.builder()
@@ -161,14 +210,16 @@ public class ProgramService {
     /**
      * 프로그램 수정하기. -> ex) 선생님 이름만 수정
      */
-    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest, MultipartFile s3Url) {
+    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest,
+                                MultipartFile programS3Url,
+                                MultipartFile teacherS3Url) {
         Program program = programRepository.findById(programId).orElseThrow(RuntimeException::new);
 
 
-        if (s3Url != null && !s3Url.isEmpty()) {
+        if (programS3Url != null && !programS3Url.isEmpty()) {
             if(program.getProgramCategory() == HOSPITAL) {
-                String programFolderName = PROGRAM_IMAGE_NAME + program.getProgramCategory();
-                String programUploadUrl = s3Uploader.upload(s3Url, programFolderName);
+                String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
+                String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
                 String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
                 S3Info programImageInfo = S3Info.builder()
                         .s3Url(programUploadUrl)
@@ -187,9 +238,53 @@ public class ProgramService {
 
                 programRepository.save(updateProgram);
             }else {
+                String programFolderName = PROGRAM_IMAGE_NAME + "ACADEMY";
+                String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
+                String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
+                S3Info programImageInfo = S3Info.builder()
+                        .s3Url(programUploadUrl)
+                        .fileName(programGeneratedPath)
+                        .folderName(programFolderName)
+                        .build();
 
-                String teacherFolderName = TEACHER_IMAGE_NAME + program.getProgramCategory();
-                String teacherUploadUrl = s3Uploader.upload(s3Url, teacherFolderName);
+                Program updateProgram = Program.builder()
+                        .title(updateProgramRequest.title())
+                        .content(updateProgramRequest.content())
+                        .place(updateProgramRequest.place())
+                        .teacherName(updateProgramRequest.teacherName())
+                        .phoneNumber(updateProgramRequest.phoneNumber())
+                        .programImageInfo(programImageInfo)
+                        .build();
+
+                programRepository.save(updateProgram);
+            }
+
+            if(teacherS3Url != null && !teacherS3Url.isEmpty()) {
+                if (program.getProgramCategory() == HOSPITAL) {
+                    String teacherFolderName = TEACHER_IMAGE_NAME + "HOSPITAL";
+                    String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
+                    String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
+
+                    S3Info teacherImageInfo = S3Info.builder()
+                            .s3Url(teacherUploadUrl)
+                            .fileName(teacherGeneratedPath)
+                            .folderName(teacherFolderName)
+                            .build();
+
+                    Program updateProgram = Program.builder()
+                            .title(updateProgramRequest.title())
+                            .content(updateProgramRequest.content())
+                            .place(updateProgramRequest.place())
+                            .teacherName(updateProgramRequest.teacherName())
+                            .phoneNumber(updateProgramRequest.phoneNumber())
+                            .teacherImageInfo(teacherImageInfo)
+                            .build();
+
+                    programRepository.save(updateProgram); // save 안해도 set 때문에 자동으로 해결
+                }
+            }else{
+                String teacherFolderName = TEACHER_IMAGE_NAME + "ACADEMY";
+                String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
                 String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
 
                 S3Info teacherImageInfo = S3Info.builder()
@@ -207,7 +302,7 @@ public class ProgramService {
                         .teacherImageInfo(teacherImageInfo)
                         .build();
 
-                programRepository.save(updateProgram); // save 안해도 set 때문에 자동으로 해결
+                programRepository.save(updateProgram);
             }
         }
     }

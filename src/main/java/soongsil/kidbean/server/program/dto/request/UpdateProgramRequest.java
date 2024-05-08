@@ -2,10 +2,6 @@ package soongsil.kidbean.server.program.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import soongsil.kidbean.server.global.vo.S3Info;
-import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.ImageQuiz;
-import soongsil.kidbean.server.quiz.domain.QuizSolved;
-
 
 public record UpdateProgramRequest(
 
@@ -18,7 +14,9 @@ public record UpdateProgramRequest(
         @NotNull (message = "전화번호를 입력해주세요")
         String phoneNumber,
         @NotNull (message = "내용을 입력해주세요")
-        String content
+        String content,
+        S3Info programS3Url,
+        S3Info teacherS3Url
         
 ) {
 }
