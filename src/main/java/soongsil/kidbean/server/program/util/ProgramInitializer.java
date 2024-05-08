@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
-import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class ProgramInitializer implements ApplicationRunner {
         } else {
             List<Program> programList = new ArrayList<>();
 
-            Program program1= Program.builder()
+            Program program1 = Program.builder()
                     .place("1번출구")
                     .title("1타강사")
                     .titleInfo("1번 입니다")
@@ -60,7 +59,7 @@ public class ProgramInitializer implements ApplicationRunner {
                     .build();
             programList.add(program1);
 
-            Program program2= Program.builder()
+            Program program2 = Program.builder()
                     .place("2번출구")
                     .title("2타강사")
                     .titleInfo("2번 입니다")
@@ -86,7 +85,7 @@ public class ProgramInitializer implements ApplicationRunner {
             programList.add(program2);
 
 
-            Program program3= Program.builder()
+            Program program3 = Program.builder()
                     .place("3번출구")
                     .title("3타강사")
                     .titleInfo("3번 입니다")
@@ -111,7 +110,7 @@ public class ProgramInitializer implements ApplicationRunner {
                     .build();
             programList.add(program3);
 
-            Program program4= Program.builder()
+            Program program4 = Program.builder()
                     .place("1번출구")
                     .title("1타의사")
                     .titleInfo("1번 입니다")
@@ -136,7 +135,7 @@ public class ProgramInitializer implements ApplicationRunner {
                     .build();
             programList.add(program4);
 
-            Program program5= Program.builder()
+            Program program5 = Program.builder()
                     .place("2번출구")
                     .title("2타의사")
                     .titleInfo("2번 입니다")
@@ -161,7 +160,7 @@ public class ProgramInitializer implements ApplicationRunner {
                     .build();
             programList.add(program5);
 
-            Program program6= Program.builder()
+            Program program6 = Program.builder()
                     .place("3번출구")
                     .title("3타의사")
                     .titleInfo("3번 입니다")

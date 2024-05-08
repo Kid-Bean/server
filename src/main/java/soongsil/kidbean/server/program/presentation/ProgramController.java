@@ -14,14 +14,11 @@ import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.program.application.ProgramService;
 import soongsil.kidbean.server.program.domain.Program;
-import soongsil.kidbean.server.program.domain.Star;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
-import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
-import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE;
@@ -34,7 +31,6 @@ public class ProgramController {
     private static final int PAGE_SIZE = 4;
     private final ProgramService programService;
     private final ProgramRepository programRepository;
-    private final DayRepository dayRepository;
 
     //목록조회 -> 페이징 진행
     @GetMapping("/programs")

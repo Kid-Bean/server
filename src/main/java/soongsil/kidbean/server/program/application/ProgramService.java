@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
-import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
@@ -21,14 +19,15 @@ import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.dto.response.StarResponse;
+import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
-import soongsil.kidbean.server.program.repository.StarRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static soongsil.kidbean.server.program.domain.type.ProgramCategory.HOSPITAL;
+import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.PROGRAM_NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,9 +42,7 @@ public class ProgramService {
     private static final String TEACHER_IMAGE_NAME = "teacher/";
     private final S3Uploader s3Uploader;
     private final DayRepository dayRepository;
-    private final StarRepository starRepository;
     private final StarService starService;
-    private final MemberRepository memberRepository;
 
     /**
      * 프로그램 상세 조회
@@ -57,7 +54,7 @@ public class ProgramService {
     public ProgramDetailResponse getProgramInfo(Long programId) {
 
         Program program = programRepository.findById(programId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
         List<Day> date = dayRepository.findAllByProgram(program);
 
@@ -73,14 +70,14 @@ public class ProgramService {
      * 카테고리에 따른 프로그램 목록 조회
      */
     @Transactional
-    public ProgramListResponse getProgramListInfo(Long memberId,ProgramCategory programCategory, Pageable pageable) {
+    public ProgramListResponse getProgramListInfo(Long memberId, ProgramCategory programCategory, Pageable pageable) {
 
         Page<Program> programPage = programRepository.findAllByProgramCategory(programCategory, pageable);
 
         List<ProgramResponse> programResponseList = programPage.stream()
                 .map(program -> {
-                            List<StarResponse> starId = starService.getStars(memberId, program.getProgramId());
-                            return ProgramResponse.of(program, (Star) starId);
+                    Page<StarResponse> starId = starService.getStars(memberId, program.getProgramId(), pageable);
+                    return ProgramResponse.of(program, (Star) starId);
                 })
                 .toList();
 
@@ -93,7 +90,7 @@ public class ProgramService {
     @Transactional
     public void deleteProgram(Long programId) {
         Program program = programRepository.findById(programId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
         programRepository.delete(program);
 
@@ -107,7 +104,7 @@ public class ProgramService {
                               MultipartFile programS3Url,
                               MultipartFile teacherS3Url) {
 
-        if(enrollProgramRequest.programCategory() == HOSPITAL){
+        if (enrollProgramRequest.programCategory() == HOSPITAL) {
 
             String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
             String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
@@ -131,7 +128,7 @@ public class ProgramService {
 
             programRepository.save(createProgram);
 
-        }else {
+        } else {
             String programFolderName = PROGRAM_IMAGE_NAME + "ACADEMY";
             String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
             String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
@@ -155,7 +152,7 @@ public class ProgramService {
             programRepository.save(createProgram);
         }
 
-        if(enrollProgramRequest.programCategory() == HOSPITAL){
+        if (enrollProgramRequest.programCategory() == HOSPITAL) {
             String teacherFolderName = TEACHER_IMAGE_NAME + "HOSPITAL";
             String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
             String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
@@ -177,7 +174,7 @@ public class ProgramService {
                     .build();
 
             programRepository.save(createProgram);
-        }else{
+        } else {
             String teacherFolderName = TEACHER_IMAGE_NAME + "ACADEMY";
             String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
             String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
@@ -208,11 +205,12 @@ public class ProgramService {
     public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest,
                                 MultipartFile programS3Url,
                                 MultipartFile teacherS3Url) {
-        Program program = programRepository.findById(programId).orElseThrow(RuntimeException::new);
+        Program program = programRepository.findById(programId)
+                .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
 
         if (programS3Url != null && !programS3Url.isEmpty()) {
-            if(program.getProgramCategory() == HOSPITAL) {
+            if (program.getProgramCategory() == HOSPITAL) {
                 String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
                 String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
                 String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
@@ -232,7 +230,7 @@ public class ProgramService {
                         .build();
 
                 programRepository.save(updateProgram);
-            }else {
+            } else {
                 String programFolderName = PROGRAM_IMAGE_NAME + "ACADEMY";
                 String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
                 String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
@@ -254,7 +252,7 @@ public class ProgramService {
                 programRepository.save(updateProgram);
             }
 
-            if(teacherS3Url != null && !teacherS3Url.isEmpty()) {
+            if (teacherS3Url != null && !teacherS3Url.isEmpty()) {
                 if (program.getProgramCategory() == HOSPITAL) {
                     String teacherFolderName = TEACHER_IMAGE_NAME + "HOSPITAL";
                     String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
@@ -275,9 +273,9 @@ public class ProgramService {
                             .teacherS3Url(teacherImageInfo)
                             .build();
 
-                    programRepository.save(updateProgram); // save 안해도 set 때문에 자동으로 해결
+                    programRepository.save(updateProgram);
                 }
-            }else{
+            } else {
                 String teacherFolderName = TEACHER_IMAGE_NAME + "ACADEMY";
                 String teacherUploadUrl = s3Uploader.upload(teacherS3Url, teacherFolderName);
                 String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
