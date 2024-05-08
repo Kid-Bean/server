@@ -25,6 +25,9 @@ public class Program {
     @Column(name = "title", length = 25)
     private String title;
 
+    @Column(name = "title_info", length = 60)
+    private String titleInfo;
+
     @Column(name = "place", length = 63)
     private String place;
 
@@ -61,6 +64,7 @@ public class Program {
     @Builder
     public Program(String teacherName,
                    String title,
+                   String titleInfo,
                    String place,
                    String phoneNumber,
                    String content,
@@ -70,6 +74,7 @@ public class Program {
                    Member member) {
         this.teacherName = teacherName;
         this.title = title;
+        this.titleInfo = titleInfo;
         this.place = place;
         this.phoneNumber = phoneNumber;
         this.content = content;
@@ -94,6 +99,7 @@ public class Program {
     }
 
     public void setProgramInfo(String title,
+                               String titleInfo,
                                String place,
                                String content,
                                S3Info teacherImageInfo,
@@ -104,6 +110,7 @@ public class Program {
         this.programImageInfo = programImageInfo;
         this.teacherImageInfo = teacherImageInfo;
         this.title = title;
+        this.titleInfo = titleInfo;
         this.content = content;
         this.teacherName = teacherName;
         this.phoneNumber = phoneNumber;

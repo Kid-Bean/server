@@ -64,15 +64,14 @@ public class ProgramController {
 
 
     //삭제
-    @DeleteMapping("/programs/{programId}/{starId}")
-    public ResponseEntity<ProgramResponse> deleteProgram(
+    @DeleteMapping("/programs/{programId}")
+    public ResponseEntity<ProgramDetailResponse> deleteProgram(
             @AuthenticationPrincipal AuthUser user,
-            @PathVariable Long programId,
-            @PathVariable Long starId) {
+            @PathVariable Long programId) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(programService.deleteProgram(programId,starId));
+                .body(programService.deleteProgram(programId));
     }
 
     //수정
@@ -96,7 +95,8 @@ public class ProgramController {
     public ResponseEntity<ResponseTemplate<Object>> createProgram(
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestPart EnrollProgramRequest enrollProgramRequest,
-            @RequestPart MultipartFile s3Url){
+            @RequestPart MultipartFile s3Url
+    ){
 
         programService.createProgram(enrollProgramRequest,s3Url);
 
