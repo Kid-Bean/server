@@ -131,7 +131,7 @@ public class ProgramService {
                     .teacherName(enrollProgramRequest.teacherName())
                     .phoneNumber(enrollProgramRequest.phoneNumber())
                     .programCategory(enrollProgramRequest.programCategory())
-                    .programImageInfo(programImageInfo)
+                    .programS3Url(programImageInfo)
                     .build();
 
             programRepository.save(createProgram);
@@ -154,7 +154,7 @@ public class ProgramService {
                     .teacherName(enrollProgramRequest.teacherName())
                     .phoneNumber(enrollProgramRequest.phoneNumber())
                     .programCategory(enrollProgramRequest.programCategory())
-                    .programImageInfo(programImageInfo)
+                    .programS3Url(programImageInfo)
                     .build();
 
             programRepository.save(createProgram);
@@ -178,7 +178,7 @@ public class ProgramService {
                     .teacherName(enrollProgramRequest.teacherName())
                     .phoneNumber(enrollProgramRequest.phoneNumber())
                     .programCategory(enrollProgramRequest.programCategory())
-                    .teacherImageInfo(teacherImageInfo)
+                    .teacherS3Url(teacherImageInfo)
                     .build();
 
             programRepository.save(createProgram);
@@ -200,7 +200,7 @@ public class ProgramService {
                     .teacherName(enrollProgramRequest.teacherName())
                     .phoneNumber(enrollProgramRequest.phoneNumber())
                     .programCategory(enrollProgramRequest.programCategory())
-                    .teacherImageInfo(teacherImageInfo)
+                    .teacherS3Url(teacherImageInfo)
                     .build();
 
             programRepository.save(createProgram);
@@ -233,7 +233,7 @@ public class ProgramService {
                         .place(updateProgramRequest.place())
                         .teacherName(updateProgramRequest.teacherName())
                         .phoneNumber(updateProgramRequest.phoneNumber())
-                        .programImageInfo(programImageInfo)
+                        .programS3Url(programImageInfo)
                         .build();
 
                 programRepository.save(updateProgram);
@@ -253,7 +253,7 @@ public class ProgramService {
                         .place(updateProgramRequest.place())
                         .teacherName(updateProgramRequest.teacherName())
                         .phoneNumber(updateProgramRequest.phoneNumber())
-                        .programImageInfo(programImageInfo)
+                        .programS3Url(programImageInfo)
                         .build();
 
                 programRepository.save(updateProgram);
@@ -277,7 +277,7 @@ public class ProgramService {
                             .place(updateProgramRequest.place())
                             .teacherName(updateProgramRequest.teacherName())
                             .phoneNumber(updateProgramRequest.phoneNumber())
-                            .teacherImageInfo(teacherImageInfo)
+                            .teacherS3Url(teacherImageInfo)
                             .build();
 
                     programRepository.save(updateProgram); // save 안해도 set 때문에 자동으로 해결
@@ -299,7 +299,7 @@ public class ProgramService {
                         .place(updateProgramRequest.place())
                         .teacherName(updateProgramRequest.teacherName())
                         .phoneNumber(updateProgramRequest.phoneNumber())
-                        .teacherImageInfo(teacherImageInfo)
+                        .teacherS3Url(teacherImageInfo)
                         .build();
 
                 programRepository.save(updateProgram);

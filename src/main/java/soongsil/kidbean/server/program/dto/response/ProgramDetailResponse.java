@@ -30,8 +30,8 @@ public record ProgramDetailResponse(
                 .title(program.getTitle())
                 .titleInfo(program.getTitleInfo())
                 .content(program.getContent())
-                .programImageUrl(program.getProgramImageInfo().getS3Url())
-                .teacherImageUrl(program.getTeacherImageInfo().getS3Url())
+                .programImageUrl(program.getProgramS3Url().getS3Url())
+                .teacherImageUrl(program.getTeacherS3Url().getS3Url())
                 .date(dates)
                 .build();
     }

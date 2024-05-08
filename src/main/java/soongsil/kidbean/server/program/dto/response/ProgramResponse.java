@@ -1,7 +1,6 @@
 package soongsil.kidbean.server.program.dto.response;
 
 import lombok.Builder;
-import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
@@ -12,8 +11,7 @@ public record ProgramResponse(
         ProgramCategory programCategory,
         String teacherName,
         String place,
-        String programImageUrl,
-        String teacherImageUrl,
+        String teacherS3Url,
         String title,
         String starId
 ) {
@@ -24,7 +22,7 @@ public record ProgramResponse(
                 .programCategory(program.getProgramCategory())
                 .teacherName(program.getTeacherName())
                 .place(program.getPlace())
-                .teacherImageUrl(program.getTeacherImageInfo().getS3Url())
+                .teacherS3Url(program.getTeacherS3Url().getS3Url())
                 .title(program.getTitle())
                 .starId(star.getStarId().toString())
                 .build();
