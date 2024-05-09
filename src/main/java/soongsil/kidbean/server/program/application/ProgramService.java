@@ -109,7 +109,7 @@ public class ProgramService {
 
             Program createProgram = Program.builder()
                     .title(enrollProgramRequest.title())
-                    .titleInfo(enrollProgramRequest.titleInfo())
+                    .contentTitle(enrollProgramRequest.titleInfo())
                     .content(enrollProgramRequest.content())
                     .place(enrollProgramRequest.place())
                     .teacherName(enrollProgramRequest.teacherName())
@@ -132,7 +132,7 @@ public class ProgramService {
 
             Program createProgram = Program.builder()
                     .title(enrollProgramRequest.title())
-                    .titleInfo(enrollProgramRequest.titleInfo())
+                    .contentTitle(enrollProgramRequest.titleInfo())
                     .content(enrollProgramRequest.content())
                     .place(enrollProgramRequest.place())
                     .teacherName(enrollProgramRequest.teacherName())
