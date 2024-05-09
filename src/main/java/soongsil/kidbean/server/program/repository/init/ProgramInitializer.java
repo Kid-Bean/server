@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.program.util;
+package soongsil.kidbean.server.program.repository.init;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class ProgramInitializer implements ApplicationRunner {
             Program program1 = Program.builder()
                     .place("1번출구")
                     .title("1타강사")
-                    .titleInfo("1번 입니다")
+                    .contentTitle("1번 입니다")
                     .phoneNumber("010-1234-1234")
                     .content("1번은 바로 1타강사")
                     .programCategory(ACADEMY)
@@ -62,7 +62,7 @@ public class ProgramInitializer implements ApplicationRunner {
             Program program2 = Program.builder()
                     .place("2번출구")
                     .title("2타강사")
-                    .titleInfo("2번 입니다")
+                    .contentTitle("2번 입니다")
                     .phoneNumber("010-1234-1234")
                     .content("2번은 바로 2타강사")
                     .programCategory(ACADEMY)
@@ -88,7 +88,7 @@ public class ProgramInitializer implements ApplicationRunner {
             Program program3 = Program.builder()
                     .place("3번출구")
                     .title("3타강사")
-                    .titleInfo("3번 입니다")
+                    .contentTitle("3번 입니다")
                     .phoneNumber("010-1234-1234")
                     .content("3번은 바로 3타강사")
                     .programCategory(ACADEMY)
@@ -113,7 +113,7 @@ public class ProgramInitializer implements ApplicationRunner {
             Program program4 = Program.builder()
                     .place("1번출구")
                     .title("1타의사")
-                    .titleInfo("1번 입니다")
+                    .contentTitle("1번 입니다")
                     .phoneNumber("010-1234-1234")
                     .content("1번은 바로 1타의사")
                     .programCategory(HOSPITAL)
@@ -138,7 +138,7 @@ public class ProgramInitializer implements ApplicationRunner {
             Program program5 = Program.builder()
                     .place("2번출구")
                     .title("2타의사")
-                    .titleInfo("2번 입니다")
+                    .contentTitle("2번 입니다")
                     .phoneNumber("010-1234-1234")
                     .content("2번은 바로 2타강사")
                     .programCategory(HOSPITAL)
@@ -163,7 +163,7 @@ public class ProgramInitializer implements ApplicationRunner {
             Program program6 = Program.builder()
                     .place("3번출구")
                     .title("3타의사")
-                    .titleInfo("3번 입니다")
+                    .contentTitle("3번 입니다")
                     .phoneNumber("010-1234-1234")
                     .content("3번은 바로 3타의사")
                     .programCategory(HOSPITAL)

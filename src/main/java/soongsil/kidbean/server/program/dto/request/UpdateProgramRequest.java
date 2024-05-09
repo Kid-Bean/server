@@ -14,9 +14,6 @@ public record UpdateProgramRequest(
         @NotNull (message = "전화번호를 입력해주세요")
         String phoneNumber,
         @NotNull (message = "내용을 입력해주세요")
-        String content,
-        S3Info programS3Url,
-        S3Info teacherS3Url
-        
+        String content
 ) {
 }

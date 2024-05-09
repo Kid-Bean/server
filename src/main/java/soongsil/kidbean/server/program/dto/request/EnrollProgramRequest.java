@@ -23,9 +23,7 @@ public record EnrollProgramRequest(
         @NotNull(message = "내용을 입력해주세요")
         String content,
         ProgramCategory programCategory,
-        List<String> date,
-        S3Info programS3Url,
-        S3Info teacherS3Url
+        List<String> date
 ) {
 
 }

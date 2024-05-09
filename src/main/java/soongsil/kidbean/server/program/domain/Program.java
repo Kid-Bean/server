@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.program.domain.type.Date;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
 @Entity
@@ -25,8 +24,8 @@ public class Program {
     @Column(name = "title", length = 25)
     private String title;
 
-    @Column(name = "title_info", length = 60)
-    private String titleInfo;
+    @Column(name = "cotent_title", length = 60)
+    private String contentTitle;
 
     @Column(name = "place", length = 63)
     private String place;
@@ -64,7 +63,7 @@ public class Program {
     @Builder
     public Program(String teacherName,
                    String title,
-                   String titleInfo,
+                   String contentTitle,
                    String place,
                    String phoneNumber,
                    String content,
@@ -74,7 +73,7 @@ public class Program {
                    Member member) {
         this.teacherName = teacherName;
         this.title = title;
-        this.titleInfo = titleInfo;
+        this.contentTitle = contentTitle;
         this.place = place;
         this.phoneNumber = phoneNumber;
         this.content = content;
@@ -110,7 +109,7 @@ public class Program {
         this.programS3Url = programS3Url;
         this.teacherS3Url = teacherS3Url;
         this.title = title;
-        this.titleInfo = titleInfo;
+        this.contentTitle = titleInfo;
         this.content = content;
         this.teacherName = teacherName;
         this.phoneNumber = phoneNumber;

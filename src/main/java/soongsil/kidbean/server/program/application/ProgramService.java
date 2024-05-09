@@ -50,7 +50,6 @@ public class ProgramService {
      * @param programId 프로그램 id
      * @return response
      */
-    @Transactional
     public ProgramDetailResponse getProgramInfo(Long programId) {
 
         Program program = programRepository.findById(programId)
@@ -69,16 +68,12 @@ public class ProgramService {
     /**
      * 카테고리에 따른 프로그램 목록 조회
      */
-    @Transactional
     public ProgramListResponse getProgramListInfo(Long memberId, ProgramCategory programCategory, Pageable pageable) {
 
         Page<Program> programPage = programRepository.findAllByProgramCategory(programCategory, pageable);
 
         List<ProgramResponse> programResponseList = programPage.stream()
-                .map(program -> {
-                    Page<StarResponse> starId = starService.getStars(memberId, program.getProgramId(), pageable);
-                    return ProgramResponse.of(program, (Star) starId);
-                })
+                .map(program -> ProgramResponse.of(program, starService.existsByMemberAndProgram(memberId, program)))
                 .toList();
 
         return ProgramListResponse.from(programResponseList);
@@ -87,26 +82,23 @@ public class ProgramService {
     /**
      * 프로그램 삭제 - 관리자
      */
-    @Transactional
     public void deleteProgram(Long programId) {
         Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
         programRepository.delete(program);
-
     }
 
     /**
      * 프로그램 추가하기- 관리자
      */
-    @Transactional
     public void createProgram(EnrollProgramRequest enrollProgramRequest,
                               MultipartFile programS3Url,
                               MultipartFile teacherS3Url) {
 
         if (enrollProgramRequest.programCategory() == HOSPITAL) {
 
-            String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
+            String programFolderName = PROGRAM_IMAGE_NAME + HOSPITAL;
             String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
             String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
             S3Info programImageInfo = S3Info.builder()

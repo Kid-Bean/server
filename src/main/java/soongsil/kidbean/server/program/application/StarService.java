@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
+import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
@@ -45,7 +46,6 @@ public class StarService {
 
             starRepository.save(star);
         }
-
     }
 
     // 즐겨찾기 삭제
@@ -73,5 +73,13 @@ public class StarService {
 
         return starRepository.findAllByMemberAndProgram(member, program, pageable)
                 .map(star -> new StarResponse(star.getStarId()));
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean existsByMemberAndProgram(Long memberId, Program program) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        return starRepository.existsByMemberAndProgram(member, program);
     }
 }

@@ -13,9 +13,9 @@ public record ProgramResponse(
         String place,
         String teacherS3Url,
         String title,
-        String starId
+        Boolean isStar
 ) {
-    public static ProgramResponse of(Program program, Star star) {
+    public static ProgramResponse of(Program program, Boolean isStar) {
         return ProgramResponse
                 .builder()
                 .programId(program.getProgramId())
@@ -24,7 +24,7 @@ public record ProgramResponse(
                 .place(program.getPlace())
                 .teacherS3Url(program.getTeacherS3Url().getS3Url())
                 .title(program.getTitle())
-                .starId(star.getStarId().toString())
+                .isStar(isStar)
                 .build();
     }
 }
