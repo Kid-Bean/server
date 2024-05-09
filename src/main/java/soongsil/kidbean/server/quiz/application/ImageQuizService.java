@@ -45,7 +45,7 @@ public class ImageQuizService {
     private final QuizSolvedService quizSolvedService;
     private final S3Uploader s3Uploader;
 
-    private final static String QUIZ_BASE_FOLDER = "quiz/";
+    private static final String QUIZ_BASE_FOLDER = "quiz/";
 
     public ImageQuizMemberDetailResponse getImageQuizById(Long memberId, Long quizId) {
         ImageQuiz imageQuiz = imageQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)

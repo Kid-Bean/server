@@ -29,7 +29,7 @@ public class AnswerQuizSolvedService {
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final S3Uploader s3Uploader;
 
-    private final static String RECORD_BASE_FOLDER = "record/";
+    private static final String RECORD_BASE_FOLDER = "record/";
 
 
     /**

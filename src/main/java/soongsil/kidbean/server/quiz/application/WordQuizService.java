@@ -76,10 +76,10 @@ public class WordQuizService {
     }
 
     public WordQuizMemberDetailResponse getWordQuizById(Long memberId, Long quizId) {
-        WordQuiz WordQuiz = wordQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
+        WordQuiz wordQuiz = wordQuizRepository.findByQuizIdAndMember_MemberId(quizId, memberId)
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
-        return WordQuizMemberDetailResponse.from(WordQuiz);
+        return WordQuizMemberDetailResponse.from(wordQuiz);
     }
 
     public List<WordQuizMemberResponse> getAllWordQuizByMember(Long memberId) {
@@ -111,7 +111,7 @@ public class WordQuizService {
     }
 
     @Transactional
-    public void deleteWordQuiz(Long memberId, Long quizId) {
+    public void deleteWordQuiz(Long quizId) {
         WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
@@ -127,12 +127,6 @@ public class WordQuizService {
             i++;
         }
     }
-
-    @Transactional
-    public void deleteWordQuiz(Long quizId) {
-        WordQuiz wordQuiz = wordQuizRepository.findById(quizId)
-                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
-    }
       
     private int getWordQuizCount(Member member) {
         return wordQuizRepository.countByMemberOrAdmin(member);
@@ -142,9 +136,9 @@ public class WordQuizService {
         return wordQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
     }
 
-    private WordQuiz getWordQuizFromPage(Page<WordQuiz> WordQuizPage) {
-        if (WordQuizPage.hasContent()) {
-            return WordQuizPage.getContent().get(0);
+    private WordQuiz getWordQuizFromPage(Page<WordQuiz> wordQuizPage) {
+        if (wordQuizPage.hasContent()) {
+            return wordQuizPage.getContent().get(0);
         } else {
             throw new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND);
         }

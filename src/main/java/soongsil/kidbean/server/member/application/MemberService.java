@@ -12,8 +12,6 @@ import soongsil.kidbean.server.member.dto.response.MemberInfoResponse;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
-import java.time.LocalDate;
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)

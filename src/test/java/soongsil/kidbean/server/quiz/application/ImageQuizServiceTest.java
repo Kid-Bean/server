@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
@@ -49,10 +48,6 @@ class ImageQuizServiceTest {
 
     @InjectMocks
     private ImageQuizService imageQuizService;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private final String COMMON_URL = "example.com";
-    private final String folderName = "quiz/NONE";
 
     @Test
     @DisplayName("ImageQuizResponse 생성 테스트")
@@ -97,7 +92,7 @@ class ImageQuizServiceTest {
         List<ImageQuizMemberResponse> response = imageQuizService.getAllImageQuizByMember(MEMBER1.getMemberId());
 
         // then
-        assertThat(response.size()).isEqualTo(1);
+        assertThat(response).hasSize(1);
     }
 
     @Test
@@ -149,7 +144,7 @@ class ImageQuizServiceTest {
         );
 
         S3Info s3Info = S3Info.builder()
-                .s3Url("http://example.com/quiz/NONE/filename.jpg")
+                .s3Url("https://example.com/quiz/NONE/filename.jpg")
                 .fileName("filename.jpg")
                 .folderName("quiz/NONE")
                 .build();
