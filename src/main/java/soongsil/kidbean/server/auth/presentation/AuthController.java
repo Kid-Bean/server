@@ -27,7 +27,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Value("${server-name}")
+    @Value("${server.env}")
     private String env;
 
     private final AuthService authService;
@@ -66,6 +66,9 @@ public class AuthController {
                 .body(tokenProvider.createAccessToken(memberRepository.findById(memberId).get()));
     }
 
+    /**
+     * 배포 환경 테스트
+     */
     @GetMapping("/deploy/status")
     public ResponseEntity<Object> getEnv() {
         return ResponseEntity

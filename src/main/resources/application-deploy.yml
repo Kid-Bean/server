@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    group:
+      blue: prod, blue
+      green: prod, green
+
+server:
+  env: blue
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: blue
+
+server:
+  port: 8080
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: green
+
+server:
+  port: 8081
