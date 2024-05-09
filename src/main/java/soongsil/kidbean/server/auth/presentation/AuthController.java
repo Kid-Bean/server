@@ -65,4 +65,11 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .body(tokenProvider.createAccessToken(memberRepository.findById(memberId).get()));
     }
+
+    @GetMapping("/deploy/status")
+    public ResponseEntity<Object> getEnv() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(env);
+    }
 }
