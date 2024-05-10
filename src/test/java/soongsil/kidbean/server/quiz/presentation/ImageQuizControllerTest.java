@@ -22,9 +22,11 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.domain.type.Level;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
@@ -141,6 +143,42 @@ class ImageQuizControllerTest extends CommonControllerTest {
                     .file(multipartFile)
                     .with(csrf())
                     .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("ImageQuiz 수정하기")
+    void updateImageQuiz() throws Exception {
+        // given
+        ImageQuizUpdateRequest updateRequest = new ImageQuizUpdateRequest(IMAGE_QUIZ_NONE.getTitle(), IMAGE_QUIZ_NONE.getAnswer(), IMAGE_QUIZ_NONE.getQuizCategory());
+
+        MockMultipartFile requestPartFile = new MockMultipartFile("imageQuizUpdateRequest", "", "application/json", objectMapper.writeValueAsString(updateRequest).getBytes());
+        MockMultipartFile multipartFile = new MockMultipartFile("multipartFile", "test.jpg", "image/jpeg", "test image content".getBytes());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.multipart("/quiz/image/member/" + IMAGE_QUIZ_NONE.getQuizId())
+                    .file(requestPartFile) // JSON 데이터를 파일 파트로 추가
+                    .file(multipartFile) // 이미지 파일 추가
+                    .with(csrf())
+                    .with(request -> { request.setMethod("PUT"); return request; }) // 요청 메소드를 PUT으로 설정
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("ImageQuiz 삭제하기")
+    void deleteImageQuiz() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/quiz/image/member/" + IMAGE_QUIZ_NONE.getQuizId())
+                        .with(csrf()))
                 .andDo(print());
 
         // then
