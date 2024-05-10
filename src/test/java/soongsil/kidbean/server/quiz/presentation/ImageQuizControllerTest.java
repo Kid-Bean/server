@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
+import static soongsil.kidbean.server.quiz.fixture.ImageQuizFixture.IMAGE_QUIZ_NONE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveListResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveResponse;
 import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
@@ -90,5 +92,23 @@ class ImageQuizControllerTest extends CommonControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.score")
                         .value(String.valueOf(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()))));
+    }
+
+    @Test
+    @DisplayName("추가한 ImageQuiz 상세 정보 가져오기")
+    void getImageQuizById() throws Exception {
+        // given
+        ImageQuizMemberDetailResponse response = ImageQuizMemberDetailResponse.from(IMAGE_QUIZ_NONE);
+
+        given(imageQuizService.getImageQuizById(anyLong(), anyLong())).willReturn(response);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/quiz/image/member/1"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.results.answer")
+                        .value(String.valueOf(IMAGE_QUIZ_NONE.getAnswer())));
     }
 }
