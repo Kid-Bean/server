@@ -1,12 +1,9 @@
 package soongsil.kidbean.server.quiz.presentation;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,11 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.domain.type.Level;
+import soongsil.kidbean.server.quiz.dto.request.ImageQuizUploadRequest;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quiz.dto.response.*;
@@ -125,5 +124,26 @@ class ImageQuizControllerTest extends CommonControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].title")
                         .value(String.valueOf(IMAGE_QUIZ_NONE.getTitle())));
+    }
+
+    @Test
+    @DisplayName("ImageQuiz 등록하기")
+    void uploadImageQuiz() throws Exception {
+        // given
+        ImageQuizUploadRequest request = new ImageQuizUploadRequest(IMAGE_QUIZ_NONE.getTitle(), IMAGE_QUIZ_NONE.getAnswer(), IMAGE_QUIZ_NONE.getQuizCategory());
+
+        MockMultipartFile requestPartFile = new MockMultipartFile("imageQuizUploadRequest", "", "application/json", objectMapper.writeValueAsString(request).getBytes());
+        MockMultipartFile multipartFile = new MockMultipartFile("multipartFile", "test.jpg", "image/jpeg", "test image content".getBytes());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(multipart("/quiz/image/member")
+                    .file(requestPartFile)
+                    .file(multipartFile)
+                    .with(csrf())
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
     }
 }
