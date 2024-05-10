@@ -163,4 +163,17 @@ class ImageQuizServiceTest {
         verify(s3Uploader, times(1)).upload(any(MultipartFile.class), anyString());
         verify(s3Uploader).deleteFile(s3Info);
     }
+
+    @Test
+    @DisplayName("ImageQuiz 삭제하기")
+    void deleteImageQuiz() {
+        // given
+        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
+
+        // when
+        imageQuizService.deleteImageQuiz(IMAGE_QUIZ_ANIMAL1.getQuizId());
+
+        // then
+        verify(imageQuizRepository).delete(IMAGE_QUIZ_ANIMAL1);
+    }
 }
