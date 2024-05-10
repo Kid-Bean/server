@@ -3,8 +3,6 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main", "test" ]
-  pull_request:
-    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -24,7 +22,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'corretto'
 
       # 설정 파일 생성
       - name: application yml setting
@@ -111,7 +109,7 @@ jobs:
           username: ubuntu
           host: ${{ secrets.LIVE_SERVER_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script_stop: true
+          script_stop: true   # 실행 중 문제가 생기면 더 진행 X
           script: |
             sudo docker stop ${{ env.CURRENT_UPSTREAM }}
             sudo docker rm ${{ env.CURRENT_UPSTREAM }}
