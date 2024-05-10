@@ -29,10 +29,7 @@ import soongsil.kidbean.server.quiz.application.ImageQuizService;
 import soongsil.kidbean.server.quiz.domain.type.Level;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quiz.dto.request.QuizSolvedRequest;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizMemberDetailResponse;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveListResponse;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveResponse;
-import soongsil.kidbean.server.quiz.dto.response.ImageQuizSolveScoreResponse;
+import soongsil.kidbean.server.quiz.dto.response.*;
 
 @WebMvcTest(ImageQuizController.class)
 class ImageQuizControllerTest extends CommonControllerTest {
@@ -110,5 +107,23 @@ class ImageQuizControllerTest extends CommonControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.answer")
                         .value(String.valueOf(IMAGE_QUIZ_NONE.getAnswer())));
+    }
+
+    @Test
+    @DisplayName("추가한 ImageQuiz 리스트 가져오기")
+    void getAllImageQuizByMember() throws Exception {
+        // given
+        List<ImageQuizMemberResponse> responses = List.of(ImageQuizMemberResponse.from(IMAGE_QUIZ_NONE));
+
+        given(imageQuizService.getAllImageQuizByMember(anyLong())).willReturn(responses);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/quiz/image/member"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].title")
+                        .value(String.valueOf(IMAGE_QUIZ_NONE.getTitle())));
     }
 }
