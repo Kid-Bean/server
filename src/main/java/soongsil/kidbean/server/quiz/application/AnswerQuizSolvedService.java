@@ -12,10 +12,8 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
-import soongsil.kidbean.server.quiz.domain.Morpheme;
 import soongsil.kidbean.server.quiz.domain.UseWord;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
-import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 
 @Slf4j
@@ -24,7 +22,6 @@ import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 @RequiredArgsConstructor
 public class AnswerQuizSolvedService {
 
-    private final MorphemeRepository morphemeRepository;
     private final UseWordRepository useWordRepository;
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final S3Uploader s3Uploader;
@@ -54,20 +51,7 @@ public class AnswerQuizSolvedService {
         answerQuizSolvedRepository.save(answerQuizSolved);
 
         //아래에 있는 부분들 refactoring 시 bulk insertion 찾아보기
-        enrollMorphemes(openApiResponse, answerQuizSolved);
         enrollUseWords(openApiResponse, answerQuizSolved);
-    }
-
-    private void enrollMorphemes(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
-        List<Morpheme> morphemeList = openApiResponse.morphemeVOList().stream()
-                .map(morphemeVO -> Morpheme.builder()
-                        .morpheme(morphemeVO.lemma())
-                        .type(morphemeVO.type())
-                        .answerQuizSolved(answerQuizSolved)
-                        .build())
-                .toList();
-
-        morphemeRepository.saveAll(morphemeList);
     }
 
     private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
