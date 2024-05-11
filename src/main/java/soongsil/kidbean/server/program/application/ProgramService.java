@@ -11,14 +11,12 @@ import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
-import soongsil.kidbean.server.program.domain.Star;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
 import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
-import soongsil.kidbean.server.program.dto.response.StarResponse;
 import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
@@ -98,7 +96,7 @@ public class ProgramService {
 
         if (enrollProgramRequest.programCategory() == HOSPITAL) {
 
-            String programFolderName = PROGRAM_IMAGE_NAME + HOSPITAL;
+            String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
             String programUploadUrl = s3Uploader.upload(programS3Url, programFolderName);
             String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
             S3Info programImageInfo = S3Info.builder()
