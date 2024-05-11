@@ -1,23 +1,18 @@
 package soongsil.kidbean.server.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assert;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
-import soongsil.kidbean.server.member.fixture.MemberFixture;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.application.AnalyzeMorphemeService;
 import soongsil.kidbean.server.quiz.application.OpenApiService;
@@ -30,10 +25,10 @@ import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
 import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @ExtendWith(MockitoExtension.class)
-class MypageServiceTest {
+class QuizSolvedResultServiceTest {
 
     @InjectMocks
-    private MypageService mypageService;
+    private QuizSolvedResultService quizSolvedResultService;
 
     @Mock
     private QuizSolvedRepository quizSolvedRepository;
@@ -66,7 +61,7 @@ class MypageServiceTest {
 
         //when
         SolvedImageListResponse solvedImageListResponse =
-                mypageService.findSolvedImage(MEMBER1.getMemberId(), true);
+                quizSolvedResultService.findSolvedImage(MEMBER1.getMemberId(), true);
 
         //then
         assertThat(solvedImageListResponse.solvedList().size()).isEqualTo(1);

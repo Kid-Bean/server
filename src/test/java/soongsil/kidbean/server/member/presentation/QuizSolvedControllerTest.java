@@ -19,15 +19,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
-import soongsil.kidbean.server.member.application.MypageService;
+import soongsil.kidbean.server.member.application.QuizSolvedResultService;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
 
 @WebMvcTest(MypageController.class)
-class MypageControllerTest extends CommonControllerTest {
+class QuizSolvedControllerTest extends CommonControllerTest {
 
     @MockBean
-    private MypageService mypageService;
+    private QuizSolvedResultService quizSolvedResultService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,7 +43,7 @@ class MypageControllerTest extends CommonControllerTest {
                 SolvedImageListResponse.from(List.of(SolvedImageInfo.from(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE)));
         Boolean isCorrect = true;
 
-        given(mypageService.findSolvedImage(MEMBER1.getMemberId(), isCorrect))
+        given(quizSolvedResultService.findSolvedImage(MEMBER1.getMemberId(), isCorrect))
                 .willReturn(solvedImageListResponse);
 
         //when
