@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,19 +52,41 @@ public class AnswerQuizSolvedService {
         answerQuizSolvedRepository.save(answerQuizSolved);
 
         //아래에 있는 부분들 refactoring 시 bulk insertion 찾아보기
-        enrollUseWords(openApiResponse, answerQuizSolved);
+        enrollUseWords(openApiResponse, answerQuizSolved, member);
     }
 
-    private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
+    private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved, Member member) {
+        Map<String, Long> wordCountMap = useWordRepository.findWordCountsForMember(member);
+
         List<UseWord> useWordList = openApiResponse.useWordVOList().stream()
-                .map(useWordVO -> UseWord.builder()
-                        .wordName(useWordVO.word())
-                        .count(useWordVO.count())
-                        .answerQuizSolved(answerQuizSolved)
-                        .build())
+                .map(useWordVO -> {
+                    String wordName = useWordVO.word();
+                    long count = useWordVO.count();
+                    long currentCount = wordCountMap.getOrDefault(wordName, 0L);
+
+                    if (currentCount > 0) {
+                        UseWord existingUseWord = useWordRepository.findByWordNameAndMember(wordName, member)
+                                .orElse(buildUseWord(answerQuizSolved, member, wordName, count));
+
+                        existingUseWord.addCount(count);
+
+                        return existingUseWord;
+                    } else {
+                        return buildUseWord(answerQuizSolved, member, wordName, count);
+                    }
+                })
                 .toList();
 
         useWordRepository.saveAll(useWordList);
+    }
+
+    private static UseWord buildUseWord(AnswerQuizSolved answerQuizSolved, Member member, String wordName, long count) {
+        return UseWord.builder()
+                .wordName(wordName)
+                .count(count)
+                .answerQuizSolved(answerQuizSolved)
+                .member(member)
+                .build();
     }
 
     private S3Info uploadRecordFile(long memberId, MultipartFile multipartFile) {

@@ -65,7 +65,7 @@ public class MypageController {
     @GetMapping("/voice/use-word/list")
     public ResponseEntity<ResponseTemplate<Object>> findAllUseWordList(
             @AuthenticationPrincipal AuthUser user) {
-        return ResponseEntity.ok(ResponseTemplate.from(voiceSolvedResultService.findAllUseWordList(user.memberId())));
+        return ResponseEntity.ok(ResponseTemplate.from(voiceSolvedResultService.findTop5UseWordList(user.memberId())));
     }
 
     @GetMapping("/image/result")
