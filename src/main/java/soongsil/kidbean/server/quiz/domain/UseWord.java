@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import soongsil.kidbean.server.member.domain.Member;
 
 @Getter
 @Entity
@@ -34,10 +35,19 @@ public class UseWord {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     AnswerQuizSolved answerQuizSolved;
 
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    Member member;
+
     @Builder
-    public UseWord(String wordName, Long count, AnswerQuizSolved answerQuizSolved) {
+    public UseWord(String wordName, Long count, AnswerQuizSolved answerQuizSolved, Member member) {
         this.wordName = wordName;
         this.count = count;
         this.answerQuizSolved = answerQuizSolved;
+        this.member = member;
+    }
+
+    public void addCount(long count) {
+        this.count += count;
     }
 }

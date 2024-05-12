@@ -13,7 +13,6 @@ import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
-import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 
 import java.util.List;
@@ -25,8 +24,6 @@ import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ
 @ExtendWith(MockitoExtension.class)
 class AnswerQuizSolvedServiceTest {
 
-    @Mock
-    private MorphemeRepository morphemeRepository;
     @Mock
     private UseWordRepository useWordRepository;
     @Mock
@@ -58,7 +55,6 @@ class AnswerQuizSolvedServiceTest {
 
         //then
         verify(answerQuizSolvedRepository).save(any(AnswerQuizSolved.class));
-        verify(morphemeRepository, atLeastOnce()).saveAll(anyList());
         verify(useWordRepository, atLeastOnce()).saveAll(anyList());
     }
 }
