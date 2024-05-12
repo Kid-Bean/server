@@ -17,7 +17,7 @@ public record SolvedImageInfo(
                 quizSolved.getSolvedId(),
                 quizSolved.getImageQuiz().getQuizCategory(),
                 quizSolved.getImageQuiz().getAnswer(),
-                quizSolved.getSolvedTime()
+                quizSolved.getCreatedDate()
         );
     }
 }

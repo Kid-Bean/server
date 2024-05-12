@@ -14,14 +14,13 @@ import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
 import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
-import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
+import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +30,6 @@ public class ProgramService {
 
     private final ProgramRepository programRepository;
 
-    private static final String COMMON_URL = "kidbean.s3.ap-northeast-2.amazonaws.com";
     private static final String PROGRAM_IMAGE_NAME = "program/";
     private static final String TEACHER_IMAGE_NAME = "teacher/";
     private final S3Uploader s3Uploader;
@@ -53,7 +51,7 @@ public class ProgramService {
         //enum에서 가져옴
         List<String> dates = date.stream()
                 .map(day -> day.getDate().getDate())
-                .collect(Collectors.toList());
+                .toList();
 
         return ProgramDetailResponse.of(program,dates);
     }
@@ -95,24 +93,8 @@ public class ProgramService {
         String programFolderName = PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory();
         String teacherFolderName = TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory();
 
-        String programUploadUrl = s3Uploader.upload(s3Url, programFolderName);
-        String teacherUploadUrl = s3Uploader.upload(s3Url, teacherFolderName);
-
-        String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
-        String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
-
-
-        S3Info programImageInfo = S3Info.builder()
-                .s3Url(programUploadUrl)
-                .fileName(programGeneratedPath)
-                .folderName(PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory())
-                .build();
-
-        S3Info teacherImageInfo = S3Info.builder()
-                .s3Url(teacherUploadUrl)
-                .fileName(teacherGeneratedPath)
-                .folderName(TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory())
-                .build();
+        S3Info programImageInfo = s3Uploader.upload(s3Url, programFolderName);
+        S3Info teacherImageInfo = s3Uploader.upload(s3Url, teacherFolderName);
 
         //to-entity
         Program createProgram = Program.builder()
@@ -140,23 +122,8 @@ public class ProgramService {
             String programFolderName = PROGRAM_IMAGE_NAME + program.getProgramCategory();
             String teacherFolderName = TEACHER_IMAGE_NAME + program.getProgramCategory();
 
-            String programUploadUrl = s3Uploader.upload(s3Url, programFolderName);
-            String teacherUploadUrl = s3Uploader.upload(s3Url, teacherFolderName);
-
-            String programGeneratedPath = programUploadUrl.split("/" + COMMON_URL + "/" + programFolderName + "/")[1];
-            String teacherGeneratedPath = teacherUploadUrl.split("/" + COMMON_URL + "/" + teacherFolderName + "/")[1];
-
-            S3Info programImageInfo = S3Info.builder()
-                    .s3Url(programUploadUrl)
-                    .fileName(programGeneratedPath)
-                    .folderName(programFolderName)
-                    .build();
-
-            S3Info teacherImageInfo = S3Info.builder()
-                    .s3Url(teacherUploadUrl)
-                    .fileName(teacherGeneratedPath)
-                    .folderName(teacherFolderName)
-                    .build();
+            S3Info programImageInfo = s3Uploader.upload(s3Url, programFolderName);
+            S3Info teacherImageInfo = s3Uploader.upload(s3Url, teacherFolderName);
 
             Program updateProgram = Program.builder()
                     .title(updateProgramRequest.title())

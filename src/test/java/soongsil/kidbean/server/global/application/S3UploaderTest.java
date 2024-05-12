@@ -59,11 +59,10 @@ class S3UploaderTest {
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
         //when
-        String urlPath = s3Uploader.upload(file, folderName);
+        S3Info s3Info = s3Uploader.upload(file, folderName);
 
         // then
-        assertThat(urlPath).contains(path);
-        assertThat(urlPath).contains(folderName);
+        assertThat(s3Info.getFolderName()).isEqualTo(folderName);
     }
 
     @Test
@@ -73,16 +72,11 @@ class S3UploaderTest {
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
 
         //when(생성된 파일을 제거)
-        String urlPath = s3Uploader.upload(file, folderName);
-        s3Uploader.deleteFile(generateImageInfo(urlPath));
+        S3Info s3Info = s3Uploader.upload(file, folderName);
+        s3Uploader.deleteFile(s3Info);
 
         // then
-        assertThatThrownBy(() -> amazonS3.getObject(BUCKET_NAME, urlPath))
+        assertThatThrownBy(() -> amazonS3.getObject(BUCKET_NAME, s3Info.getS3Url()))
                 .isInstanceOf(AmazonS3Exception.class);
-    }
-
-    private S3Info generateImageInfo(String urlPath) {
-        String generatedPath = urlPath.split("/" + BUCKET_NAME + "/" + folderName + "/")[1];
-        return new S3Info(urlPath, generatedPath, folderName);
     }
 }

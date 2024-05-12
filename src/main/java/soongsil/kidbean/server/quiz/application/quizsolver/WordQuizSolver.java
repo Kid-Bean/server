@@ -40,7 +40,7 @@ public class WordQuizSolver implements QuizSolver {
         if (wordQuizSolvedExists(wordQuiz, member)) {
             return solveExistingWordQuizSolved(wordQuizSolved, wordQuiz);
         } else {
-            return SolveNewWordQuiz(wordQuizSolved, wordQuiz);
+            return solveNewWordQuiz(wordQuizSolved, wordQuiz);
         }
     }
 
@@ -48,7 +48,7 @@ public class WordQuizSolver implements QuizSolver {
         return quizSolvedRepository.existsByWordQuizAndMember(wordQuiz, member);
     }
 
-    private SolvedQuizInfo SolveNewWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
+    private SolvedQuizInfo solveNewWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
 
         newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(wordQuiz.getAnswer()));
         quizSolvedRepository.save(newQuizSolved);

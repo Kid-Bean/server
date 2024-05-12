@@ -1,23 +1,25 @@
 package soongsil.kidbean.server.global.application;
 
-import static soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode.*;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.global.exception.FileConvertFailException;
+import soongsil.kidbean.server.global.vo.S3Info;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.Optional;
+
+import static soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode.FILE_CONVERT_FAIL;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class S3Uploader {
     private String bucket;
 
     //MultipartFile을 전달받아 File로 전환한 후 S3에 업로드 후 url return
-    public String upload(MultipartFile multipartFile, String folderName) {
+    public S3Info upload(MultipartFile multipartFile, String folderName) {
         File uploadFile;
 
         try {
@@ -40,7 +42,14 @@ public class S3Uploader {
             throw new FileConvertFailException(FILE_CONVERT_FAIL);
         }
 
-        return upload(uploadFile, folderName);
+        String uploadUrl = upload(uploadFile, folderName);
+        String fileName = uploadFile.getName();
+
+        return S3Info.builder()
+                .s3Url(uploadUrl)
+                .fileName(fileName)
+                .folderName(folderName)
+                .build();
     }
 
     //S3 버킷에 있는 파일을 삭제
@@ -80,8 +89,11 @@ public class S3Uploader {
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-        //UUID로 파일 이름 중복 제거
-        String fileName = UUID.randomUUID() + Objects.requireNonNull(file.getOriginalFilename());
+        //LocalDateTime으로 파일 이름 중복 제거
+        // LocalDateTime을 "yyyyMMddHHmmss" 포맷으로 변경
+        String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        // 포맷된 시간을 파일 이름에 포함
+        String fileName = formattedDateTime + "_" + Objects.requireNonNull(file.getOriginalFilename());
         File convertFile = new File(fileName);
 
         if (convertFile.createNewFile()) {

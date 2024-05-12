@@ -29,7 +29,7 @@ public class AnswerQuizSolvedService {
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final S3Uploader s3Uploader;
 
-    private final static String RECORD_BASE_FOLDER = "record/";
+    private static final String RECORD_BASE_FOLDER = "record/";
 
 
     /**
@@ -84,13 +84,6 @@ public class AnswerQuizSolvedService {
 
     private S3Info uploadRecordFile(long memberId, MultipartFile multipartFile) {
         String folderName = RECORD_BASE_FOLDER + memberId;
-        String uploadUrl = s3Uploader.upload(multipartFile, folderName);
-        String fileName = uploadUrl.split(folderName + "/")[1];
-
-        return S3Info.builder()
-                .folderName(folderName)
-                .fileName(fileName)
-                .s3Url(uploadUrl)
-                .build();
+        return s3Uploader.upload(multipartFile, folderName);
     }
 }
