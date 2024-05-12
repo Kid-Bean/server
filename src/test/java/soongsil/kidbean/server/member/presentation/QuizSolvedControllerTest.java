@@ -20,14 +20,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.member.application.QuizSolvedResultService;
+import soongsil.kidbean.server.member.application.VoiceSolvedResultService;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
+import soongsil.kidbean.server.summary.application.SummaryService;
 
 @WebMvcTest(MypageController.class)
 class QuizSolvedControllerTest extends CommonControllerTest {
 
     @MockBean
     private QuizSolvedResultService quizSolvedResultService;
+
+    @MockBean
+    private SummaryService summaryService;
+
+    @MockBean
+    private VoiceSolvedResultService voiceSolvedResultService;
 
     @Autowired
     private MockMvc mockMvc;

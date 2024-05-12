@@ -1,7 +1,10 @@
 package soongsil.kidbean.server.quiz.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +14,7 @@ import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.vo.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
+import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 import soongsil.kidbean.server.quiz.domain.UseWord;
@@ -58,26 +62,24 @@ public class AnswerQuizSolvedService {
     private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved, Member member) {
         Map<String, Long> wordCountMap = useWordRepository.findWordCountsForMember(member);
 
-        List<UseWord> useWordList = openApiResponse.useWordVOList().stream()
-                .map(useWordVO -> {
-                    String wordName = useWordVO.word();
-                    long count = useWordVO.count();
-                    long currentCount = wordCountMap.getOrDefault(wordName, 0L);
+        List<UseWord> newUseWords = new ArrayList<>();
 
-                    if (currentCount > 0) {
-                        UseWord existingUseWord = useWordRepository.findByWordNameAndMember(wordName, member)
-                                .orElse(buildUseWord(answerQuizSolved, member, wordName, count));
+        openApiResponse.useWordVOList().forEach(useWordVO -> {
+            String wordName = useWordVO.word();
+            long count = useWordVO.count();
+            long currentCount = wordCountMap.getOrDefault(wordName, 0L);
 
-                        existingUseWord.addCount(count);
+            if (currentCount > 0) {
+                UseWord existingUseWord = useWordRepository.findByWordNameAndMember(wordName, member)
+                        .orElse(buildUseWord(answerQuizSolved, member, wordName, count));
 
-                        return existingUseWord;
-                    } else {
-                        return buildUseWord(answerQuizSolved, member, wordName, count);
-                    }
-                })
-                .toList();
+                existingUseWord.addCount(count);
+            } else {
+                newUseWords.add(buildUseWord(answerQuizSolved, member, wordName, count));
+            }
+        });
 
-        useWordRepository.saveAll(useWordList);
+        useWordRepository.saveAll(newUseWords);
     }
 
     private static UseWord buildUseWord(AnswerQuizSolved answerQuizSolved, Member member, String wordName, long count) {
