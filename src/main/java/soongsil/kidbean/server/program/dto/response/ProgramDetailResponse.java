@@ -10,6 +10,7 @@ public record ProgramDetailResponse(
         Long programId,
         String teacherName,
         String title,
+        String contentTitle,
         String place,
         String phoneNumber,
         String content,
@@ -27,9 +28,10 @@ public record ProgramDetailResponse(
                 .place(program.getPlace())
                 .phoneNumber(program.getPhoneNumber())
                 .title(program.getTitle())
+                .contentTitle(program.getContentTitle())
                 .content(program.getContent())
-                .programImageUrl(program.getProgramImageInfo().getS3Url())
-                .teacherImageUrl(program.getTeacherImageInfo().getS3Url())
+                .programImageUrl(program.getProgramS3Url().getS3Url())
+                .teacherImageUrl(program.getTeacherS3Url().getS3Url())
                 .date(dates)
                 .build();
     }

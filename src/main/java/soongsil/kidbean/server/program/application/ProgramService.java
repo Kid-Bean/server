@@ -17,15 +17,19 @@ import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
+import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.List;
 
+import static soongsil.kidbean.server.program.domain.type.ProgramCategory.HOSPITAL;
+import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.PROGRAM_NOT_FOUND;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class ProgramService {
 
     private final ProgramRepository programRepository;
@@ -34,6 +38,7 @@ public class ProgramService {
     private static final String TEACHER_IMAGE_NAME = "teacher/";
     private final S3Uploader s3Uploader;
     private final DayRepository dayRepository;
+    private final StarService starService;
 
     /**
      * 프로그램 상세 조회
@@ -41,31 +46,30 @@ public class ProgramService {
      * @param programId 프로그램 id
      * @return response
      */
-    @Transactional
     public ProgramDetailResponse getProgramInfo(Long programId) {
 
         Program program = programRepository.findById(programId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
         List<Day> date = dayRepository.findAllByProgram(program);
+
         //enum에서 가져옴
         List<String> dates = date.stream()
                 .map(day -> day.getDate().getDate())
                 .toList();
 
-        return ProgramDetailResponse.of(program,dates);
+        return ProgramDetailResponse.of(program, dates);
     }
 
     /**
      * 카테고리에 따른 프로그램 목록 조회
      */
-    @Transactional
-    public ProgramListResponse getProgramListInfo(ProgramCategory programCategory, Pageable pageable) {
+    public ProgramListResponse getProgramListInfo(Long memberId, ProgramCategory programCategory, Pageable pageable) {
 
         Page<Program> programPage = programRepository.findAllByProgramCategory(programCategory, pageable);
 
         List<ProgramResponse> programResponseList = programPage.stream()
-                .map(ProgramResponse::from)
+                .map(program -> ProgramResponse.of(program, starService.existsByMemberAndProgram(memberId, program)))
                 .toList();
 
         return ProgramListResponse.from(programResponseList);
@@ -74,68 +78,161 @@ public class ProgramService {
     /**
      * 프로그램 삭제 - 관리자
      */
-    @Transactional
-    public ProgramResponse deleteProgram(Long programId) {
+    public void deleteProgram(Long programId) {
         Program program = programRepository.findById(programId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
         programRepository.delete(program);
-
-        return ProgramResponse.from(program);
     }
 
     /**
      * 프로그램 추가하기- 관리자
      */
-    @Transactional
-    public void createProgram(EnrollProgramRequest enrollProgramRequest, MultipartFile s3Url) {
+    public void createProgram(EnrollProgramRequest enrollProgramRequest,
+                              MultipartFile programS3Url,
+                              MultipartFile teacherS3Url) {
 
-        String programFolderName = PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory();
-        String teacherFolderName = TEACHER_IMAGE_NAME + enrollProgramRequest.programCategory();
+        if (enrollProgramRequest.programCategory() == HOSPITAL) {
 
-        S3Info programImageInfo = s3Uploader.upload(s3Url, programFolderName);
-        S3Info teacherImageInfo = s3Uploader.upload(s3Url, teacherFolderName);
+            String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
+            S3Info programImageInfo = s3Uploader.upload(programS3Url, programFolderName);
 
-        //to-entity
-        Program createProgram = Program.builder()
-                .title(enrollProgramRequest.title())
-                .content(enrollProgramRequest.content())
-                .place(enrollProgramRequest.place())
-                .teacherName(enrollProgramRequest.teacherName())
-                .phoneNumber(enrollProgramRequest.phoneNumber())
-                .programCategory(enrollProgramRequest.programCategory())
-                .programImageInfo(programImageInfo)
-                .teacherImageInfo(teacherImageInfo)
-                .build();
+            Program createProgram = Program.builder()
+                    .title(enrollProgramRequest.title())
+                    .contentTitle(enrollProgramRequest.titleInfo())
+                    .content(enrollProgramRequest.content())
+                    .place(enrollProgramRequest.place())
+                    .teacherName(enrollProgramRequest.teacherName())
+                    .phoneNumber(enrollProgramRequest.phoneNumber())
+                    .programCategory(enrollProgramRequest.programCategory())
+                    .programS3Url(programImageInfo)
+                    .build();
 
-        programRepository.save(createProgram);
+            programRepository.save(createProgram);
+
+        } else {
+            String programFolderName = PROGRAM_IMAGE_NAME + "ACADEMY";
+            S3Info programImageInfo = s3Uploader.upload(programS3Url, programFolderName);
+
+            Program createProgram = Program.builder()
+                    .title(enrollProgramRequest.title())
+                    .contentTitle(enrollProgramRequest.titleInfo())
+                    .content(enrollProgramRequest.content())
+                    .place(enrollProgramRequest.place())
+                    .teacherName(enrollProgramRequest.teacherName())
+                    .phoneNumber(enrollProgramRequest.phoneNumber())
+                    .programCategory(enrollProgramRequest.programCategory())
+                    .programS3Url(programImageInfo)
+                    .build();
+
+            programRepository.save(createProgram);
+        }
+
+        if (enrollProgramRequest.programCategory() == HOSPITAL) {
+            String teacherFolderName = TEACHER_IMAGE_NAME + "HOSPITAL";
+            S3Info teacherImageInfo = s3Uploader.upload(teacherS3Url, teacherFolderName);
+
+            Program createProgram = Program.builder()
+                    .title(enrollProgramRequest.title())
+                    .content(enrollProgramRequest.content())
+                    .place(enrollProgramRequest.place())
+                    .teacherName(enrollProgramRequest.teacherName())
+                    .phoneNumber(enrollProgramRequest.phoneNumber())
+                    .programCategory(enrollProgramRequest.programCategory())
+                    .teacherS3Url(teacherImageInfo)
+                    .build();
+
+            programRepository.save(createProgram);
+        } else {
+            String teacherFolderName = TEACHER_IMAGE_NAME + "ACADEMY";
+            S3Info teacherImageInfo = s3Uploader.upload(teacherS3Url, teacherFolderName);
+
+            Program createProgram = Program.builder()
+                    .title(enrollProgramRequest.title())
+                    .content(enrollProgramRequest.content())
+                    .place(enrollProgramRequest.place())
+                    .teacherName(enrollProgramRequest.teacherName())
+                    .phoneNumber(enrollProgramRequest.phoneNumber())
+                    .programCategory(enrollProgramRequest.programCategory())
+                    .teacherS3Url(teacherImageInfo)
+                    .build();
+
+            programRepository.save(createProgram);
+        }
     }
 
     /**
      * 프로그램 수정하기. -> ex) 선생님 이름만 수정
      */
-    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest, MultipartFile s3Url) {
-        Program program = programRepository.findById(programId).orElseThrow(RuntimeException::new);
+    public void editProgramInfo(Long programId, UpdateProgramRequest updateProgramRequest,
+                                MultipartFile programS3Url,
+                                MultipartFile teacherS3Url) {
+        Program program = programRepository.findById(programId)
+                .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
 
-        if (s3Url != null && !s3Url.isEmpty()) {
-            String programFolderName = PROGRAM_IMAGE_NAME + program.getProgramCategory();
-            String teacherFolderName = TEACHER_IMAGE_NAME + program.getProgramCategory();
+        if (programS3Url != null && !programS3Url.isEmpty()) {
+            if (program.getProgramCategory() == HOSPITAL) {
+                String programFolderName = PROGRAM_IMAGE_NAME + "HOSPITAL";
+                S3Info programImageInfo = s3Uploader.upload(programS3Url, programFolderName);
 
-            S3Info programImageInfo = s3Uploader.upload(s3Url, programFolderName);
-            S3Info teacherImageInfo = s3Uploader.upload(s3Url, teacherFolderName);
+                Program updateProgram = Program.builder()
+                        .title(updateProgramRequest.title())
+                        .content(updateProgramRequest.content())
+                        .place(updateProgramRequest.place())
+                        .teacherName(updateProgramRequest.teacherName())
+                        .phoneNumber(updateProgramRequest.phoneNumber())
+                        .programS3Url(programImageInfo)
+                        .build();
 
-            Program updateProgram = Program.builder()
-                    .title(updateProgramRequest.title())
-                    .content(updateProgramRequest.content())
-                    .place(updateProgramRequest.place())
-                    .teacherName(updateProgramRequest.teacherName())
-                    .phoneNumber(updateProgramRequest.phoneNumber())
-                    .programImageInfo(programImageInfo)
-                    .teacherImageInfo(teacherImageInfo)
-                    .build();
+                programRepository.save(updateProgram);
+            } else {
+                String programFolderName = PROGRAM_IMAGE_NAME + "ACADEMY";
+                S3Info programImageInfo = s3Uploader.upload(programS3Url, programFolderName);
 
-            programRepository.save(updateProgram); // save 안해도 set 때문에 자동으로 해결
+                Program updateProgram = Program.builder()
+                        .title(updateProgramRequest.title())
+                        .content(updateProgramRequest.content())
+                        .place(updateProgramRequest.place())
+                        .teacherName(updateProgramRequest.teacherName())
+                        .phoneNumber(updateProgramRequest.phoneNumber())
+                        .programS3Url(programImageInfo)
+                        .build();
+
+                programRepository.save(updateProgram);
+            }
+
+            if (teacherS3Url != null && !teacherS3Url.isEmpty()) {
+                if (program.getProgramCategory() == HOSPITAL) {
+                    String teacherFolderName = TEACHER_IMAGE_NAME + "HOSPITAL";
+                    S3Info teacherImageInfo = s3Uploader.upload(teacherS3Url, teacherFolderName);
+
+                    Program updateProgram = Program.builder()
+                            .title(updateProgramRequest.title())
+                            .content(updateProgramRequest.content())
+                            .place(updateProgramRequest.place())
+                            .teacherName(updateProgramRequest.teacherName())
+                            .phoneNumber(updateProgramRequest.phoneNumber())
+                            .teacherS3Url(teacherImageInfo)
+                            .build();
+
+                    programRepository.save(updateProgram);
+                }
+            } else {
+                String teacherFolderName = TEACHER_IMAGE_NAME + "ACADEMY";
+                S3Info teacherImageInfo = s3Uploader.upload(teacherS3Url, teacherFolderName);
+
+                Program updateProgram = Program.builder()
+                        .title(updateProgramRequest.title())
+                        .content(updateProgramRequest.content())
+                        .place(updateProgramRequest.place())
+                        .teacherName(updateProgramRequest.teacherName())
+                        .phoneNumber(updateProgramRequest.phoneNumber())
+                        .teacherS3Url(teacherImageInfo)
+                        .build();
+
+                programRepository.save(updateProgram);
+            }
         }
     }
 }
