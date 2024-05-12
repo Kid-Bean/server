@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.exception.FileConvertFailException;
-import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.global.domain.S3Info;
 
 import java.io.File;
 import java.io.FileOutputStream;

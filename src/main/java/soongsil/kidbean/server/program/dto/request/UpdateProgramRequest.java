@@ -1,19 +1,25 @@
 package soongsil.kidbean.server.program.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import soongsil.kidbean.server.global.vo.S3Info;
 
 public record UpdateProgramRequest(
 
-        @NotNull (message = "선생님 이름을 입력해주세요")
-        String teacherName,
-        @NotNull (message = "제목을 입력해주세요")
-        String title,
-        @NotNull (message = "장소를 입력해주세요")
+        Long programId,
+
+        @NotNull(message = "관련 부서 이름을 입력해주세요")
+        String departmentName,
+
+        @NotNull(message = "프로그램 제목을 입력해주세요")
+        String programTitle,
+
+        @NotNull(message = "장소를 입력해주세요")
         String place,
-        @NotNull (message = "전화번호를 입력해주세요")
+
+        @NotNull(message = "부서 전화번호를 입력해주세요")
         String phoneNumber,
-        @NotNull (message = "내용을 입력해주세요")
+
+        @NotNull(message = "내용을 입력해주세요")
         String content
 ) {
+
 }

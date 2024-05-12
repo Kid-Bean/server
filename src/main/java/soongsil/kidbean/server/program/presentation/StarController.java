@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.program.application.StarService;
+
 import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE;
 
 
@@ -57,7 +58,7 @@ public class StarController {
             @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 
-        starService.getStars(programId, user.memberId() , pageable);
+        starService.getStarProgramList(programId, user.memberId(), pageable);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

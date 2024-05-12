@@ -2,17 +2,15 @@ package soongsil.kidbean.server.program.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
-import soongsil.kidbean.server.program.dto.response.StarResponse;
+import soongsil.kidbean.server.program.dto.response.ProgramResponseList;
 import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 import soongsil.kidbean.server.program.repository.StarRepository;
@@ -64,15 +62,17 @@ public class StarService {
         starRepository.delete(star);
     }
 
-    //즐겨찾기 조회
-    public Page<StarResponse> getStars(Long memberId, Long programId, Pageable pageable) {
+    //즐겨 찾기 목록 조회
+    public ProgramResponseList getStarProgramList(Long memberId, Long programId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
         Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
-        return starRepository.findAllByMemberAndProgram(member, program, pageable)
-                .map(star -> new StarResponse(star.getStarId()));
+        //starRepository 에서 member 가 즐겨 찾기한 프로그램 목록 pageable 로 가져오기
+        //programRepository 에서 위에서 찾은 프로그램 목록을 가져 와서 return
+
+        return null;
     }
 
     @Transactional(readOnly = true)

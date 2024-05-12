@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
-import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -36,7 +36,6 @@ import static soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode.IMA
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-
 
 public class ImageQuizService {
 
