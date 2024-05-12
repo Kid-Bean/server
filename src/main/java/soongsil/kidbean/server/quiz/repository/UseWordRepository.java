@@ -1,6 +1,8 @@
 package soongsil.kidbean.server.quiz.repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,8 +13,11 @@ import soongsil.kidbean.server.quiz.domain.UseWord;
 
 @Repository
 public interface UseWordRepository extends JpaRepository<UseWord, Long> {
-    List<UseWord> findAllByAnswerQuizSolved(AnswerQuizSolved answerQuizSolved);
 
-    @Query("SELECT uw FROM UseWord uw JOIN FETCH uw.answerQuizSolved aqs WHERE aqs.member = :member")
-    List<UseWord> findAllByMemberFetchJoinUseWord(@Param("member") Member member);
+    List<UseWord> findTop5ByMemberOrderByCountDesc(Member member);
+
+    @Query("SELECT uw.wordName, uw.count FROM UseWord uw WHERE uw.member = :member")
+    Map<String,Long> findWordCountsForMember(@Param("member") Member member);
+
+    Optional<UseWord> findByWordNameAndMember(String wordName, Member member);
 }

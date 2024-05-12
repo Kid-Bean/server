@@ -1,17 +1,5 @@
 package soongsil.kidbean.server.quiz.presentation;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
-import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +14,24 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.quiz.application.AnswerQuizService;
 import soongsil.kidbean.server.quiz.dto.request.AnswerQuizSolvedRequest;
+import soongsil.kidbean.server.quiz.dto.request.AnswerQuizUpdateRequest;
+import soongsil.kidbean.server.quiz.dto.request.AnswerQuizUploadRequest;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberDetailResponse;
+import soongsil.kidbean.server.quiz.dto.response.AnswerQuizMemberResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.quiz.dto.response.AnswerQuizSolveScoreResponse;
+
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
+import static soongsil.kidbean.server.quiz.fixture.AnswerQuizFixture.ANSWER_QUIZ;
 
 @WebMvcTest(AnswerQuizController.class)
 class AnswerQuizControllerTest extends CommonControllerTest {
@@ -44,7 +48,6 @@ class AnswerQuizControllerTest extends CommonControllerTest {
     @Test
     @DisplayName("랜덤 AnswerQuiz 생성 요청")
     void getRandomAnswerQuiz() throws Exception {
-
         //given
         Long memberId = MEMBER1.getMemberId();
         AnswerQuizResponse answerQuizResponse = AnswerQuizResponse.from(ANSWER_QUIZ);
@@ -62,7 +65,7 @@ class AnswerQuizControllerTest extends CommonControllerTest {
 
     @Test
     @DisplayName("AnswerQuiz 풀기 요청")
-    public void solveAnswerQuiz() throws Exception {
+    void solveAnswerQuiz() throws Exception {
         //given
         long returnScore = 3L;
 
@@ -87,5 +90,89 @@ class AnswerQuizControllerTest extends CommonControllerTest {
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.score").value(returnScore));
+    }
+
+    @Test
+    @DisplayName("추가한 AnswerQuiz 리스트 가져오기")
+    void getAllAnswerQuizByMember() throws Exception {
+        // given
+        List<AnswerQuizMemberResponse> responses = List.of(AnswerQuizMemberResponse.from(ANSWER_QUIZ));
+
+        given(answerQuizService.getAllAnswerQuizByMember(anyLong())).willReturn(responses);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/quiz/answer/member")
+                        .with(csrf()))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].title").value(ANSWER_QUIZ.getTitle()));
+    }
+
+    @Test
+    @DisplayName("AnswerQuiz 상세 정보 가져오기")
+    void getAnswerQuizById() throws Exception {
+        // given
+        AnswerQuizMemberDetailResponse response = new AnswerQuizMemberDetailResponse(ANSWER_QUIZ.getTitle(), ANSWER_QUIZ.getQuestion());
+
+        given(answerQuizService.getAnswerQuizById(anyLong(), anyLong())).willReturn(response);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/quiz/answer/member/1")
+                    .with(csrf()))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.results.title").value(ANSWER_QUIZ.getTitle()));
+    }
+
+    @Test
+    @DisplayName("AnswerQuiz 등록하기")
+    void uploadAnswerQuiz() throws Exception {
+        // given
+        AnswerQuizUploadRequest request = new AnswerQuizUploadRequest(anyString(), anyString());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/quiz/answer/member")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("AnswerQuiz 수정하기")
+    void updateAnswerQuiz() throws Exception {
+        // given
+        AnswerQuizUpdateRequest request = new AnswerQuizUpdateRequest(anyString(), anyString());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(put("/quiz/answer/member/1")
+                        .with(csrf())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("AnswerQuiz 삭제하기")
+    void deleteAnswerQuiz() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/quiz/answer/member/1")
+                        .with(csrf()))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
     }
 }

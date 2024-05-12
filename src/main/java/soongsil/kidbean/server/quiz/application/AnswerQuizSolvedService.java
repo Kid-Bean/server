@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.quiz.application;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,8 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
-import soongsil.kidbean.server.quiz.domain.Morpheme;
 import soongsil.kidbean.server.quiz.domain.UseWord;
 import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
-import soongsil.kidbean.server.quiz.repository.MorphemeRepository;
 import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 
 @Slf4j
@@ -24,12 +23,11 @@ import soongsil.kidbean.server.quiz.repository.UseWordRepository;
 @RequiredArgsConstructor
 public class AnswerQuizSolvedService {
 
-    private final MorphemeRepository morphemeRepository;
     private final UseWordRepository useWordRepository;
     private final AnswerQuizSolvedRepository answerQuizSolvedRepository;
     private final S3Uploader s3Uploader;
 
-    private final static String RECORD_BASE_FOLDER = "record/";
+    private static final String RECORD_BASE_FOLDER = "record/";
 
 
     /**
@@ -54,43 +52,45 @@ public class AnswerQuizSolvedService {
         answerQuizSolvedRepository.save(answerQuizSolved);
 
         //아래에 있는 부분들 refactoring 시 bulk insertion 찾아보기
-        enrollMorphemes(openApiResponse, answerQuizSolved);
-        enrollUseWords(openApiResponse, answerQuizSolved);
+        enrollUseWords(openApiResponse, answerQuizSolved, member);
     }
 
-    private void enrollMorphemes(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
-        List<Morpheme> morphemeList = openApiResponse.morphemeVOList().stream()
-                .map(morphemeVO -> Morpheme.builder()
-                        .morpheme(morphemeVO.lemma())
-                        .type(morphemeVO.type())
-                        .answerQuizSolved(answerQuizSolved)
-                        .build())
-                .toList();
+    private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved, Member member) {
+        Map<String, Long> wordCountMap = useWordRepository.findWordCountsForMember(member);
 
-        morphemeRepository.saveAll(morphemeList);
-    }
-
-    private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved) {
         List<UseWord> useWordList = openApiResponse.useWordVOList().stream()
-                .map(useWordVO -> UseWord.builder()
-                        .wordName(useWordVO.word())
-                        .count(useWordVO.count())
-                        .answerQuizSolved(answerQuizSolved)
-                        .build())
+                .map(useWordVO -> {
+                    String wordName = useWordVO.word();
+                    long count = useWordVO.count();
+                    long currentCount = wordCountMap.getOrDefault(wordName, 0L);
+
+                    if (currentCount > 0) {
+                        UseWord existingUseWord = useWordRepository.findByWordNameAndMember(wordName, member)
+                                .orElse(buildUseWord(answerQuizSolved, member, wordName, count));
+
+                        existingUseWord.addCount(count);
+
+                        return existingUseWord;
+                    } else {
+                        return buildUseWord(answerQuizSolved, member, wordName, count);
+                    }
+                })
                 .toList();
 
         useWordRepository.saveAll(useWordList);
     }
 
+    private static UseWord buildUseWord(AnswerQuizSolved answerQuizSolved, Member member, String wordName, long count) {
+        return UseWord.builder()
+                .wordName(wordName)
+                .count(count)
+                .answerQuizSolved(answerQuizSolved)
+                .member(member)
+                .build();
+    }
+
     private S3Info uploadRecordFile(long memberId, MultipartFile multipartFile) {
         String folderName = RECORD_BASE_FOLDER + memberId;
-        String uploadUrl = s3Uploader.upload(multipartFile, folderName);
-        String fileName = uploadUrl.split(folderName + "/")[1];
-
-        return S3Info.builder()
-                .folderName(folderName)
-                .fileName(fileName)
-                .s3Url(uploadUrl)
-                .build();
+        return s3Uploader.upload(multipartFile, folderName);
     }
 }
