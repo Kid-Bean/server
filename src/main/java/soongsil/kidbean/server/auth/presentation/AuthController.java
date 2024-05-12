@@ -2,6 +2,8 @@ package soongsil.kidbean.server.auth.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +21,14 @@ import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Value("${server.env}")
+    private String env;
 
     private final AuthService authService;
     //이 아래는 테스트 용도 - 나중에 삭제
@@ -53,8 +59,20 @@ public class AuthController {
     @Operation(summary = "테스트 용 access token 발급", description = "테스트 용 access token 발급")
     @GetMapping("test/login/{memberId}")
     public ResponseEntity<String> testAccessToken(@PathVariable Long memberId) {
+        log.info("server: {}", env);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(tokenProvider.createAccessToken(memberRepository.findById(memberId).get()));
+    }
+
+    /**
+     * 배포 환경 테스트
+     */
+    @GetMapping("/deploy/status")
+    public ResponseEntity<Object> getEnv() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(env);
     }
 }

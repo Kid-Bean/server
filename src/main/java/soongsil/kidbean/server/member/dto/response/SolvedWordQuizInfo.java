@@ -13,7 +13,7 @@ public record SolvedWordQuizInfo(
     public static SolvedWordQuizInfo from(QuizSolved wordQuizSolved) {
         return new SolvedWordQuizInfo(
                 wordQuizSolved.getSolvedId(),
-                wordQuizSolved.getSolvedTime(),
+                wordQuizSolved.getCreatedDate(),
                 wordQuizSolved.getQuizCategory(),
                 wordQuizSolved.getWordQuiz().getTitle()
         );

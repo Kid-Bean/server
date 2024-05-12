@@ -100,9 +100,9 @@ public class ImageQuizController {
     public ResponseEntity<ResponseTemplate<Object>> uploadImageQuiz(
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestPart ImageQuizUploadRequest imageQuizUploadRequest,
-            @RequestPart MultipartFile s3Url) {
+            @RequestPart MultipartFile multipartFile) {
 
-        imageQuizService.uploadImageQuiz(imageQuizUploadRequest, user.memberId(), s3Url);
+        imageQuizService.uploadImageQuiz(imageQuizUploadRequest, user.memberId(), multipartFile);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -114,9 +114,9 @@ public class ImageQuizController {
     public ResponseEntity<ResponseTemplate<Object>> updateImageQuiz(
             @PathVariable Long quizId,
             @Valid @RequestPart ImageQuizUpdateRequest imageQuizUpdateRequest,
-            @RequestPart MultipartFile s3Url) {
+            @RequestPart MultipartFile multipartFile) {
 
-        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, quizId, s3Url);
+        imageQuizService.updateImageQuiz(imageQuizUpdateRequest, quizId, multipartFile);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
