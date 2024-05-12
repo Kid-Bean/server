@@ -20,4 +20,6 @@ public interface UseWordRepository extends JpaRepository<UseWord, Long> {
     Map<String,Long> findWordCountsForMember(@Param("member") Member member);
 
     Optional<UseWord> findByWordNameAndMember(String wordName, Member member);
+
+    List<UseWord> findAllByMember(Member member);
 }
