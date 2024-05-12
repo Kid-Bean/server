@@ -104,7 +104,6 @@ public class WordQuizService {
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
 
         List<Word> wordList = wordRepository.findAllByWordQuiz(wordQuiz);
-
         updateWords(request, wordList);
 
         wordQuiz.updateWordQuiz(request.title(), request.answer());
@@ -118,7 +117,7 @@ public class WordQuizService {
         wordQuizRepository.delete(wordQuiz);
     }
 
-    private static void updateWords(WordQuizUpdateRequest request, List<Word> wordList) {
+    private void updateWords(WordQuizUpdateRequest request, List<Word> wordList) {
         int i = 0;
 
         for (Word originalWord : wordList) {
