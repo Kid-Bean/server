@@ -57,10 +57,10 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/auth/deploy/status")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "https://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/auth/deploy/status")
+            CURRENT_UPSTREAM=$(curl -s "https://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
           else
             CURRENT_UPSTREAM=green
           fi
@@ -79,7 +79,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
-          host: ${{ secrets.LIVE_SERVER_IP }}
+          host: ${{ secrets.SERVER_DOMAIN }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
@@ -87,7 +87,7 @@ jobs:
             sudo docker-compose -f docker-compose.yml up -d ${{ env.TARGET_UPSTREAM }}
 
       - name: Check deploy server URL
-        uses: jtalk/url-health-check-action@v3
+        uses: jtalk/url-health-check-action@v4
         with:
           url: http://${{ secrets.LIVE_SERVER_IP }}:${{ env.STOPPED_PORT }}/auth/deploy/status
           max-attempts: 5
@@ -97,7 +97,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
-          host: ${{ secrets.LIVE_SERVER_IP }}
+          host: ${{ secrets.SERVER_DOMAIN }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
@@ -107,7 +107,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
-          host: ${{ secrets.LIVE_SERVER_IP }}
+          host: ${{ secrets.SERVER_DOMAIN }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true   # 실행 중 문제가 생기면 더 진행 X
           script: |
