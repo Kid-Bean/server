@@ -2,28 +2,27 @@ package soongsil.kidbean.server.program.dto.response;
 
 import lombok.Builder;
 import soongsil.kidbean.server.program.domain.Program;
-import soongsil.kidbean.server.program.domain.Star;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
 @Builder
 public record ProgramResponse(
         Long programId,
         ProgramCategory programCategory,
-        String teacherName,
+        String departmentName,
         String place,
-        String teacherS3Url,
-        String title,
+        String departmentS3Url,
+        String programTitle,
         Boolean isStar
 ) {
     public static ProgramResponse of(Program program, Boolean isStar) {
-        return ProgramResponse
-                .builder()
+
+        return ProgramResponse.builder()
                 .programId(program.getProgramId())
-                .programCategory(program.getProgramCategory())
-                .teacherName(program.getTeacherName())
-                .place(program.getPlace())
-                .teacherS3Url(program.getTeacherS3Url().getS3Url())
-                .title(program.getTitle())
+                .programCategory(program.getProgramInfo().getProgramCategory())
+                .place(program.getProgramInfo().getPlace())
+                .programTitle(program.getProgramInfo().getProgramTitle())
+                .departmentName(program.getDepartmentInfo().getDepartmentName())
+                .departmentS3Url(program.getDepartmentInfo().getDepartmentS3Info().getS3Url())
                 .isStar(isStar)
                 .build();
     }

@@ -20,6 +20,7 @@ import soongsil.kidbean.server.global.exception.response.ErrorResponse;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationError;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationErrors;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
+import soongsil.kidbean.server.program.exception.CanNotDeleteProgramException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
@@ -34,13 +35,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleFileConvertFail(final FileConvertFailException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgument(final IllegalArgumentException e) {
-        log.warn("handleIllegalArgument", e);
-        final ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
-        return handleExceptionInternal(errorCode, e.getMessage());
     }
 
     @ExceptionHandler(AnswerQuizNotFoundException.class)
@@ -91,11 +85,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode);
     }
 
+    @ExceptionHandler(CanNotDeleteProgramException.class)
+    public ResponseEntity<Object> handleCanNotDeleteProgram(final CanNotDeleteProgramException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(final IllegalArgumentException e) {
+        log.warn("handleIllegalArgument", e);
+        final ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(errorCode, e.getMessage());
+    }
+
     /**
      * DTO @Valid 관련 exception 처리
-     *
-     * @param e exception
-     * @return response
      */
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(

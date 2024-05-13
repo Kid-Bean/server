@@ -17,27 +17,28 @@ import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.dto.request.EnrollProgramRequest;
 import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
-import soongsil.kidbean.server.program.dto.response.ProgramListResponse;
+import soongsil.kidbean.server.program.dto.response.ProgramResponseList;
 
 import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/programs")
 public class ProgramController {
 
     private static final int PAGE_SIZE = 4;
     private final ProgramService programService;
 
     //목록조회 -> 페이징 진행
-    @GetMapping("/programs")
+    @GetMapping
     public ResponseEntity<ResponseTemplate<Object>> getProgramListInfo(
             @RequestParam ProgramCategory programcategory,
             @AuthenticationPrincipal AuthUser user,
             @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
-        ProgramListResponse response = programService.getProgramListInfo(user.memberId(), programcategory, pageRequest);
+        ProgramResponseList response = programService.getProgramInfoList(user.memberId(), programcategory, pageRequest);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -45,7 +46,7 @@ public class ProgramController {
     }
 
     //상세조회
-    @GetMapping("/programs/{programId}")
+    @GetMapping("/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> getProgramInfo(
             @PathVariable Long programId) {
 
@@ -58,7 +59,7 @@ public class ProgramController {
 
 
     //삭제
-    @DeleteMapping("/programs/{programId}")
+    @DeleteMapping("/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteProgram(
             @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId) {
@@ -71,15 +72,14 @@ public class ProgramController {
     }
 
     //수정
-    @PatchMapping("/programs/{programId}")
+    @PutMapping
     public ResponseEntity<ResponseTemplate<Object>> editProgramInfo(
             @AuthenticationPrincipal AuthUser user,
-            @PathVariable Long programId,
             @Valid @RequestPart UpdateProgramRequest updateProgramRequest,
             @RequestPart MultipartFile programS3Url,
             @RequestPart MultipartFile teacherS3Url) {
 
-        programService.editProgramInfo(programId, updateProgramRequest, programS3Url, teacherS3Url);
+        programService.editProgramInfo(user.memberId(), updateProgramRequest, programS3Url, teacherS3Url);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -88,14 +88,14 @@ public class ProgramController {
     }
 
     //추가-등록
-    @PostMapping("/program")
+    @PostMapping
     public ResponseEntity<ResponseTemplate<Object>> createProgram(
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestPart EnrollProgramRequest enrollProgramRequest,
-            @RequestPart MultipartFile programS3Url,
-            @RequestPart MultipartFile teacherS3Url) {
+            @RequestPart MultipartFile programImage,
+            @RequestPart MultipartFile departmentImage) {
 
-        programService.createProgram(enrollProgramRequest, programS3Url, teacherS3Url);
+        programService.createProgram(user.memberId(), enrollProgramRequest, programImage, departmentImage);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

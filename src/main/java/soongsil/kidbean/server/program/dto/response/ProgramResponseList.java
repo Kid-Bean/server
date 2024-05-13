@@ -4,11 +4,11 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ProgramListResponse(
+public record ProgramResponseList(
         List<ProgramResponse> programResponseList
 ) {
 
-    public static ProgramListResponse from(List<ProgramResponse> programList) {
-        return new ProgramListResponse(programList);
+    public static ProgramResponseList from(List<ProgramResponse> programList) {
+        return new ProgramResponseList(programList);
     }
 }
