@@ -28,7 +28,7 @@ public class SwaggerConfig {
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
         Server server = new Server();
-        server.setUrl("https://도메인.com"); // https://에 접근 가능하게 설정
+        server.setUrl("https://kidbean.store"); // https://에 접근 가능하게 설정
 
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
