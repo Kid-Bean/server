@@ -57,7 +57,7 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "https://${{ secrets.LIVE_SERVER_IP }}/auth/deploy/status")
+          STATUS=$(curl --tlsv1.2 -o /dev/null -w "%{http_code}" "https://${{ secrets.LIVE_SERVER_IP }}/auth/deploy/status")
           echo $STATUS
           if [ $STATUS = 200 ]; then
             CURRENT_UPSTREAM=$(curl -s "https://${{ secrets.LIVE_SERVER_IP }}/auth/deploy/status")
