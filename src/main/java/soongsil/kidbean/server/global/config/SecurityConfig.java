@@ -40,7 +40,6 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 .requestMatchers(
                         "/error",
-                        "/token/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-resources/*",
@@ -50,10 +49,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
                 .formLogin(AbstractHttpConfigurer::disable) // 기본 login form 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP 기본 인증을 비활성화
                 .cors(Customizer.withDefaults()) // CORS 활성화 - corsConfigurationSource 이름의 빈 사용
-                .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 기능 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth // 요청에 대한 인증 설정
                         .requestMatchers("/logout", "/auth/refresh-token").hasRole(MEMBER)
