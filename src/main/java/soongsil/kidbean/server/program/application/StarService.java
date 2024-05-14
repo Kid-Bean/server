@@ -38,8 +38,8 @@ public class StarService {
 
         if (!starRepository.existsByMemberAndProgram(starMember, starProgram)) {
             Star star = Star.builder()
-                    .memberId(starMember)
-                    .programId(starProgram)
+                    .member(starMember)
+                    .program(starProgram)
                     .build();
 
             starRepository.save(star);

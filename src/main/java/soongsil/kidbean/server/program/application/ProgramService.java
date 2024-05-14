@@ -28,7 +28,7 @@ import soongsil.kidbean.server.program.repository.ProgramRepository;
 import java.util.List;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.*;
+import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.CAN_NOT_DELETE_PROGRAM;
 import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.PROGRAM_NOT_FOUND;
 
 @Slf4j

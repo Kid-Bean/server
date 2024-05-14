@@ -25,8 +25,8 @@ public class Star {
     @Column(name = "star_id")
     private Long starId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @JoinColumn(name = "program_id")
@@ -34,9 +34,8 @@ public class Star {
     private Program program;
 
     @Builder
-    public Star(Long starId, Member memberId, Program programId) {
-        this.starId = starId;
-        this.member = memberId;
-        this.program = programId;
+    public Star(Member member, Program program) {
+        this.member = member;
+        this.program = program;
     }
 }
