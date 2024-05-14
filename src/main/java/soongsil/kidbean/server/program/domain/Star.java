@@ -38,4 +38,11 @@ public class Star {
         this.member = member;
         this.program = program;
     }
+
+    public static Star from(Member member, Program program) {
+        return Star.builder()
+                .member(member)
+                .program(program)
+                .build();
+    }
 }

@@ -84,7 +84,6 @@ public class ProgramController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(EMPTY_RESPONSE);
-
     }
 
     //추가-등록
