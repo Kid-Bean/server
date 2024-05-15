@@ -16,7 +16,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("/**"));
+        config.setAllowedOrigins(List.of("https://kidbean.store"));
         config.setAllowedMethods(List.of(
                 HttpMethod.POST.name(),
                 HttpMethod.GET.name(),
