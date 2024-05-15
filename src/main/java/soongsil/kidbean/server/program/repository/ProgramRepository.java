@@ -10,6 +10,6 @@ import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 @Repository
 public interface ProgramRepository extends JpaRepository<Program, Long> {
 
-    Page<Program> findAllByProgramCategory(ProgramCategory programCategory, Pageable pageable);
+    Page<Program> findAllByProgramInfo_ProgramCategory(ProgramCategory programCategory, Pageable pageable);
 
 }

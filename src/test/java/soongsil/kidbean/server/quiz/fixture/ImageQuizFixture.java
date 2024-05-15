@@ -11,7 +11,7 @@ import static soongsil.kidbean.server.quiz.domain.type.Level.PLATINUM;
 import static soongsil.kidbean.server.quiz.domain.type.Level.SILVER;
 
 import org.springframework.test.util.ReflectionTestUtils;
-import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 
 public class ImageQuizFixture {

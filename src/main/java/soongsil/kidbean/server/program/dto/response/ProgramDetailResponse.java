@@ -8,30 +8,29 @@ import java.util.List;
 @Builder
 public record ProgramDetailResponse(
         Long programId,
-        String teacherName,
-        String title,
+        String programTitle,
         String contentTitle,
+        String content,
+        String departmentName,
         String place,
         String phoneNumber,
-        String content,
-        String programImageUrl,
-        String teacherImageUrl,
+        String programS3Url,
+        String departmentS3Url,
         List<String> date
 ) {
 
-    public static ProgramDetailResponse of(Program program,List<String> dates) {
+    public static ProgramDetailResponse of(Program program, List<String> dates) {
 
-        return ProgramDetailResponse
-                .builder()
+        return ProgramDetailResponse.builder()
                 .programId(program.getProgramId())
-                .teacherName(program.getTeacherName())
-                .place(program.getPlace())
-                .phoneNumber(program.getPhoneNumber())
-                .title(program.getTitle())
-                .contentTitle(program.getContentTitle())
-                .content(program.getContent())
-                .programImageUrl(program.getProgramS3Url().getS3Url())
-                .teacherImageUrl(program.getTeacherS3Url().getS3Url())
+                .place(program.getProgramInfo().getPlace())
+                .programTitle(program.getProgramInfo().getProgramTitle())
+                .contentTitle(program.getProgramInfo().getContentTitle())
+                .content(program.getProgramInfo().getContent())
+                .programS3Url(program.getProgramInfo().getProgramS3Info().getS3Url())
+                .phoneNumber(program.getDepartmentInfo().getPhoneNumber())
+                .departmentName(program.getDepartmentInfo().getDepartmentName())
+                .departmentS3Url(program.getDepartmentInfo().getDepartmentS3Info().getS3Url())
                 .date(dates)
                 .build();
     }

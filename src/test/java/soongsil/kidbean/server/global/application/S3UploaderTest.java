@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
-import soongsil.kidbean.server.global.vo.S3Info;
+import soongsil.kidbean.server.global.domain.S3Info;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
