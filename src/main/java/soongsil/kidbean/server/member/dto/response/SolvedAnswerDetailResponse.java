@@ -6,6 +6,7 @@ import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 public record SolvedAnswerDetailResponse(
         Long solvedId,
         String answerUrl,
+        String quizContent,
         String kidAnswer,
         MorphemeCheckListResponse checkList
 ) {
@@ -14,6 +15,7 @@ public record SolvedAnswerDetailResponse(
         return new SolvedAnswerDetailResponse(
                 answerQuizSolved.getSolvedId(),
                 answerQuizSolved.getRecordAnswer().getS3Url(),
+                answerQuizSolved.getAnswerQuiz().getQuestion(),
                 answerQuizSolved.getSentenceAnswer(),
                 checkList
         );
