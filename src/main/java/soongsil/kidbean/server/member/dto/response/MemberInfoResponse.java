@@ -10,7 +10,7 @@ public record MemberInfoResponse(
         LocalDate memberBirth,
         String memberName,
         Integer memberAge,
-        Gender gender
+        Gender memberGender
 ) {
     public static MemberInfoResponse from(Member member) {
         int age = Period.between(member.getBirthDate(), LocalDate.now()).getYears();
