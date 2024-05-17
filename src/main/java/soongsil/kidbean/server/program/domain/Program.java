@@ -93,11 +93,7 @@ public class Program {
         programInfo.updateProgram(updateProgramRequest);
         departmentInfo.updateDepartment(updateProgramRequest);
 
-        dayList.forEach(day -> {
-            if (!updateProgramRequest.date().contains(day.getDate().getDayOfWeek())) {
-                dayList.remove(day);
-            }
-        });
+        dayList.removeIf(day -> !updateProgramRequest.date().contains(day.getDate().getDayOfWeek()));
 
         updateProgramRequest.date().stream()
                 .filter(day -> dayList.stream().noneMatch(d -> d.getDate().getDayOfWeek().equals(day)))
