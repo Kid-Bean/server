@@ -39,4 +39,8 @@ public class Day {
         this.date = date;
         this.program = program;
     }
+
+    public void setProgram(Program program) {
+        this.program = program;
+    }
 }

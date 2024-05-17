@@ -3,7 +3,9 @@ package soongsil.kidbean.server.program.dto.request;
 import jakarta.validation.constraints.NotNull;
 
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.program.domain.Day;
 import soongsil.kidbean.server.program.domain.Program;
+import soongsil.kidbean.server.program.domain.type.Date;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 
 import java.util.List;
@@ -29,7 +31,7 @@ public record EnrollProgramRequest(
         String phoneNumber
 ) {
     public Program toEntity(Member member) {
-        return Program.builder()
+        Program program = Program.builder()
                 .programInfo(ProgramInfo.builder()
                         .programTitle(programTitle)
                         .contentTitle(contentTitle)
@@ -43,5 +45,14 @@ public record EnrollProgramRequest(
                         .build())
                 .member(member)
                 .build();
+
+        date.stream()
+                .map(day -> Day.builder()
+                        .date(Date.getDayOfWeek(day))
+                        .build())
+                .forEach(program::addDay);
+
+        return program;
     }
+
 }

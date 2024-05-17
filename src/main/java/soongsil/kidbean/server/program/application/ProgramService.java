@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Program;
@@ -20,7 +19,6 @@ import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponseList;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
-import soongsil.kidbean.server.program.exception.CanNotDeleteProgramException;
 import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
@@ -28,7 +26,6 @@ import soongsil.kidbean.server.program.repository.ProgramRepository;
 import java.util.List;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.CAN_NOT_DELETE_PROGRAM;
 import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.PROGRAM_NOT_FOUND;
 
 @Slf4j
@@ -65,9 +62,11 @@ public class ProgramService {
     /**
      * 카테고리에 따른 프로그램 목록 조회
      */
-    public ProgramResponseList getProgramInfoList(Long memberId, ProgramCategory programCategory, Pageable pageable) {
+    public ProgramResponseList getProgramInfoList(Long memberId, List<ProgramCategory> programCategoryList,
+                                                  Pageable pageable) {
 
-        Page<Program> programPage = programRepository.findAllByProgramInfo_ProgramCategory(programCategory, pageable);
+        Page<Program> programPage = programRepository.findAllByProgramInfo_ProgramCategoryIn(programCategoryList,
+                pageable);
 
         List<ProgramResponse> programResponseList = programPage.stream()
                 .map(program -> ProgramResponse.of(program, starService.existsByMemberAndProgram(memberId, program)))
@@ -114,35 +113,40 @@ public class ProgramService {
     /**
      * 프로그램 수정하기. -> ex) 선생님 이름만 수정
      */
-    public void editProgramInfo(Long memberId, UpdateProgramRequest updateProgramRequest, MultipartFile programImage,
+    public void editProgramInfo(UpdateProgramRequest updateProgramRequest, MultipartFile programImage,
                                 MultipartFile departmentImage) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
         Program program = programRepository.findById(updateProgramRequest.programId())
                 .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
-        if (!canDeleteProgram(member, program)) {
-            throw new CanNotDeleteProgramException(CAN_NOT_DELETE_PROGRAM);
-        }
-
+        //프로그램 이미지 수정
         if (programImage != null && departmentImage != null) {  //이미지 둘 다 변경
-
+            updateProgramS3Info(programImage, program);
+            updateDepartmentS3Info(departmentImage, program);
         } else if (programImage != null) {  //program 만 변경
-
+            updateProgramS3Info(programImage, program);
         } else if (departmentImage != null) {  //department 만 변경
-
-        } else {  //이미지 둘 다 변경 안함
-
+            updateDepartmentS3Info(departmentImage, program);
         }
+
+        program.updateProgram(updateProgramRequest);
     }
 
-    //role 이 admin 이거나 프로그램을 등록한 사람은 삭제 가능
-    private Boolean canDeleteProgram(Member member, Program program) {
-        if (member.getRole() == Role.ADMIN) {
-            return true;
-        } else {
-            return program.getMember().getMemberId().equals(member.getMemberId());
-        }
+    private void updateProgramS3Info(MultipartFile programImage, Program program) {
+        s3Uploader.deleteFile(program.getProgramS3Info());
+
+        String programFolderName = PROGRAM_IMAGE_NAME + program.getProgramCategory();
+        S3Info programS3Info = s3Uploader.upload(programImage, programFolderName);
+
+        program.setProgramS3Info(programS3Info);
+    }
+
+    private void updateDepartmentS3Info(MultipartFile departmentImage, Program program) {
+        s3Uploader.deleteFile(program.getDepartmentS3Info());
+
+        String departmentFolderName = DEPARTMENT_IMAGE_NAME + program.getProgramCategory();
+        S3Info departmentS3Info = s3Uploader.upload(departmentImage, departmentFolderName);
+
+        program.setDepartmentS3Info(departmentS3Info);
     }
 }

@@ -1,6 +1,8 @@
 package soongsil.kidbean.server.program.presentation;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -33,12 +35,13 @@ public class ProgramController {
     //목록조회 -> 페이징 진행
     @GetMapping
     public ResponseEntity<ResponseTemplate<Object>> getProgramListInfo(
-            @RequestParam ProgramCategory programcategory,
+            @RequestParam List<ProgramCategory> programCategoryList,
             @AuthenticationPrincipal AuthUser user,
             @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
-        ProgramResponseList response = programService.getProgramInfoList(user.memberId(), programcategory, pageRequest);
+        ProgramResponseList response = programService.getProgramInfoList(user.memberId(), programCategoryList,
+                pageRequest);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -61,7 +64,6 @@ public class ProgramController {
     //삭제
     @DeleteMapping("/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteProgram(
-            @AuthenticationPrincipal AuthUser user,
             @PathVariable Long programId) {
 
         programService.deleteProgram(programId);
@@ -74,12 +76,11 @@ public class ProgramController {
     //수정
     @PutMapping
     public ResponseEntity<ResponseTemplate<Object>> editProgramInfo(
-            @AuthenticationPrincipal AuthUser user,
             @Valid @RequestPart UpdateProgramRequest updateProgramRequest,
-            @RequestPart MultipartFile programS3Url,
-            @RequestPart MultipartFile teacherS3Url) {
+            @Nullable @RequestPart MultipartFile programImage,
+            @Nullable @RequestPart MultipartFile departmentImage) {
 
-        programService.editProgramInfo(user.memberId(), updateProgramRequest, programS3Url, teacherS3Url);
+        programService.editProgramInfo(updateProgramRequest, programImage, departmentImage);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

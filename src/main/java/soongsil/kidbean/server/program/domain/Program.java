@@ -1,5 +1,6 @@
 package soongsil.kidbean.server.program.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -18,8 +19,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.program.domain.type.Date;
+import soongsil.kidbean.server.program.domain.type.ProgramCategory;
 import soongsil.kidbean.server.program.domain.vo.ProgramInfo;
 import soongsil.kidbean.server.program.domain.vo.DepartmentInfo;
+import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 
 @Entity
 @Getter
@@ -41,12 +45,14 @@ public class Program {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "program", orphanRemoval = true)
+    @OneToMany(mappedBy = "program", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<Day> dayList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "program", cascade = CascadeType.REMOVE)
+    private List<Star> starList = new ArrayList<>();
+
     @Builder
-    public Program(Long programId, ProgramInfo programInfo, DepartmentInfo departmentInfo, Member member) {
-        this.programId = programId;
+    public Program(ProgramInfo programInfo, DepartmentInfo departmentInfo, Member member) {
         this.programInfo = programInfo;
         this.departmentInfo = departmentInfo;
         this.member = member;
@@ -57,11 +63,47 @@ public class Program {
         this.departmentInfo.setDepartmentS3Info(departmentS3Info);
     }
 
+    public void setProgramS3Info(S3Info programS3Info) {
+        this.programInfo.setProgramS3Info(programS3Info);
+    }
+
+    public void setDepartmentS3Info(S3Info departmentS3Info) {
+        this.departmentInfo.setDepartmentS3Info(departmentS3Info);
+    }
+
     public S3Info getProgramS3Info() {
         return programInfo.getProgramS3Info();
     }
 
     public S3Info getDepartmentS3Info() {
         return departmentInfo.getDepartmentS3Info();
+    }
+
+    public ProgramCategory getProgramCategory() {
+        return programInfo.getProgramCategory();
+    }
+
+    // 연관 관계 편의 메소드
+    public void addDay(Day day) {
+        dayList.add(day);
+        day.setProgram(this);
+    }
+
+    public void updateProgram(UpdateProgramRequest updateProgramRequest) {
+        programInfo.updateProgram(updateProgramRequest);
+        departmentInfo.updateDepartment(updateProgramRequest);
+
+        dayList.forEach(day -> {
+            if (!updateProgramRequest.date().contains(day.getDate().getDayOfWeek())) {
+                dayList.remove(day);
+            }
+        });
+
+        updateProgramRequest.date().stream()
+                .filter(day -> dayList.stream().noneMatch(d -> d.getDate().getDayOfWeek().equals(day)))
+                .map(day -> Day.builder()
+                        .date(Date.getDayOfWeek(day))
+                        .build())
+                .forEach(this::addDay);
     }
 }

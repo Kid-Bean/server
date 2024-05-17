@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
+import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -56,5 +57,12 @@ public class ProgramInfo {
 
     public void setProgramS3Info(S3Info programS3Info) {
         this.programS3Info = programS3Info;
+    }
+
+    public void updateProgram(UpdateProgramRequest updateProgramRequest) {
+        this.programTitle = updateProgramRequest.programTitle();
+        this.contentTitle = updateProgramRequest.contentTitle();
+        this.place = updateProgramRequest.place();
+        this.content = updateProgramRequest.content();
     }
 }
