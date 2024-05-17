@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.program.presentation;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -77,8 +76,8 @@ public class ProgramController {
     @PutMapping
     public ResponseEntity<ResponseTemplate<Object>> editProgramInfo(
             @Valid @RequestPart UpdateProgramRequest updateProgramRequest,
-            @Nullable @RequestPart MultipartFile programImage,
-            @Nullable @RequestPart MultipartFile departmentImage) {
+            @RequestPart MultipartFile programImage,
+            @RequestPart MultipartFile departmentImage) {
 
         programService.editProgramInfo(updateProgramRequest, programImage, departmentImage);
 

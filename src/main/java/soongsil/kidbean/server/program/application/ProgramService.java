@@ -119,13 +119,10 @@ public class ProgramService {
         Program program = programRepository.findById(updateProgramRequest.programId())
                 .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
-        //프로그램 이미지 수정
-        if (programImage != null && departmentImage != null) {  //이미지 둘 다 변경
+        if (!programImage.isEmpty()) {      //프로그램 이미지 변경
             updateProgramS3Info(programImage, program);
-            updateDepartmentS3Info(departmentImage, program);
-        } else if (programImage != null) {  //program 만 변경
-            updateProgramS3Info(programImage, program);
-        } else if (departmentImage != null) {  //department 만 변경
+        }
+        if (!departmentImage.isEmpty()) {  //department 이미지 변경
             updateDepartmentS3Info(departmentImage, program);
         }
 
