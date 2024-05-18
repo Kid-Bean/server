@@ -37,6 +37,7 @@ class HomeControllerTest extends CommonControllerTest {
         // given
         String s3Url = "https://www.example.com";
         HomeResponse response = new HomeResponse(MEMBER1.getName(), LocalDateTime.now(), s3Url, MEMBER1.getScore());
+
         given(homeService.getHomeInfo(anyLong())).willReturn(response);
 
         // when
