@@ -47,6 +47,20 @@ public class ProgramController {
                 .body(ResponseTemplate.from(response));
     }
 
+    //좋아요한 프로그램 목록 조회
+    @GetMapping("/star")
+    public ResponseEntity<ResponseTemplate<Object>> getStarProgramListInfo(
+            @AuthenticationPrincipal AuthUser user,
+            @RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
+        ProgramResponseList response = programService.getStarProgramInfoList(user.memberId(), pageRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
+    }
+
     //상세조회
     @GetMapping("/{programId}")
     public ResponseEntity<ResponseTemplate<Object>> getProgramInfo(

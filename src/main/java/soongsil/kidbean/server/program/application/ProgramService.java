@@ -80,6 +80,28 @@ public class ProgramService {
     }
 
     /**
+     * 좋아요 한 프로그램 목록 조회
+     */
+
+    public ProgramResponseList getStarProgramInfoList(Long memberId, Pageable pageable) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+
+        Page<Program> programPage = programRepository.findAllStarProgramByProgramInfo(pageable, member);
+
+        if (!programPage.hasContent()) {
+            throw new ProgramNotFoundException(PROGRAM_NOT_FOUND);
+        }
+
+        List<ProgramResponse> programResponseList = programPage.stream()
+                .map(program -> ProgramResponse.of(program, true))
+                .toList();
+
+        return ProgramResponseList.from(programResponseList);
+    }
+
+    /**
      * 프로그램 삭제 - 관리자
      */
     public void deleteProgram(Long programId) {
