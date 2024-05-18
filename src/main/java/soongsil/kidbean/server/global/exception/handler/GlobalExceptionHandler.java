@@ -20,7 +20,7 @@ import soongsil.kidbean.server.global.exception.response.ErrorResponse;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationError;
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationErrors;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.program.exception.CanNotDeleteProgramException;
+import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.quiz.exception.AnswerQuizSolvedNotFoundException;
 import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
@@ -85,8 +85,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode);
     }
 
-    @ExceptionHandler(CanNotDeleteProgramException.class)
-    public ResponseEntity<Object> handleCanNotDeleteProgram(final CanNotDeleteProgramException e) {
+    @ExceptionHandler(ProgramNotFoundException.class)
+    public ResponseEntity<Object> handleProgramNotFound(final ProgramNotFoundException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }

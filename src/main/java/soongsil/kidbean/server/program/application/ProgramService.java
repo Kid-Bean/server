@@ -65,8 +65,12 @@ public class ProgramService {
     public ProgramResponseList getProgramInfoList(Long memberId, List<ProgramCategory> programCategoryList,
                                                   Pageable pageable) {
 
-        Page<Program> programPage = programRepository.findAllByProgramInfo_ProgramCategoryIn(programCategoryList,
-                pageable);
+        Page<Program> programPage = programRepository.findAllByProgramInfo_ProgramCategoryIn(
+                programCategoryList, pageable);
+
+        if (!programPage.hasContent()) {
+            throw new ProgramNotFoundException(PROGRAM_NOT_FOUND);
+        }
 
         List<ProgramResponse> programResponseList = programPage.stream()
                 .map(program -> ProgramResponse.of(program, starService.existsByMemberAndProgram(memberId, program)))
