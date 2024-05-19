@@ -75,7 +75,7 @@ public class S3Uploader {
                 new PutObjectRequest(bucket, fileName, uploadFile)
                         .withCannedAcl(CannedAccessControlList.PublicRead)
         );
-        log.info("File Upload : " + fileName);
+        log.info("File Upload : {}", fileName);
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
