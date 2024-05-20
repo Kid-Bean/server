@@ -10,7 +10,6 @@ import soongsil.kidbean.server.global.exception.errorcode.ErrorCode;
 public enum ProgramErrorCode implements ErrorCode {
 
     PROGRAM_NOT_FOUND(HttpStatus.NOT_FOUND, "프로그램을 찾을 수 없습니다."),
-    CAN_NOT_DELETE_PROGRAM(HttpStatus.NOT_ACCEPTABLE, "프로그램을 지울 수 있는 권한이 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

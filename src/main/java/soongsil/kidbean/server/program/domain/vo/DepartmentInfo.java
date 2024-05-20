@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.global.domain.S3Info;
+import soongsil.kidbean.server.program.dto.request.UpdateProgramRequest;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,5 +40,10 @@ public class DepartmentInfo {
 
     public void setDepartmentS3Info(S3Info departmentS3Info) {
         this.departmentS3Info = departmentS3Info;
+    }
+
+    public void updateDepartment(UpdateProgramRequest updateProgramRequest) {
+        this.departmentName = updateProgramRequest.departmentName();
+        this.phoneNumber = updateProgramRequest.phoneNumber();
     }
 }
