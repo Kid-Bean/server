@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.summary.util;
+package soongsil.kidbean.server.summary.repository.init;
 
 import java.util.ArrayList;
 import java.util.List;
