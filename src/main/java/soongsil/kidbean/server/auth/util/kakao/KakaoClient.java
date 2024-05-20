@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import soongsil.kidbean.server.auth.dto.response.KakaoUserResponse;
 
-@Profile({"!test"})
 @FeignClient(name = "kakaoClient", url = "${kakao.feign.base-url}")
 public interface KakaoClient {
 
