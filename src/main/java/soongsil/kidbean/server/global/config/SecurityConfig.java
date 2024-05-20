@@ -40,10 +40,10 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 .requestMatchers(
                         "/error",
-                        "/token/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-resources/*",
+                        "/webjars/**",
                         "/auth/**");
     }
 

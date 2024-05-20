@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.program.domain.type.Date;
@@ -32,4 +33,14 @@ public class Day {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_id")
     private Program program;
+
+    @Builder
+    public Day(Date date, Program program) {
+        this.date = date;
+        this.program = program;
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
+    }
 }

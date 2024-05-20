@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class JwtTokenProvider {
     private final MemberRepository memberRepository;
 
     private Key key;
+    private static final String MEMBER_ROLE = "role";
 
     @PostConstruct
     public void setKey() {
@@ -52,6 +54,7 @@ public class JwtTokenProvider {
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
                 .setSubject(member.getSocialId())
+                .addClaims(Map.of(MEMBER_ROLE, member.getRole().name()))
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -73,6 +76,7 @@ public class JwtTokenProvider {
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
                 .setSubject(member.getSocialId())
+                .addClaims(Map.of(MEMBER_ROLE, member.getRole().name()))
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .signWith(key, SignatureAlgorithm.HS512)

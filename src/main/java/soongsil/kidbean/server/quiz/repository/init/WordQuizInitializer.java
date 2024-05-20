@@ -43,7 +43,6 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_MEMBER)
                     .build();
 
-
             WordQuiz WordQuiz2 = WordQuiz.builder()
                     .quizCategory(QuizCategory.ANIMAL)
                     .title("동물")
@@ -52,7 +51,6 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .member(DUMMY_MEMBER)
                     .build();
 
-
             WordQuiz WordQuiz3 = WordQuiz.builder()
                     .quizCategory(QuizCategory.PLANT)
                     .title("식물")
@@ -60,7 +58,6 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .level(GOLD)
                     .member(DUMMY_MEMBER)
                     .build();
-
 
             WordQuiz WordQuiz4 = WordQuiz.builder()
                     .quizCategory(QuizCategory.FOOD)
@@ -71,7 +68,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz5 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.FOOD)
+                    .quizCategory(QuizCategory.PLANT)
                     .title("과일")
                     .answer("시계")
                     .level(DIAMOND)
@@ -103,7 +100,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz9 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.NONE)
+                    .quizCategory(QuizCategory.ANIMAL)
                     .title("동물")
                     .answer("기차")
                     .level(SILVER)
@@ -119,7 +116,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz11 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.NONE)
+                    .quizCategory(QuizCategory.OBJECT)
                     .title("운송수단")
                     .answer("고양이")
                     .level(DIAMOND)
@@ -143,7 +140,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz14 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.NONE)
+                    .quizCategory(QuizCategory.ANIMAL)
                     .title("동물")
                     .answer("사과")
                     .level(BRONZE)
@@ -151,7 +148,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz15 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.NONE)
+                    .quizCategory(QuizCategory.OBJECT)
                     .title("사물")
                     .answer("손")
                     .level(GOLD)
@@ -159,9 +156,9 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz16 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.NONE)
+                    .quizCategory(QuizCategory.OBJECT)
                     .title("기계")
-                    .answer("선풍기")
+                    .answer("엄마")
                     .level(DIAMOND)
                     .member(DUMMY_ADMIN)
                     .build();
@@ -175,7 +172,7 @@ public class WordQuizInitializer implements ApplicationRunner {
                     .build();
 
             WordQuiz WordQuiz18 = WordQuiz.builder()
-                    .quizCategory(QuizCategory.NONE)
+                    .quizCategory(QuizCategory.OBJECT)
                     .title("기계")
                     .answer("다람쥐")
                     .level(SILVER)
@@ -234,10 +231,6 @@ public class WordQuizInitializer implements ApplicationRunner {
             wordList.add(new Word("선인장", WordQuiz3));
             wordList.add(new Word("진달래", WordQuiz3));
             wordList.add(new Word("소나무", WordQuiz3));
-            wordList.add(new Word("호박벌", WordQuiz4));
-            wordList.add(new Word("강아지", WordQuiz4));
-            wordList.add(new Word("고양이", WordQuiz4));
-            wordList.add(new Word("커피", WordQuiz4));
 
             wordList.add(new Word("비행기", WordQuiz4));
             wordList.add(new Word("호박", WordQuiz4));
@@ -302,7 +295,7 @@ public class WordQuizInitializer implements ApplicationRunner {
             wordList.add(new Word("선풍기", WordQuiz16));
             wordList.add(new Word("다리미", WordQuiz16));
             wordList.add(new Word("컴퓨터", WordQuiz16));
-            wordList.add(new Word("에어컨", WordQuiz16));
+            wordList.add(new Word("엄마", WordQuiz16));
 
             wordList.add(new Word("태양", WordQuiz17));
             wordList.add(new Word("네모", WordQuiz17));
