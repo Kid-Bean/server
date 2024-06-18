@@ -20,24 +20,6 @@
    <tr><td>Deploy</td><td>EC2, Docker, Github Action, Docker Compose, Nginx</td></tr>
 </table>
 
-## 📄 Package
-### Architecture
-```
-soongsil.kidbean.server
-├── application
-│   └── service
-├── config
-├── domain
-│   ├── dto
-│   │   ├── request
-│   │   ├── response
-│   └── entity
-├── exception
-│   └── handler
-├── presentation
-│   └── controller
-└── repository
-```
 ### ERD
 ![image](https://github.com/Kid-Bean/server/assets/43364585/db1c0350-2e0f-4608-be16-90f014aad2ef)
 
