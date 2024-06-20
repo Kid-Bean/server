@@ -59,9 +59,9 @@ public class AnswerQuizSolvedService {
     }
 
     private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved, Member member) {
-        List<UseWordVO> wordCountList = useWordRepository.findWordCountsForMember(member);
+        List<UseWord> wordCountList = useWordRepository.findAllByMember(member);
         Map<String, Long> wordCountMap = wordCountList.stream()
-                .collect(Collectors.toMap(UseWordVO::word, UseWordVO::count));
+                .collect(Collectors.toMap(UseWord::getWordName, UseWord::getCount));
 
         List<UseWord> newUseWords = new ArrayList<>();
 
