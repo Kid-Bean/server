@@ -17,8 +17,8 @@ public interface UseWordRepository extends JpaRepository<UseWord, Long> {
 
     List<UseWord> findTop5ByMemberOrderByCountDesc(Member member);
 
-    @Query("SELECT uw.wordName, uw.count FROM UseWord uw WHERE uw.member = :member")
-    List<UseWordVO> findWordCountsForMember(@Param("member") Member member);
+        @Query("SELECT uw.wordName, uw.count FROM UseWord uw WHERE uw.member = :member")
+        List<UseWordVO> findWordCountsForMember(@Param("member") Member member);
 
     Optional<UseWord> findByWordNameAndMember(String wordName, Member member);
 
