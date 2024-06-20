@@ -3,6 +3,7 @@ package soongsil.kidbean.server.quiz.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
+import soongsil.kidbean.server.quiz.application.vo.UseWordVO;
 import soongsil.kidbean.server.quiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
 import soongsil.kidbean.server.quiz.domain.UseWord;
@@ -57,7 +59,9 @@ public class AnswerQuizSolvedService {
     }
 
     private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved, Member member) {
-        Map<String, Long> wordCountMap = useWordRepository.findWordCountsForMember(member);
+        List<UseWordVO> wordCountList = useWordRepository.findWordCountsForMember(member);
+        Map<String, Long> wordCountMap = wordCountList.stream()
+                .collect(Collectors.toMap(UseWordVO::word, UseWordVO::count));
 
         List<UseWord> newUseWords = new ArrayList<>();
 
