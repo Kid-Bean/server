@@ -46,7 +46,7 @@ public class Program {
     private Member member;
 
     @OneToMany(mappedBy = "program", orphanRemoval = true, cascade = CascadeType.PERSIST)
-    private List<Day> dayList = new ArrayList<>();
+    private List<OpenDay> openDayList = new ArrayList<>();
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.REMOVE)
     private List<Star> starList = new ArrayList<>();
@@ -84,20 +84,20 @@ public class Program {
     }
 
     // 연관 관계 편의 메소드
-    public void addDay(Day day) {
-        dayList.add(day);
-        day.setProgram(this);
+    public void addDay(OpenDay openDay) {
+        openDayList.add(openDay);
+        openDay.setProgram(this);
     }
 
     public void updateProgram(UpdateProgramRequest updateProgramRequest) {
         programInfo.updateProgram(updateProgramRequest);
         departmentInfo.updateDepartment(updateProgramRequest);
 
-        dayList.removeIf(day -> !updateProgramRequest.date().contains(day.getDate().getDayOfWeek()));
+        openDayList.removeIf(openDay -> !updateProgramRequest.date().contains(openDay.getDate().getDayOfWeek()));
 
         updateProgramRequest.date().stream()
-                .filter(day -> dayList.stream().noneMatch(d -> d.getDate().getDayOfWeek().equals(day)))
-                .map(day -> Day.builder()
+                .filter(day -> openDayList.stream().noneMatch(d -> d.getDate().getDayOfWeek().equals(day)))
+                .map(day -> OpenDay.builder()
                         .date(Date.getDayOfWeek(day))
                         .build())
                 .forEach(this::addDay);

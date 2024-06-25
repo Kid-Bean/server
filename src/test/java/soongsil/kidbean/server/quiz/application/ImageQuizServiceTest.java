@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.fixture.MemberFixture;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
@@ -26,6 +27,7 @@ import soongsil.kidbean.server.quiz.repository.ImageQuizRepository;
 
 import java.util.List;
 import java.util.Optional;
+import soongsil.kidbean.server.quiz.util.RandNumUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -53,13 +55,17 @@ class ImageQuizServiceTest {
     @DisplayName("ImageQuizResponse 생성 테스트")
     void selectRandomImageQuiz() {
         //given
-        given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
-        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(7);
-        given(imageQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
-                .willReturn(new PageImpl<>(List.of(IMAGE_QUIZ_ANIMAL1)));
+        int IMAGE_QUIZ_SIZE = 5;
+        int IMAGE_QUIZ_TOTAL_NUM = 10;
+
+        given(memberRepository.findById(MEMBER1.getMemberId())).willReturn(Optional.of(MEMBER1));
+        given(imageQuizRepository.countByMemberOrAdmin(MEMBER1)).willReturn(IMAGE_QUIZ_TOTAL_NUM);
+        given(imageQuizRepository.findByMemberAndQuizIdIn(eq(MEMBER1), anyList())).willReturn(
+                List.of(IMAGE_QUIZ_ANIMAL1));
 
         //when
-        ImageQuizSolveListResponse imageQuizSolveResponse = imageQuizService.selectRandomImageQuizList(1L, 5);
+        ImageQuizSolveListResponse imageQuizSolveResponse =
+                imageQuizService.selectRandomImageQuizList(MEMBER1.getMemberId(), IMAGE_QUIZ_SIZE);
 
         //then
         assertThat(imageQuizSolveResponse.imageQuizSolveResponseList().get(0).quizId())

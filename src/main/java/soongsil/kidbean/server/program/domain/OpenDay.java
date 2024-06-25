@@ -19,7 +19,7 @@ import soongsil.kidbean.server.program.domain.type.Date;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Day {
+public class OpenDay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class Day {
     private Program program;
 
     @Builder
-    public Day(Date date, Program program) {
+    public OpenDay(Date date, Program program) {
         this.date = date;
         this.program = program;
     }

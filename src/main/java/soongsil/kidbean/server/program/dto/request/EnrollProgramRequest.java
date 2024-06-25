@@ -3,7 +3,7 @@ package soongsil.kidbean.server.program.dto.request;
 import jakarta.validation.constraints.NotNull;
 
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.program.domain.Day;
+import soongsil.kidbean.server.program.domain.OpenDay;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.Date;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
@@ -47,7 +47,7 @@ public record EnrollProgramRequest(
                 .build();
 
         date.stream()
-                .map(day -> Day.builder()
+                .map(day -> OpenDay.builder()
                         .date(Date.getDayOfWeek(day))
                         .build())
                 .forEach(program::addDay);

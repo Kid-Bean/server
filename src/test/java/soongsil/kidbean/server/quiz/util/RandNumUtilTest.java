@@ -16,7 +16,7 @@ class RandNumUtilTest {
         int size = 5;
 
         //when
-        List<Integer> integerList = RandNumUtil.generateRandomNumbers(startNum, endNum, size);
+        List<Long> integerList = RandNumUtil.generateRandomNumbers(startNum, endNum, size);
 
         //then
         Assertions.assertThat(integerList.size()).isEqualTo(size);

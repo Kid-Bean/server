@@ -126,13 +126,13 @@ public class WordQuizService {
             i++;
         }
     }
-      
+
     private int getWordQuizCount(Member member) {
         return wordQuizRepository.countByMemberOrAdmin(member);
     }
 
-    private Page<WordQuiz> generateRandomWordQuizPage(Member member, int quizIdx) {
-        return wordQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
+    private Page<WordQuiz> generateRandomWordQuizPage(Member member, long quizIdx) {
+        return wordQuizRepository.findSinglePageByMember(member, PageRequest.of((int) quizIdx, 1));
     }
 
     private WordQuiz getWordQuizFromPage(Page<WordQuiz> wordQuizPage) {

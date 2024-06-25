@@ -1,9 +1,8 @@
 package soongsil.kidbean.server.quiz.application;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,18 +81,17 @@ public class ImageQuizService {
      * @return 이미지 퀴즈 DTO
      */
     public ImageQuizSolveListResponse selectRandomImageQuizList(Long memberId, Integer quizNum) {
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         int totalQuizNum = getImageQuizCount(member);
 
+        List<Long> randomNumbers = RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum);
+
         List<ImageQuizSolveResponse> imageQuizSolveResponseList =
-                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
-                        .map(quizIdx -> generateRandomPageWithCategory(member, quizIdx))
-                        .map(this::getImageQuizFromPage)
+                generateRandomImageQuizList(member, randomNumbers).stream()
                         .map(ImageQuizSolveResponse::from)
-                        .toList();
+                        .collect(Collectors.toList());
 
         return new ImageQuizSolveListResponse(imageQuizSolveResponseList);
     }
@@ -140,19 +138,11 @@ public class ImageQuizService {
         return s3Uploader.upload(multipartFile, folderName);
     }
 
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {
-        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
+    private List<ImageQuiz> generateRandomImageQuizList(Member member, List<Long> quizIdList) {
+        return imageQuizRepository.findByMemberAndQuizIdIn(member, quizIdList);
     }
 
     private int getImageQuizCount(Member member) {
         return imageQuizRepository.countByMemberOrAdmin(member);
-    }
-
-    private ImageQuiz getImageQuizFromPage(Page<ImageQuiz> imageQuizPage) {
-        if (imageQuizPage.hasContent()) {
-            return imageQuizPage.getContent().get(0);
-        } else {
-            throw new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND);
-        }
     }
 }

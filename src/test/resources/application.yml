@@ -13,10 +13,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        show_sql: false
-
-logging.level:
-  org.hibernate.SQL: debug
+        show_sql: true
 
 cloud:
   aws:
@@ -35,3 +32,16 @@ kakao:
 openApi:
   url: http://localhost:15359
   accessKey: thisistestaccesskey
+
+jwt:
+  secret-key: thisisjwtsecretkeywithdevenvironment123123123enoughlongisneedneedneedminumumsizeis512soithastobelong
+  issuer: kidbean
+  access-token-expiration: 3600000 # 1시간 (1000(ms -> s) * 60(s -> m) * 60(m -> h))
+  refresh-token-expiration: 1209600000 # 2주 (1000(ms -> s) * 60(s -> m) * 60(m -> h) * 24(h -> 하루) * 14(2주))
+
+server:
+  env: dev
+
+cors:
+  allowed:
+    origins: http://localhost:12356

@@ -20,7 +20,7 @@ import soongsil.kidbean.server.program.dto.response.ProgramDetailResponse;
 import soongsil.kidbean.server.program.dto.response.ProgramResponseList;
 import soongsil.kidbean.server.program.dto.response.ProgramResponse;
 import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
-import soongsil.kidbean.server.program.repository.DayRepository;
+import soongsil.kidbean.server.program.repository.OpenDayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class ProgramService {
     private final MemberRepository memberRepository;
     private final ProgramRepository programRepository;
     private final S3Uploader s3Uploader;
-    private final DayRepository dayRepository;
+    private final OpenDayRepository openDayRepository;
     private final StarService starService;
 
     /**
@@ -52,7 +52,7 @@ public class ProgramService {
         Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
-        List<String> dates = dayRepository.findAllByProgram(program).stream()
+        List<String> dates = openDayRepository.findAllByProgram(program).stream()
                 .map(day -> day.getDate().getDayOfWeek())
                 .toList();
 
