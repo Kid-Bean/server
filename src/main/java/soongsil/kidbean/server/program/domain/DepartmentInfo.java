@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.program.domain.vo;
+package soongsil.kidbean.server.program.domain;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;

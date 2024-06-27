@@ -8,8 +8,8 @@ import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
 import soongsil.kidbean.server.program.domain.Program;
-import soongsil.kidbean.server.program.domain.vo.DepartmentInfo;
-import soongsil.kidbean.server.program.domain.vo.ProgramInfo;
+import soongsil.kidbean.server.program.domain.DepartmentInfo;
+import soongsil.kidbean.server.program.domain.ProgramInfo;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.ArrayList;

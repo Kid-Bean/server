@@ -8,7 +8,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
-import soongsil.kidbean.server.program.domain.Day;
+import soongsil.kidbean.server.program.domain.OpenDay;
 import soongsil.kidbean.server.program.domain.type.Date;
 import soongsil.kidbean.server.program.repository.DayRepository;
 
@@ -25,96 +25,96 @@ public class DayInitializer implements ApplicationRunner {
         if (dayRepository.count() > 0) {
             log.info("[Day]더미 데이터 존재");
         } else {
-            List<Day> dayList = new ArrayList<>();
+            List<OpenDay> openDayList = new ArrayList<>();
 
-            Day program1_day1 = Day.builder()
+            OpenDay program1_OpenDay1 = OpenDay.builder()
                     .date(Date.MONDAY)
                     .program(ProgramInitializer.PROGRAM1)
                     .build();
-            Day program1_day2 = Day.builder()
+            OpenDay program1_OpenDay2 = OpenDay.builder()
                     .date(Date.TUESDAY)
                     .program(ProgramInitializer.PROGRAM1)
                     .build();
-            Day program1_day3 = Day.builder()
+            OpenDay program1_OpenDay3 = OpenDay.builder()
                     .date(Date.WEDNESDAY)
                     .program(ProgramInitializer.PROGRAM1)
                     .build();
 
-            Day program2_day1 = Day.builder()
+            OpenDay program2_OpenDay1 = OpenDay.builder()
                     .date(Date.MONDAY)
                     .program(ProgramInitializer.PROGRAM2)
                     .build();
-            Day program2_day3 = Day.builder()
+            OpenDay program2_OpenDay3 = OpenDay.builder()
                     .date(Date.WEDNESDAY)
                     .program(ProgramInitializer.PROGRAM2)
                     .build();
-            Day program2_day4 = Day.builder()
+            OpenDay program2_OpenDay4 = OpenDay.builder()
                     .date(Date.THURSDAY)
                     .program(ProgramInitializer.PROGRAM2)
                     .build();
 
-            Day program3_day2 = Day.builder()
+            OpenDay program3_OpenDay2 = OpenDay.builder()
                     .date(Date.TUESDAY)
                     .program(ProgramInitializer.PROGRAM3)
                     .build();
-            Day program3_day5 = Day.builder()
+            OpenDay program3_OpenDay5 = OpenDay.builder()
                     .date(Date.FRIDAY)
                     .program(ProgramInitializer.PROGRAM3)
                     .build();
-            Day program3_day7 = Day.builder()
+            OpenDay program3_OpenDay7 = OpenDay.builder()
                     .date(Date.SUNDAY)
                     .program(ProgramInitializer.PROGRAM3)
                     .build();
 
-            Day program4_day2 = Day.builder()
+            OpenDay program4_OpenDay2 = OpenDay.builder()
                     .date(Date.TUESDAY)
                     .program(ProgramInitializer.PROGRAM4)
                     .build();
-            Day program4_day3 = Day.builder()
+            OpenDay program4_OpenDay3 = OpenDay.builder()
                     .date(Date.WEDNESDAY)
                     .program(ProgramInitializer.PROGRAM4)
                     .build();
-            Day program4_day4 = Day.builder()
+            OpenDay program4_OpenDay4 = OpenDay.builder()
                     .date(Date.THURSDAY)
                     .program(ProgramInitializer.PROGRAM4)
                     .build();
-            Day program4_day5 = Day.builder()
+            OpenDay program4_OpenDay5 = OpenDay.builder()
                     .date(Date.FRIDAY)
                     .program(ProgramInitializer.PROGRAM4)
                     .build();
 
-            Day program5_day1 = Day.builder()
+            OpenDay program5_OpenDay1 = OpenDay.builder()
                     .date(Date.MONDAY)
                     .program(ProgramInitializer.PROGRAM5)
                     .build();
-            Day program5_day2 = Day.builder()
+            OpenDay program5_OpenDay2 = OpenDay.builder()
                     .date(Date.TUESDAY)
                     .program(ProgramInitializer.PROGRAM5)
                     .build();
 
-            Day program6_day6 = Day.builder()
+            OpenDay program6_OpenDay6 = OpenDay.builder()
                     .date(Date.SATURDAY)
                     .program(ProgramInitializer.PROGRAM6)
                     .build();
 
-            dayList.add(program1_day1);
-            dayList.add(program1_day2);
-            dayList.add(program1_day3);
-            dayList.add(program2_day1);
-            dayList.add(program2_day3);
-            dayList.add(program2_day4);
-            dayList.add(program3_day2);
-            dayList.add(program3_day5);
-            dayList.add(program3_day7);
-            dayList.add(program4_day2);
-            dayList.add(program4_day3);
-            dayList.add(program4_day4);
-            dayList.add(program4_day5);
-            dayList.add(program5_day1);
-            dayList.add(program5_day2);
-            dayList.add(program6_day6);
+            openDayList.add(program1_OpenDay1);
+            openDayList.add(program1_OpenDay2);
+            openDayList.add(program1_OpenDay3);
+            openDayList.add(program2_OpenDay1);
+            openDayList.add(program2_OpenDay3);
+            openDayList.add(program2_OpenDay4);
+            openDayList.add(program3_OpenDay2);
+            openDayList.add(program3_OpenDay5);
+            openDayList.add(program3_OpenDay7);
+            openDayList.add(program4_OpenDay2);
+            openDayList.add(program4_OpenDay3);
+            openDayList.add(program4_OpenDay4);
+            openDayList.add(program4_OpenDay5);
+            openDayList.add(program5_OpenDay1);
+            openDayList.add(program5_OpenDay2);
+            openDayList.add(program6_OpenDay6);
 
-            dayRepository.saveAll(dayList);
+            dayRepository.saveAll(openDayList);
         }
     }
 }
