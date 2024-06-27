@@ -25,7 +25,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,7 +82,6 @@ class AnswerQuizControllerTest extends CommonControllerTest {
         ResultActions resultActions = mockMvc.perform(multipart("/quiz/answer/solve")
                         .file(file)
                         .file(jsonFile)
-                        .with(csrf())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print());
 
@@ -101,8 +99,7 @@ class AnswerQuizControllerTest extends CommonControllerTest {
         given(answerQuizService.getAllAnswerQuizByMember(anyLong())).willReturn(responses);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/quiz/answer/member")
-                        .with(csrf()))
+        ResultActions resultActions = mockMvc.perform(get("/quiz/answer/member"))
                 .andDo(print());
 
         // then
@@ -114,13 +111,13 @@ class AnswerQuizControllerTest extends CommonControllerTest {
     @DisplayName("AnswerQuiz 상세 정보 가져오기")
     void getAnswerQuizById() throws Exception {
         // given
-        AnswerQuizMemberDetailResponse response = new AnswerQuizMemberDetailResponse(ANSWER_QUIZ.getTitle(), ANSWER_QUIZ.getQuestion());
+        AnswerQuizMemberDetailResponse response = new AnswerQuizMemberDetailResponse(ANSWER_QUIZ.getTitle(),
+                ANSWER_QUIZ.getQuestion());
 
         given(answerQuizService.getAnswerQuizById(anyLong(), anyLong())).willReturn(response);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/quiz/answer/member/1")
-                    .with(csrf()))
+        ResultActions resultActions = mockMvc.perform(get("/quiz/answer/member/1"))
                 .andDo(print());
 
         // then
@@ -136,7 +133,6 @@ class AnswerQuizControllerTest extends CommonControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/quiz/answer/member")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print());
@@ -153,7 +149,6 @@ class AnswerQuizControllerTest extends CommonControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(put("/quiz/answer/member/1")
-                        .with(csrf())
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
@@ -168,8 +163,7 @@ class AnswerQuizControllerTest extends CommonControllerTest {
         // given
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/quiz/answer/member/1")
-                        .with(csrf()))
+        ResultActions resultActions = mockMvc.perform(delete("/quiz/answer/member/1"))
                 .andDo(print());
 
         // then

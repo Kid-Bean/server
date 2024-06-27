@@ -2,7 +2,6 @@ package soongsil.kidbean.server.auth.presentation;
 
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,7 +52,6 @@ class AuthControllerTest extends CommonControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post("/auth/login/{provider}", provider).contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
                         .content(objectMapper.writeValueAsString(loginRequest))).andDo(print());
 
         //then
@@ -73,7 +71,6 @@ class AuthControllerTest extends CommonControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                         post("/auth/reissue")
-                                .with(csrf())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reissueRequest)))
                 .andDo(print());

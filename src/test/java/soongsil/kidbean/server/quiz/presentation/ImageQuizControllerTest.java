@@ -2,7 +2,6 @@ package soongsil.kidbean.server.quiz.presentation;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,8 +79,7 @@ class ImageQuizControllerTest extends CommonControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(post("/quiz/image/solve")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                        .with(csrf()))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print());
         //TODO 위와 같이 csrf 가 적용된 부분들 나중에 spring rest docs 사용 시 @AutoConfigureRestDocs로 공통 처리해주기
         //CommonControllerTest 에서 MockMvc 에 설정 하면 됨.
@@ -132,17 +130,19 @@ class ImageQuizControllerTest extends CommonControllerTest {
     @DisplayName("ImageQuiz 등록하기")
     void uploadImageQuiz() throws Exception {
         // given
-        ImageQuizUploadRequest request = new ImageQuizUploadRequest(IMAGE_QUIZ_NONE.getTitle(), IMAGE_QUIZ_NONE.getAnswer(), IMAGE_QUIZ_NONE.getQuizCategory());
+        ImageQuizUploadRequest request = new ImageQuizUploadRequest(IMAGE_QUIZ_NONE.getTitle(),
+                IMAGE_QUIZ_NONE.getAnswer(), IMAGE_QUIZ_NONE.getQuizCategory());
 
-        MockMultipartFile requestPartFile = new MockMultipartFile("imageQuizUploadRequest", "", "application/json", objectMapper.writeValueAsString(request).getBytes());
-        MockMultipartFile multipartFile = new MockMultipartFile("multipartFile", "test.jpg", "image/jpeg", "test image content".getBytes());
+        MockMultipartFile requestPartFile = new MockMultipartFile("imageQuizUploadRequest", "", "application/json",
+                objectMapper.writeValueAsString(request).getBytes());
+        MockMultipartFile multipartFile = new MockMultipartFile("multipartFile", "test.jpg", "image/jpeg",
+                "test image content".getBytes());
 
         // when
         ResultActions resultActions = mockMvc.perform(multipart("/quiz/image/member")
-                    .file(requestPartFile)
-                    .file(multipartFile)
-                    .with(csrf())
-                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                        .file(requestPartFile)
+                        .file(multipartFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print());
 
         // then
@@ -153,18 +153,24 @@ class ImageQuizControllerTest extends CommonControllerTest {
     @DisplayName("ImageQuiz 수정하기")
     void updateImageQuiz() throws Exception {
         // given
-        ImageQuizUpdateRequest updateRequest = new ImageQuizUpdateRequest(IMAGE_QUIZ_NONE.getTitle(), IMAGE_QUIZ_NONE.getAnswer(), IMAGE_QUIZ_NONE.getQuizCategory());
+        ImageQuizUpdateRequest updateRequest = new ImageQuizUpdateRequest(IMAGE_QUIZ_NONE.getTitle(),
+                IMAGE_QUIZ_NONE.getAnswer(), IMAGE_QUIZ_NONE.getQuizCategory());
 
-        MockMultipartFile requestPartFile = new MockMultipartFile("imageQuizUpdateRequest", "", "application/json", objectMapper.writeValueAsString(updateRequest).getBytes());
-        MockMultipartFile multipartFile = new MockMultipartFile("multipartFile", "test.jpg", "image/jpeg", "test image content".getBytes());
+        MockMultipartFile requestPartFile = new MockMultipartFile("imageQuizUpdateRequest", "", "application/json",
+                objectMapper.writeValueAsString(updateRequest).getBytes());
+        MockMultipartFile multipartFile = new MockMultipartFile("multipartFile", "test.jpg", "image/jpeg",
+                "test image content".getBytes());
 
         // when
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.multipart("/quiz/image/member/" + IMAGE_QUIZ_NONE.getQuizId())
-                    .file(requestPartFile) // JSON 데이터를 파일 파트로 추가
-                    .file(multipartFile) // 이미지 파일 추가
-                    .with(csrf())
-                    .with(request -> { request.setMethod("PUT"); return request; }) // 요청 메소드를 PUT으로 설정
-                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        ResultActions resultActions = mockMvc.perform(
+                        MockMvcRequestBuilders.multipart("/quiz/image/member/" + IMAGE_QUIZ_NONE.getQuizId())
+                                .file(requestPartFile) // JSON 데이터를 파일 파트로 추가
+                                .file(multipartFile) // 이미지 파일 추가
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                }) // 요청 메소드를 PUT으로 설정
+                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print());
 
         // then
@@ -177,8 +183,7 @@ class ImageQuizControllerTest extends CommonControllerTest {
         // given
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/quiz/image/member/" + IMAGE_QUIZ_NONE.getQuizId())
-                        .with(csrf()))
+        ResultActions resultActions = mockMvc.perform(delete("/quiz/image/member/" + IMAGE_QUIZ_NONE.getQuizId()))
                 .andDo(print());
 
         // then

@@ -23,7 +23,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -121,7 +120,6 @@ class WordQuizControllerTest extends CommonControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/quiz/word/member")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print());
@@ -145,7 +143,6 @@ class WordQuizControllerTest extends CommonControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(put("/quiz/word/member/1")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print());
@@ -160,8 +157,7 @@ class WordQuizControllerTest extends CommonControllerTest {
         // given
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/quiz/word/member/1")
-                        .with(csrf()))
+        ResultActions resultActions = mockMvc.perform(delete("/quiz/word/member/1"))
                 .andDo(print());
 
         // then
