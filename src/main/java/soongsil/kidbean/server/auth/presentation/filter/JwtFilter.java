@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.filter;
+package soongsil.kidbean.server.auth.presentation.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import soongsil.kidbean.server.auth.util.AuthenticationUtil;
-import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
+import soongsil.kidbean.server.auth.application.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.member.domain.Member;
 
 @Slf4j

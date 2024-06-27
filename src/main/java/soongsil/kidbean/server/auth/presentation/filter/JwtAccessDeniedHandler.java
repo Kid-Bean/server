@@ -1,4 +1,4 @@
-package soongsil.kidbean.server.auth.filter;
+package soongsil.kidbean.server.auth.presentation.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

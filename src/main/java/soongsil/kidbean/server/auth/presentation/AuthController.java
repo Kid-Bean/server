@@ -17,7 +17,7 @@ import soongsil.kidbean.server.auth.dto.request.LoginRequest;
 import soongsil.kidbean.server.auth.dto.request.ReissueRequest;
 import soongsil.kidbean.server.auth.dto.response.LoginResponse;
 import soongsil.kidbean.server.auth.dto.response.ReissueResponse;
-import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
+import soongsil.kidbean.server.auth.application.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 

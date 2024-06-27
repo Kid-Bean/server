@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import soongsil.kidbean.server.auth.dto.request.LoginRequest;
 import soongsil.kidbean.server.auth.dto.request.ReissueRequest;
-import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
+import soongsil.kidbean.server.auth.application.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.auth.util.SocialLoginProvider;
 import soongsil.kidbean.server.auth.util.kakao.KakaoLoginProvider;
 import soongsil.kidbean.server.member.domain.Member;

@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import soongsil.kidbean.server.global.domain.BaseTimeEntity;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
@@ -14,7 +13,6 @@ import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
 import java.util.Objects;
 
 @Getter
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuizSolved extends BaseTimeEntity {
@@ -66,8 +64,12 @@ public class QuizSolved extends BaseTimeEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         QuizSolved that = (QuizSolved) o;
         return Objects.equals(member, that.member) &&
                 (Objects.equals(imageQuiz, that.imageQuiz) || Objects.equals(wordQuiz, that.wordQuiz));
