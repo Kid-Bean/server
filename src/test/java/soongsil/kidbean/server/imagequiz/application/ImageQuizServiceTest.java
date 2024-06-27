@@ -7,13 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
-import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
@@ -53,10 +50,8 @@ class ImageQuizServiceTest {
     @DisplayName("ImageQuizResponse 생성 테스트")
     void selectRandomImageQuiz() {
         //given
-        given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
-        given(imageQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(7);
-        given(imageQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
-                .willReturn(new PageImpl<>(List.of(IMAGE_QUIZ_ANIMAL1)));
+        given(imageQuizRepository.findRandomQuizzesByMemberOrAdmin(any(Long.class), anyInt()))
+                .willReturn(List.of(IMAGE_QUIZ_ANIMAL1));
 
         //when
         ImageQuizSolveListResponse imageQuizSolveResponse = imageQuizService.selectRandomImageQuizList(1L, 5);

@@ -3,10 +3,11 @@ spring:
     active: test
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/kidbean
-    username: sa
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testdb
+    username: root
     password: test
-    driver-class-name: org.h2.Driver
+
   jpa:
     hibernate:
       ddl-auto: create-drop

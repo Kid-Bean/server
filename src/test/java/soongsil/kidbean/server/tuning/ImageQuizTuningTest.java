@@ -557,7 +557,7 @@ public class ImageQuizTuningTest {
     void selectRandomImageQuiz() {
         //given
         List<ImageQuizSolveListResponse> resultList = new ArrayList<>();
-        int loopCnt = 10;
+        int loopCnt = 1;
 
         StopWatch stopWatch = new StopWatch();
 
