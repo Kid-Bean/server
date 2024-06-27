@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 import soongsil.kidbean.server.summary.domain.AverageScore;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 

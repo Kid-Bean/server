@@ -15,9 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.application.vo.QuizType;
-import soongsil.kidbean.server.quiz.domain.type.Level;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quizsolve.domain.type.Level;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
 @Entity
 @Getter

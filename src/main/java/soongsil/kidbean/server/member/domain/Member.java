@@ -11,7 +11,7 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
 
 import java.time.LocalDate;
-import soongsil.kidbean.server.quiz.domain.type.Level;
+import soongsil.kidbean.server.quizsolve.domain.type.Level;
 
 @Entity
 @Getter

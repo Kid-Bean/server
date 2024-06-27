@@ -1,8 +1,8 @@
 package soongsil.kidbean.server.member.dto.response;
 
 import java.time.LocalDateTime;
-import soongsil.kidbean.server.quiz.domain.QuizSolved;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
 public record SolvedWordQuizInfo(
         Long solvedId,
