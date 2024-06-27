@@ -11,9 +11,8 @@ import soongsil.kidbean.server.answerquiz.repository.AnswerQuizRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,6 +20,7 @@ import static soongsil.kidbean.server.member.repository.init.MemberInitializer.D
 @LocalDummyDataInit
 public class AnswerQuizInitializer implements ApplicationRunner {
 
+    private final MemberRepository memberRepository;
     private final AnswerQuizRepository answerQuizRepository;
 
     @Override
@@ -28,6 +28,9 @@ public class AnswerQuizInitializer implements ApplicationRunner {
         if (answerQuizRepository.count() > 0) {
             log.info("[AnswerQuiz]더미 데이터 존재");
         } else {
+            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
+            Member DUMMY_ADMIN = memberRepository.findBySocialId("socialId2").orElseThrow();
+
             List<AnswerQuiz> answerQuizList = new ArrayList<>();
 
             AnswerQuiz answerQuiz1 = AnswerQuiz.builder()

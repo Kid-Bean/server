@@ -21,29 +21,29 @@ public class MemberInitializer implements ApplicationRunner {
 
     private final MemberRepository memberRepository;
 
-    public static final Member DUMMY_MEMBER = Member.builder()
-            .email("email1")
-            .name("name1")
-            .socialId("socialId1")
-            .gender(Gender.MAN)
-            .role(Role.MEMBER)
-            .score(25L)
-            .build();
-    public static final Member DUMMY_ADMIN = Member.builder()
-            .email("email5")
-            .name("name5")
-            .socialId("socialId2")
-            .gender(Gender.MAN)
-            .role(Role.ADMIN)
-            .score(3L)
-            .build();
-
     @Override
     public void run(ApplicationArguments args) {
         if (memberRepository.count() > 0) {
             log.info("[Member]더미 데이터 존재");
         } else {
             List<Member> memberList = new ArrayList<>();
+
+            Member DUMMY_MEMBER = Member.builder()
+                    .email("email1")
+                    .name("name1")
+                    .socialId("socialId1")
+                    .gender(Gender.MAN)
+                    .role(Role.MEMBER)
+                    .score(25L)
+                    .build();
+            Member DUMMY_ADMIN = Member.builder()
+                    .email("email5")
+                    .name("adminName")
+                    .socialId("socialId2")
+                    .gender(Gender.MAN)
+                    .role(Role.ADMIN)
+                    .score(3L)
+                    .build();
 
             memberList.add(DUMMY_MEMBER);
             memberList.add(DUMMY_ADMIN);

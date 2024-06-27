@@ -6,14 +6,15 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
+import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
+import soongsil.kidbean.server.imagequiz.repository.ImageQuizRepository;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
 import soongsil.kidbean.server.quizsolve.repository.QuizSolvedRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
-import static soongsil.kidbean.server.imagequiz.repository.init.ImageQuizInitializer.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,6 +22,8 @@ import static soongsil.kidbean.server.imagequiz.repository.init.ImageQuizInitial
 @LocalDummyDataInit
 public class QuizSolvedInitializer implements ApplicationRunner {
 
+    private final MemberRepository memberRepository;
+    private final ImageQuizRepository imageQuizRepository;
     private final QuizSolvedRepository quizSolvedRepository;
 
     @Override
@@ -28,8 +31,12 @@ public class QuizSolvedInitializer implements ApplicationRunner {
         if (quizSolvedRepository.count() > 0) {
             log.info("[QuizSolved]더미 데이터 존재");
         } else {
-            //더미 데이터 작성
-            log.info("[QuizSolved]더미 데이터 작성");
+            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
+
+            ImageQuiz IMAGE_QUIZ_ANIMAL1 = imageQuizRepository.findById(1L).orElseThrow();
+            ImageQuiz IMAGE_QUIZ_FOOD1 = imageQuizRepository.findById(2L).orElseThrow();
+            ImageQuiz IMAGE_QUIZ_ANIMAL3 = imageQuizRepository.findById(3L).orElseThrow();
+
             List<QuizSolved> quizSolvedList = new ArrayList<>();
 
             quizSolvedList.add(QuizSolved.builder()

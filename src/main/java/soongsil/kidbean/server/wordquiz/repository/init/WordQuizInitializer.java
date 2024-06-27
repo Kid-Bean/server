@@ -6,6 +6,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.wordquiz.domain.Word;
 import soongsil.kidbean.server.wordquiz.domain.WordQuiz;
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
@@ -15,8 +17,6 @@ import soongsil.kidbean.server.wordquiz.repository.WordRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_ADMIN;
-import static soongsil.kidbean.server.member.repository.init.MemberInitializer.DUMMY_MEMBER;
 import static soongsil.kidbean.server.quizsolve.domain.type.Level.*;
 
 @Slf4j
@@ -25,6 +25,7 @@ import static soongsil.kidbean.server.quizsolve.domain.type.Level.*;
 @LocalDummyDataInit
 public class WordQuizInitializer implements ApplicationRunner {
 
+    private final MemberRepository memberRepository;
     private final WordQuizRepository wordQuizRepository;
     private final WordRepository wordRepository;
 
@@ -33,6 +34,9 @@ public class WordQuizInitializer implements ApplicationRunner {
         if (wordQuizRepository.count() > 0 || wordRepository.count() > 0) {
             log.info("[WordQuiz]더미 데이터 존재");
         } else {
+            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
+            Member DUMMY_ADMIN = memberRepository.findBySocialId("socialId2").orElseThrow();
+
             List<WordQuiz> WordQuizList = new ArrayList<>();
 
             WordQuiz WordQuiz1 = WordQuiz.builder()
