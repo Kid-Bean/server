@@ -99,6 +99,22 @@ public class ImageQuizService {
         return new ImageQuizSolveListResponse(imageQuizSolveResponseList);
     }
 
+    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {
+        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
+    }
+
+    private int getImageQuizCount(Member member) {
+        return imageQuizRepository.countByMemberOrAdmin(member);
+    }
+
+    private ImageQuiz getImageQuizFromPage(Page<ImageQuiz> imageQuizPage) {
+        if (imageQuizPage.hasContent()) {
+            return imageQuizPage.getContent().get(0);
+        } else {
+            throw new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND);
+        }
+    }
+
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile multipartFile) {
         Member member = memberRepository.findById(memberId)
@@ -139,21 +155,5 @@ public class ImageQuizService {
     private S3Info uploadS3Info(MultipartFile multipartFile, QuizCategory quizCategory) {
         String folderName = QUIZ_BASE_FOLDER + quizCategory;
         return s3Uploader.upload(multipartFile, folderName);
-    }
-
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {
-        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
-    }
-
-    private int getImageQuizCount(Member member) {
-        return imageQuizRepository.countByMemberOrAdmin(member);
-    }
-
-    private ImageQuiz getImageQuizFromPage(Page<ImageQuiz> imageQuizPage) {
-        if (imageQuizPage.hasContent()) {
-            return imageQuizPage.getContent().get(0);
-        } else {
-            throw new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND);
-        }
     }
 }
