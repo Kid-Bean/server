@@ -1,6 +1,6 @@
 package soongsil.kidbean.server.member.dto.response;
 
-import soongsil.kidbean.server.quiz.domain.UseWord;
+import soongsil.kidbean.server.quizsolve.domain.UseWord;
 
 public record UseWordInfo(
         String word,

@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.member.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.*;
+import static soongsil.kidbean.server.quizsolve.exception.errorcode.QuizSolvedErrorCode.QUIZ_SOLVED_NOT_FOUND;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,11 @@ import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
-import soongsil.kidbean.server.quiz.domain.QuizSolved;
-import soongsil.kidbean.server.quiz.domain.Word;
-import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
-import soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode;
-import soongsil.kidbean.server.quiz.repository.QuizSolvedRepository;
-import soongsil.kidbean.server.quiz.repository.WordRepository;
+import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
+import soongsil.kidbean.server.wordquiz.domain.Word;
+import soongsil.kidbean.server.quizsolve.exception.QuizSolvedNotFoundException;
+import soongsil.kidbean.server.quizsolve.repository.QuizSolvedRepository;
+import soongsil.kidbean.server.wordquiz.repository.WordRepository;
 
 @Slf4j
 @Service
@@ -79,7 +79,6 @@ public class QuizSolvedResultService {
      * 푼 단어 관련 문제 디테일
      *
      * @param solvedId 푼 id
-     * @return
      */
     public SolvedWordDetailResponse solvedWordDetail(Long solvedId) {
         QuizSolved quizSolved = findQuizSolvedById(solvedId);
@@ -90,7 +89,7 @@ public class QuizSolvedResultService {
 
     private QuizSolved findQuizSolvedById(Long solvedId) {
         return quizSolvedRepository.findById(solvedId)
-                .orElseThrow(() -> new QuizSolvedNotFoundException(QuizErrorCode.QUIZ_SOLVED_NOT_FOUND));
+                .orElseThrow(() -> new QuizSolvedNotFoundException(QUIZ_SOLVED_NOT_FOUND));
     }
 
     private Member findMemberById(Long memberId) {

@@ -10,7 +10,7 @@ import soongsil.kidbean.server.auth.dto.response.LoginResponse;
 import soongsil.kidbean.server.auth.dto.response.ReissueResponse;
 import soongsil.kidbean.server.auth.exception.TokenNotValidException;
 import soongsil.kidbean.server.auth.exception.errorcode.AuthErrorCode;
-import soongsil.kidbean.server.auth.jwt.JwtTokenProvider;
+import soongsil.kidbean.server.auth.application.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.auth.util.SocialLoginProvider;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;

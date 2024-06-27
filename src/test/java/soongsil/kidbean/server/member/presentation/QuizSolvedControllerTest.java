@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
-import static soongsil.kidbean.server.quiz.fixture.QuizSolvedFixture.*;
+import static soongsil.kidbean.server.quizsolve.fixture.QuizSolvedFixture.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -49,7 +49,7 @@ class QuizSolvedControllerTest extends CommonControllerTest {
         //given
         SolvedImageListResponse solvedImageListResponse =
                 SolvedImageListResponse.from(List.of(SolvedImageInfo.from(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE)));
-        Boolean isCorrect = true;
+        boolean isCorrect = true;
 
         given(quizSolvedResultService.findSolvedImage(MEMBER1.getMemberId(), isCorrect))
                 .willReturn(solvedImageListResponse);

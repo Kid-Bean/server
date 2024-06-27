@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,8 +40,7 @@ class HomeControllerTest extends CommonControllerTest {
         given(homeService.getHomeInfo(anyLong())).willReturn(response);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/home")
-                        .with(csrf()))
+        ResultActions resultActions = mockMvc.perform(get("/home"))
                 .andDo(print());
 
         // then

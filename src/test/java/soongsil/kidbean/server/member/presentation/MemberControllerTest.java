@@ -13,7 +13,6 @@ import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.member.application.MemberService;
 import soongsil.kidbean.server.member.dto.request.MemberInfoRequest;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,11 +34,11 @@ class MemberControllerTest extends CommonControllerTest {
     @DisplayName("아이 정보 입력하기")
     void uploadMemberInfo() throws Exception {
         // given
-        MemberInfoRequest request = new MemberInfoRequest(MEMBER1.getName(), MEMBER1.getGender(), MEMBER1.getBirthDate());
+        MemberInfoRequest request = new MemberInfoRequest(MEMBER1.getName(), MEMBER1.getGender(),
+                MEMBER1.getBirthDate());
 
         // when
         ResultActions resultActions = mockMvc.perform(put("/member/info")
-                        .with(csrf())
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());

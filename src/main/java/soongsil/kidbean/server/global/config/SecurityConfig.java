@@ -16,9 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import soongsil.kidbean.server.auth.application.CustomOAuth2UserService;
-import soongsil.kidbean.server.auth.filter.JwtFilter;
-import soongsil.kidbean.server.auth.filter.JwtAccessDeniedHandler;
-import soongsil.kidbean.server.auth.filter.JwtAuthenticationEntryPoint;
+import soongsil.kidbean.server.auth.presentation.filter.JwtFilter;
+import soongsil.kidbean.server.auth.presentation.filter.JwtAccessDeniedHandler;
+import soongsil.kidbean.server.auth.presentation.filter.JwtAuthenticationEntryPoint;
 
 @Slf4j
 @Profile("!test")
