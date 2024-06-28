@@ -2,7 +2,6 @@ package soongsil.kidbean.server.imagequiz.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
 
@@ -16,7 +15,7 @@ public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
             "JOIN member m ON iq.member_id = m.member_id " +
             "WHERE iq.member_id = :memberId OR m.role = 'admin' " +
             "ORDER BY RAND() LIMIT :limit", nativeQuery = true)
-    List<ImageQuiz> findRandomQuizzesByMemberOrAdmin(@Param("memberId") Long memberId, @Param("limit") int limit);
+    List<ImageQuiz> findRandomQuizzesByMemberOrAdmin(Long memberId, int limit);
 
     Optional<ImageQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 
