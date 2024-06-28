@@ -21,7 +21,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -546,12 +545,6 @@ public class ImageQuizTuningTest {
         }
 
         member = memberRepository.findById(879L).orElseThrow();
-    }
-
-    @AfterAll
-    void tearDown() {
-        imageQuizRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test
