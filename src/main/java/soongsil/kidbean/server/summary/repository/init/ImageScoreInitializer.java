@@ -28,7 +28,7 @@ public class ImageScoreInitializer implements ApplicationRunner {
         if (quizScoreRepository.count() > 0) {
             log.info("[ImageQuizScore]더미 데이터 존재");
         } else {
-            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
+            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
 
             List<QuizScore> imageQuizScores = new ArrayList<>();
 

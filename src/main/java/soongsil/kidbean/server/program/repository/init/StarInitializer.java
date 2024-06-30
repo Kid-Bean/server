@@ -31,8 +31,8 @@ public class StarInitializer implements ApplicationRunner {
         if (starRepository.count() > 0) {
             log.info("[Star]더미 데이터 존재");
         } else {
-            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
-            Member DUMMY_ADMIN = memberRepository.findBySocialId("socialId2").orElseThrow();
+            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
+            Member DUMMY_ADMIN = memberRepository.findById(2L).orElseThrow();
 
             Program PROGRAM1 = programRepository.findById(1L).orElseThrow();
             Program PROGRAM2 = programRepository.findById(2L).orElseThrow();

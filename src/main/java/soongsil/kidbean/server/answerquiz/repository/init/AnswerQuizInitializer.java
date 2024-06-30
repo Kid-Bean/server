@@ -28,8 +28,8 @@ public class AnswerQuizInitializer implements ApplicationRunner {
         if (answerQuizRepository.count() > 0) {
             log.info("[AnswerQuiz]더미 데이터 존재");
         } else {
-            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
-            Member DUMMY_ADMIN = memberRepository.findBySocialId("socialId2").orElseThrow();
+            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
+            Member DUMMY_ADMIN = memberRepository.findById(2L).orElseThrow();
 
             List<AnswerQuiz> answerQuizList = new ArrayList<>();
 
