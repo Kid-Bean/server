@@ -2,8 +2,6 @@ package soongsil.kidbean.server.imagequiz.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +25,6 @@ import soongsil.kidbean.server.imagequiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.imagequiz.repository.ImageQuizRepository;
 
 import java.util.List;
-import soongsil.kidbean.server.global.util.RandNumUtil;
 
 import static soongsil.kidbean.server.imagequiz.exception.errorcode.ImageQuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -84,15 +81,8 @@ public class ImageQuizService {
      */
     public ImageQuizSolveListResponse selectRandomImageQuizList(Long memberId, Integer quizNum) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        int totalQuizNum = getImageQuizCount(member);
-
         List<ImageQuizSolveResponse> imageQuizSolveResponseList =
-                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
-                        .map(quizIdx -> generateRandomPageWithCategory(member, quizIdx))
-                        .map(this::getImageQuizFromPage)
+                imageQuizRepository.findRandomQuizzesByMemberOrAdmin(memberId, quizNum).stream()
                         .map(ImageQuizSolveResponse::from)
                         .toList();
 
@@ -139,21 +129,5 @@ public class ImageQuizService {
     private S3Info uploadS3Info(MultipartFile multipartFile, QuizCategory quizCategory) {
         String folderName = QUIZ_BASE_FOLDER + quizCategory;
         return s3Uploader.upload(multipartFile, folderName);
-    }
-
-    private Page<ImageQuiz> generateRandomPageWithCategory(Member member, int quizIdx) {
-        return imageQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
-    }
-
-    private int getImageQuizCount(Member member) {
-        return imageQuizRepository.countByMemberOrAdmin(member);
-    }
-
-    private ImageQuiz getImageQuizFromPage(Page<ImageQuiz> imageQuizPage) {
-        if (imageQuizPage.hasContent()) {
-            return imageQuizPage.getContent().get(0);
-        } else {
-            throw new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND);
-        }
     }
 }
