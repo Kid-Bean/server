@@ -13,7 +13,10 @@ import soongsil.kidbean.server.member.domain.type.Gender;
 import java.time.LocalDate;
 import soongsil.kidbean.server.quizsolve.domain.type.Level;
 
-@Table(name = "member", indexes = {@Index(name = "idx_member_role", columnList = "role")})
+@Table(name = "member", indexes = {
+        @Index(name = "idx_member_role", columnList = "role"),
+        @Index(name = "idx_member_social_id", columnList = "social_id")
+})
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
