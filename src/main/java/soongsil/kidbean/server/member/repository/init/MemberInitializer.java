@@ -28,7 +28,7 @@ public class MemberInitializer implements ApplicationRunner {
         } else {
             List<Member> memberList = new ArrayList<>();
 
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 500; i++) {
                 Member DUMMY_MEMBER = Member.builder()
                         .email("email1")
                         .name("name1")

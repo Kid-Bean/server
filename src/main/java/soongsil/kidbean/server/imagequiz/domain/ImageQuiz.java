@@ -15,10 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
 
-@Table(name = "image_quiz", indexes = {
-        @Index(name = "idx_image_quiz_rand_val", columnList = "rand_val"),
-        @Index(name = "idx_image_quiz_is_default", columnList = "is_default")
-})
+@Table(name = "image_quiz")
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
