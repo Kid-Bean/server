@@ -51,6 +51,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL2 = ImageQuiz.builder()
@@ -65,6 +66,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL3 = ImageQuiz.builder()
@@ -79,6 +81,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL4 = ImageQuiz.builder()
@@ -93,6 +96,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL5 = ImageQuiz.builder()
@@ -107,6 +111,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL6 = ImageQuiz.builder()
@@ -121,6 +126,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_MEMBER)
+                        .isDefault(false)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL7 = ImageQuiz.builder()
@@ -135,6 +141,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_MEMBER)
+                        .isDefault(false)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_FOOD1 = ImageQuiz.builder()
@@ -149,6 +156,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_FOOD2 = ImageQuiz.builder()
@@ -163,6 +171,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_FOOD3 = ImageQuiz.builder()
@@ -177,6 +186,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_FOOD4 = ImageQuiz.builder()
@@ -191,6 +201,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_FOOD5 = ImageQuiz.builder()
@@ -205,6 +216,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_MEMBER)
+                        .isDefault(false)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_NONE1 = ImageQuiz.builder()
@@ -219,6 +231,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_NONE2 = ImageQuiz.builder()
@@ -233,6 +246,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_NONE3 = ImageQuiz.builder()
@@ -247,6 +261,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_NONE4 = ImageQuiz.builder()
@@ -261,6 +276,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_NONE5 = ImageQuiz.builder()
@@ -275,6 +291,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_NONE6 = ImageQuiz.builder()
@@ -289,6 +306,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_OBJECT1 = ImageQuiz.builder()
@@ -303,6 +321,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_MEMBER)
+                        .isDefault(false)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_OBJECT2 = ImageQuiz.builder()
@@ -317,6 +336,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_OBJECT3 = ImageQuiz.builder()
@@ -331,6 +351,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_OBJECT4 = ImageQuiz.builder()
@@ -345,6 +366,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_OBJECT5 = ImageQuiz.builder()
@@ -359,6 +381,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_OBJECT6 = ImageQuiz.builder()
@@ -373,6 +396,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT1 = ImageQuiz.builder()
@@ -387,6 +411,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT2 = ImageQuiz.builder()
@@ -401,6 +426,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT3 = ImageQuiz.builder()
@@ -415,6 +441,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT4 = ImageQuiz.builder()
@@ -429,6 +456,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT5 = ImageQuiz.builder()
@@ -443,6 +471,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT6 = ImageQuiz.builder()
@@ -457,6 +486,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 ImageQuiz IMAGE_QUIZ_PLANT7 = ImageQuiz.builder()
@@ -471,6 +501,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
                                 .build()
                         )
                         .member(DUMMY_ADMIN)
+                        .isDefault(true)
                         .build();
 
                 imageQuizList.add(IMAGE_QUIZ_ANIMAL1);

@@ -23,6 +23,7 @@ public record ImageQuizUploadRequest(
                 .answer(answer)
                 .quizCategory(quizCategory)
                 .level(Level.BRONZE)
+                .isDefault(false)
                 .build();
     }
 }
