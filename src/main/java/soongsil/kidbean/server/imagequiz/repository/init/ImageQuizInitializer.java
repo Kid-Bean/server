@@ -37,7 +37,7 @@ public class ImageQuizInitializer implements ApplicationRunner {
             //더미 데이터 작성
             List<ImageQuiz> imageQuizList = new ArrayList<>();
 
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 1; i++) {
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL1 = ImageQuiz.builder()
                         .quizCategory(ANIMAL)

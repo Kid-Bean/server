@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.wordquiz.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +17,7 @@ public interface WordQuizRepository extends JpaRepository<WordQuiz, Long> {
     Integer countByMemberOrAdmin(Member member);
 
     @Query("SELECT wq FROM WordQuiz wq WHERE wq.member = :member OR wq.member.role = 'ADMIN'")
-    Page<WordQuiz> findSinglePageByMember(Member member, Pageable pageable);
+    List<WordQuiz> findSingleResultByMember(Member member, Pageable pageable);
 
     Optional<WordQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 

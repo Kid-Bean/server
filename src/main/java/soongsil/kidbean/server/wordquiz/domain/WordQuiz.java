@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
+@Table(name = "word_quiz")
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

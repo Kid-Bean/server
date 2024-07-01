@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -54,8 +53,8 @@ class WordQuizServiceTest {
         //given
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
         given(wordQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(4);
-        given(wordQuizRepository.findSinglePageByMember(any(Member.class), any(Pageable.class)))
-                .willReturn(new PageImpl<>(List.of(WORD_QUIZ)));
+        given(wordQuizRepository.findSingleResultByMember(any(Member.class), any(Pageable.class)))
+                .willReturn(List.of(WORD_QUIZ));
 
         //when
         WordQuizSolveListResponse wordQuizSolveListResponse =
