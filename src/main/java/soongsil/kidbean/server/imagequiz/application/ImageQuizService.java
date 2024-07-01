@@ -1,7 +1,9 @@
 package soongsil.kidbean.server.imagequiz.application;
 
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,12 +83,19 @@ public class ImageQuizService {
      */
     public ImageQuizSolveListResponse selectRandomImageQuizList(Long memberId, Integer quizNum) {
 
+        long count = imageQuizRepository.countByMemberId(memberId);
+        PageRequest pageRequest = makeRandomPageRequest(count, quizNum);
+
         List<ImageQuizSolveResponse> imageQuizSolveResponseList =
-                imageQuizRepository.findRandomQuizzesByMemberOrAdmin(memberId, quizNum).stream()
+                imageQuizRepository.findRandomQuizzesByMember(memberId, pageRequest).stream()
                         .map(ImageQuizSolveResponse::from)
                         .toList();
 
         return new ImageQuizSolveListResponse(imageQuizSolveResponseList);
+    }
+
+    private PageRequest makeRandomPageRequest(long count, int quizNum) {
+        return PageRequest.of(ThreadLocalRandom.current().nextInt((int) (count / 5)), quizNum);
     }
 
     @Transactional

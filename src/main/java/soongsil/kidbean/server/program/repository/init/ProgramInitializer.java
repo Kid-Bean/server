@@ -34,8 +34,8 @@ public class ProgramInitializer implements ApplicationRunner {
         if (programRepository.count() > 0) {
             log.info("[Program]더미 데이터 존재");
         } else {
-            Member DUMMY_ADMIN = memberRepository.findBySocialId("socialId2").orElseThrow();
-            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
+            Member DUMMY_ADMIN = memberRepository.findById(2L).orElseThrow();
+            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
 
             Program PROGRAM1 = Program.builder()
                     .programInfo(ProgramInfo.builder()

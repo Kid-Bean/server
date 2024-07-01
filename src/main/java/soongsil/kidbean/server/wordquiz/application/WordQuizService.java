@@ -3,7 +3,6 @@ package soongsil.kidbean.server.wordquiz.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +58,18 @@ public class WordQuizService {
         List<WordQuizSolveResponse> wordQuizSolveResponseList =
                 RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
                         .map(quizIdx -> generateRandomWordQuizPage(member, quizIdx))
-                        .map(this::getWordQuizFromPage)
                         .map(WordQuizSolveResponse::from)
                         .toList();
 
         return new WordQuizSolveListResponse(wordQuizSolveResponseList);
+    }
+
+    private int getWordQuizCount(Member member) {
+        return wordQuizRepository.countByMemberOrAdmin(member);
+    }
+
+    private WordQuiz generateRandomWordQuizPage(Member member, int quizIdx) {
+        return wordQuizRepository.findSingleResultByMember(member, PageRequest.of(quizIdx, 1)).get(0);
     }
 
     @Transactional
@@ -125,22 +131,6 @@ public class WordQuizService {
             String newWord = request.words().get(i).content();
             originalWord.update(newWord);
             i++;
-        }
-    }
-
-    private int getWordQuizCount(Member member) {
-        return wordQuizRepository.countByMemberOrAdmin(member);
-    }
-
-    private Page<WordQuiz> generateRandomWordQuizPage(Member member, int quizIdx) {
-        return wordQuizRepository.findSinglePageByMember(member, PageRequest.of(quizIdx, 1));
-    }
-
-    private WordQuiz getWordQuizFromPage(Page<WordQuiz> wordQuizPage) {
-        if (wordQuizPage.hasContent()) {
-            return wordQuizPage.getContent().get(0);
-        } else {
-            throw new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND);
         }
     }
 }

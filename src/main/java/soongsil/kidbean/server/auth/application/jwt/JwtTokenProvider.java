@@ -53,7 +53,7 @@ public class JwtTokenProvider {
                 .setExpiration(accessValidity)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
-                .setSubject(member.getSocialId())
+                .setSubject(member.getMemberId().toString())
                 .addClaims(Map.of(MEMBER_ROLE, member.getRole().name()))
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -75,7 +75,7 @@ public class JwtTokenProvider {
                 .setExpiration(refreshValidity)
                 // 토큰을 발급한 주체를 설정
                 .setIssuer(jwtProperties.getIssuer())
-                .setSubject(member.getSocialId())
+                .setSubject(member.getMemberId().toString())
                 .addClaims(Map.of(MEMBER_ROLE, member.getRole().name()))
                 // 토큰이 JWT 타입 명시
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -100,12 +100,12 @@ public class JwtTokenProvider {
     }
 
     public Member getMember(String token) {
-        String socialId = Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject();
+        Long id = Long.parseLong(Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().getSubject());
 
-        log.info("in getMember() socialId: {}", socialId);
+        log.info("in getMember() socialId: {}", id);
 
-        return memberRepository.findBySocialId(socialId)
+        return memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
     }
 }

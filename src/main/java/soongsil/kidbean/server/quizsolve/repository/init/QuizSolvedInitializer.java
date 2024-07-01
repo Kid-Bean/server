@@ -31,7 +31,7 @@ public class QuizSolvedInitializer implements ApplicationRunner {
         if (quizSolvedRepository.count() > 0) {
             log.info("[QuizSolved]더미 데이터 존재");
         } else {
-            Member DUMMY_MEMBER = memberRepository.findBySocialId("socialId1").orElseThrow();
+            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL1 = imageQuizRepository.findById(1L).orElseThrow();
             ImageQuiz IMAGE_QUIZ_FOOD1 = imageQuizRepository.findById(2L).orElseThrow();

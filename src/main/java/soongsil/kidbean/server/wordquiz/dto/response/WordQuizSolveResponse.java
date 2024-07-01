@@ -11,12 +11,12 @@ public record WordQuizSolveResponse(
         String answer,
         List<WordResponse> words
 ) {
-    public static WordQuizSolveResponse from(WordQuiz WordQuiz) {
+    public static WordQuizSolveResponse from(WordQuiz wordQuiz) {
         return WordQuizSolveResponse.builder()
-                .quizId(WordQuiz.getQuizId())
-                .answer(WordQuiz.getAnswer())
-                .title(WordQuiz.getTitle())
-                .words(WordQuiz.getWords().stream()
+                .quizId(wordQuiz.getQuizId())
+                .answer(wordQuiz.getAnswer())
+                .title(wordQuiz.getTitle())
+                .words(wordQuiz.getWords().stream()
                         .map(WordResponse::from)
                         .toList())
                 .build();

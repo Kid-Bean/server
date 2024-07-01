@@ -50,8 +50,9 @@ class ImageQuizServiceTest {
     @DisplayName("ImageQuizResponse 생성 테스트")
     void selectRandomImageQuiz() {
         //given
-        given(imageQuizRepository.findRandomQuizzesByMemberOrAdmin(any(Long.class), anyInt()))
+        given(imageQuizRepository.findRandomQuizzesByMember(any(Long.class), any()))
                 .willReturn(List.of(IMAGE_QUIZ_ANIMAL1));
+        given(imageQuizRepository.countByMemberId(any(Long.class))).willReturn(12L);
 
         //when
         ImageQuizSolveListResponse imageQuizSolveResponse = imageQuizService.selectRandomImageQuizList(1L, 5);
