@@ -60,7 +60,7 @@ public class ImageQuizTuningTest {
 
     @BeforeAll
     void setUp() {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 500; i++) {
             Member DUMMY_MEMBER = Member.builder()
                     .email("email1")
                     .name("name1")
@@ -82,7 +82,7 @@ public class ImageQuizTuningTest {
             memberRepository.save(DUMMY_ADMIN);
         }
 
-        for (long i = 1; i <= 1; i++) {
+        for (long i = 1; i <= 1000; i++) {
             member = memberRepository.findById(i).orElseThrow();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL1 = ImageQuiz.builder()
@@ -97,7 +97,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL2 = ImageQuiz.builder()
@@ -112,7 +111,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL3 = ImageQuiz.builder()
@@ -127,7 +125,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL4 = ImageQuiz.builder()
@@ -142,7 +139,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL5 = ImageQuiz.builder()
@@ -157,7 +153,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL6 = ImageQuiz.builder()
@@ -172,7 +167,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_ANIMAL7 = ImageQuiz.builder()
@@ -187,7 +181,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_FOOD1 = ImageQuiz.builder()
@@ -202,7 +195,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_FOOD2 = ImageQuiz.builder()
@@ -217,7 +209,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_FOOD3 = ImageQuiz.builder()
@@ -232,7 +223,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_FOOD4 = ImageQuiz.builder()
@@ -247,7 +237,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_FOOD5 = ImageQuiz.builder()
@@ -262,7 +251,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
             ImageQuiz IMAGE_QUIZ_NONE1 = ImageQuiz.builder()
                     .quizCategory(NONE)
@@ -276,7 +264,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_NONE2 = ImageQuiz.builder()
@@ -291,7 +278,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_NONE3 = ImageQuiz.builder()
@@ -306,7 +292,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_NONE4 = ImageQuiz.builder()
@@ -321,7 +306,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_NONE5 = ImageQuiz.builder()
@@ -350,7 +334,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_OBJECT1 = ImageQuiz.builder()
@@ -365,7 +348,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_OBJECT2 = ImageQuiz.builder()
@@ -380,7 +362,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_OBJECT3 = ImageQuiz.builder()
@@ -395,7 +376,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_OBJECT4 = ImageQuiz.builder()
@@ -410,7 +390,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_OBJECT5 = ImageQuiz.builder()
@@ -425,7 +404,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_OBJECT6 = ImageQuiz.builder()
@@ -440,7 +418,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_PLANT1 = ImageQuiz.builder()
@@ -455,7 +432,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_PLANT2 = ImageQuiz.builder()
@@ -470,7 +446,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_PLANT3 = ImageQuiz.builder()
@@ -485,7 +460,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_PLANT4 = ImageQuiz.builder()
@@ -500,7 +474,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_PLANT5 = ImageQuiz.builder()
@@ -515,7 +488,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             ImageQuiz IMAGE_QUIZ_PLANT6 = ImageQuiz.builder()
@@ -530,7 +502,6 @@ public class ImageQuizTuningTest {
                             .build()
                     )
                     .member(member)
-                    .isDefault(true)
                     .build();
 
             List<ImageQuiz> imageQuizList = new ArrayList<>();
@@ -573,7 +544,7 @@ public class ImageQuizTuningTest {
             imageQuizRepository.saveAll(imageQuizList);
         }
 
-        member = memberRepository.findById(1L).orElseThrow();
+        member = memberRepository.findById(879L).orElseThrow();
     }
 
     @Test
