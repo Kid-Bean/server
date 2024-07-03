@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
+import soongsil.kidbean.server.imagequiz.util.ImageQuizCountCache;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -43,6 +44,8 @@ public class ImageQuizService {
     private final MemberRepository memberRepository;
     private final QuizSolvedService quizSolvedService;
     private final S3Uploader s3Uploader;
+
+    private final ImageQuizCountCache imageQuizCountCache;
 
     private static final String QUIZ_BASE_FOLDER = "quiz/";
 
@@ -83,15 +86,13 @@ public class ImageQuizService {
      */
     public ImageQuizSolveListResponse selectRandomImageQuizList(Long memberId, Integer quizNum) {
 
-        long count = imageQuizRepository.countByMemberId(memberId);
+        long count = imageQuizCountCache.get(memberId);
         PageRequest pageRequest = makeRandomPageRequest(count, quizNum);
 
         List<ImageQuizSolveResponse> imageQuizSolveResponseList =
-                imageQuizRepository.findRandomQuizzesByMember(memberId, pageRequest).stream()
-                        .map(ImageQuizSolveResponse::from)
-                        .toList();
+                imageQuizRepository.findRandomQuizzesByMember(memberId, pageRequest);
 
-        return new ImageQuizSolveListResponse(imageQuizSolveResponseList);
+        return ImageQuizSolveListResponse.from(imageQuizSolveResponseList);
     }
 
     private PageRequest makeRandomPageRequest(long count, int quizNum) {
@@ -108,6 +109,8 @@ public class ImageQuizService {
         imageQuiz.setS3Info(s3Info);
 
         imageQuizRepository.save(imageQuiz);
+
+        imageQuizCountCache.plusCount(memberId);
     }
 
     @Transactional
@@ -127,12 +130,14 @@ public class ImageQuizService {
     }
 
     @Transactional
-    public void deleteImageQuiz(Long quizId) {
+    public void deleteImageQuiz(Long quizId, Long memberId) {
         ImageQuiz imageQuiz = imageQuizRepository.findById(quizId)
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
 
         s3Uploader.deleteFile(imageQuiz.getS3Info());
         imageQuizRepository.delete(imageQuiz);
+
+        imageQuizCountCache.minusCount(memberId);
     }
 
     private S3Info uploadS3Info(MultipartFile multipartFile, QuizCategory quizCategory) {

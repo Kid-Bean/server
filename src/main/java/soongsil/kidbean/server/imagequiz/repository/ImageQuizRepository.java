@@ -8,18 +8,20 @@ import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
 
 import java.util.List;
 import java.util.Optional;
+import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizSolveResponse;
 
 @Repository
 public interface ImageQuizRepository extends JpaRepository<ImageQuiz, Long> {
 
     @Query("SELECT count(*) FROM ImageQuiz iq "
             + "WHERE iq.isDefault = TRUE OR iq.member.memberId = :memberId")
-    Long countByMemberId(Long memberId);
+    Long countByMemberIdAndDefaultProblem(Long memberId);
 
-    @Query("SELECT iq FROM ImageQuiz iq "
+    @Query("SELECT new soongsil.kidbean.server.imagequiz.dto.response.ImageQuizSolveResponse(iq.quizId, iq.answer, iq.s3Info.s3Url) "
+            + "FROM ImageQuiz iq "
             + "WHERE iq.isDefault = TRUE OR iq.member.memberId = :memberId "
             + "ORDER BY iq.randVal")
-    List<ImageQuiz> findRandomQuizzesByMember(Long memberId, PageRequest request);
+    List<ImageQuizSolveResponse> findRandomQuizzesByMember(Long memberId, PageRequest request);
 
     Optional<ImageQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 
