@@ -127,9 +127,10 @@ public class ImageQuizController {
     @DeleteMapping("/member/{quizId}")
 
     public ResponseEntity<ResponseTemplate<Object>> deleteImageQuiz(
+            @AuthenticationPrincipal AuthUser member,
             @PathVariable Long quizId) {
 
-        imageQuizService.deleteImageQuiz(quizId);
+        imageQuizService.deleteImageQuiz(quizId, member.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

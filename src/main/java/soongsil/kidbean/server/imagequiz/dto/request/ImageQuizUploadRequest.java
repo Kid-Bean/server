@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
+import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.quizsolve.domain.type.Level;
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
@@ -23,7 +24,7 @@ public record ImageQuizUploadRequest(
                 .answer(answer)
                 .quizCategory(quizCategory)
                 .level(Level.BRONZE)
-                .isDefault(false)
+                .isDefault(member.getRole() == Role.ADMIN)
                 .build();
     }
 }

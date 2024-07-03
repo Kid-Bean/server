@@ -11,6 +11,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
+import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizSolveResponse;
+import soongsil.kidbean.server.imagequiz.util.ImageQuizCountCache;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
@@ -43,16 +45,19 @@ class ImageQuizServiceTest {
     @Mock
     private S3Uploader s3Uploader;
 
+    @Mock
+    private ImageQuizCountCache imageQuizCountCache;
+
     @InjectMocks
     private ImageQuizService imageQuizService;
 
     @Test
-    @DisplayName("ImageQuizResponse 생성 테스트")
+    @DisplayName("ImageQuizResponse 생성 테스트 - 캐시에 데이터 존재")
     void selectRandomImageQuiz() {
         //given
         given(imageQuizRepository.findRandomQuizzesByMember(any(Long.class), any()))
-                .willReturn(List.of(IMAGE_QUIZ_ANIMAL1));
-        given(imageQuizRepository.countByMemberId(any(Long.class))).willReturn(12L);
+                .willReturn(List.of(ImageQuizSolveResponse.from(IMAGE_QUIZ_ANIMAL1)));
+        given(imageQuizCountCache.get(anyLong())).willReturn(12L);
 
         //when
         ImageQuizSolveListResponse imageQuizSolveResponse = imageQuizService.selectRandomImageQuizList(1L, 5);
@@ -167,7 +172,7 @@ class ImageQuizServiceTest {
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
 
         // when
-        imageQuizService.deleteImageQuiz(IMAGE_QUIZ_ANIMAL1.getQuizId());
+        imageQuizService.deleteImageQuiz(IMAGE_QUIZ_ANIMAL1.getQuizId(), any());
 
         // then
         verify(imageQuizRepository).delete(IMAGE_QUIZ_ANIMAL1);

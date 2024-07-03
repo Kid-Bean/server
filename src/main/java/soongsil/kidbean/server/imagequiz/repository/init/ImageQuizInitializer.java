@@ -31,13 +31,14 @@ public class ImageQuizInitializer implements ApplicationRunner {
         if (imageQuizRepository.count() > 0) {
             log.info("[ImageQuiz]더미 데이터 존재");
         } else {
-            Member DUMMY_ADMIN = memberRepository.findById(2L).orElseThrow();
-            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
 
             //더미 데이터 작성
             List<ImageQuiz> imageQuizList = new ArrayList<>();
 
             for (int i = 0; i < 1; i++) {
+
+                Member DUMMY_ADMIN = memberRepository.findById((long) (i / 10 + 2)).orElseThrow();
+                Member DUMMY_MEMBER = memberRepository.findById((long) (i / 10 + 1)).orElseThrow();
 
                 ImageQuiz IMAGE_QUIZ_ANIMAL1 = ImageQuiz.builder()
                         .quizCategory(ANIMAL)
