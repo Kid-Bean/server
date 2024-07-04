@@ -96,7 +96,7 @@ public class ImageQuizService {
     }
 
     private PageRequest makeRandomPageRequest(long count, int quizNum) {
-        return PageRequest.of(ThreadLocalRandom.current().nextInt((int) (count / 5)), quizNum);
+        return PageRequest.of(ThreadLocalRandom.current().nextInt((int) (count / quizNum)), quizNum);
     }
 
     @Transactional
