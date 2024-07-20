@@ -27,9 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.util.StopWatch;
-import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.imagequiz.application.ImageQuizService;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
@@ -42,9 +40,8 @@ import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
-@Import(AwsS3MockConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ImageQuizTuningTest {
 
     @Autowired

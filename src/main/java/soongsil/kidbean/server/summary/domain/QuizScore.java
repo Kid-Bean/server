@@ -51,12 +51,7 @@ public class QuizScore {
     }
 
     public static QuizScore makeInitQuizScore(Member member, QuizCategory quizCategory) {
-        return new QuizScore(
-                member,
-                quizCategory,
-                0L,
-                0L
-        );
+        return new QuizScore(member, quizCategory, 0L, 0L);
     }
 
     public void updateScore(Level beforeLevel, Level afterLevel) {
@@ -68,10 +63,8 @@ public class QuizScore {
         return this;
     }
 
-    public QuizScore addCount(boolean isExist) {
-        if (!isExist) {
-            quizCount++;
-        }
+    public QuizScore addCount() {
+        quizCount++;
         return this;
     }
 }

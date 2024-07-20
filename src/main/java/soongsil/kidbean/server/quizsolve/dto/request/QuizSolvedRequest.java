@@ -19,6 +19,7 @@ public record QuizSolvedRequest(
                 .imageQuiz(imageQuiz)
                 .reply(answer)
                 .member(member)
+                .isCorrect(answer.equals(imageQuiz.getAnswer()))
                 .build();
     }
 
@@ -27,6 +28,7 @@ public record QuizSolvedRequest(
                 .wordQuiz(wordQuiz)
                 .reply(answer)
                 .member(member)
+                .isCorrect(answer.equals(wordQuiz.getAnswer()))
                 .build();
     }
 }

@@ -55,7 +55,7 @@ class QuizSolvedServiceTest {
         QuizSolvedRequest request =
                 new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
         SolvedQuizInfo solvedQuizInfo =
-                new SolvedQuizInfo(WORD_QUIZ.getQuizCategory(), Level.getPoint(WORD_QUIZ.getLevel()), false);
+                new SolvedQuizInfo(WORD_QUIZ.getQuizCategory(), Level.getPoint(WORD_QUIZ.getLevel()));
 
         given(quizSolverFactory.getSolver(QuizType.WORD_QUIZ)).willReturn(wordQuizSolver);
         given(wordQuizSolver.solveQuiz(request, MEMBER1)).willReturn(solvedQuizInfo);
@@ -76,8 +76,7 @@ class QuizSolvedServiceTest {
         QuizSolvedRequest request =
                 new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
         SolvedQuizInfo solvedQuizInfo =
-                new SolvedQuizInfo(IMAGE_QUIZ_ANIMAL1.getQuizCategory(), Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()),
-                        false);
+                new SolvedQuizInfo(IMAGE_QUIZ_ANIMAL1.getQuizCategory(), Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
 
         given(quizSolverFactory.getSolver(QuizType.IMAGE_QUIZ)).willReturn(imageQuizSolver);
         given(imageQuizSolver.solveQuiz(request, MEMBER1)).willReturn(solvedQuizInfo);

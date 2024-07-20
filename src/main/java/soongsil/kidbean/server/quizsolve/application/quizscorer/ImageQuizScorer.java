@@ -14,14 +14,14 @@ import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 public class ImageQuizScorer implements QuizScorer {
 
     private final QuizScoreRepository quizScoreRepository;
+
     @Override
     public Long addPerQuizScore(SolvedQuizInfo solvedQuizInfo, Member member) {
         QuizScore quizScore = quizScoreRepository.findByMemberAndQuizCategory(member, solvedQuizInfo.category())
                 .orElseGet(() -> quizScoreRepository.save(
                         QuizScore.makeInitQuizScore(member, solvedQuizInfo.category())));
 
-        QuizScore updateQuizScore = quizScore.addScore(solvedQuizInfo.score())
-                .addCount(solvedQuizInfo.isExist());
+        QuizScore updateQuizScore = quizScore.addScore(solvedQuizInfo.score()).addCount();
         quizScoreRepository.save(updateQuizScore);
 
         return solvedQuizInfo.score();

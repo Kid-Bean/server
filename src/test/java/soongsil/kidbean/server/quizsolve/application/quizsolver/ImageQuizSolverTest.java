@@ -31,56 +31,13 @@ class ImageQuizSolverTest {
     private ImageQuizRepository imageQuizRepository;
 
     @Test
-    @DisplayName("이미 푼 맞은 ImageQuiz 풀었을 때")
-    public void solveImageQuiz1() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
-
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId()))
-                .willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
-        //이전에 풀었던 문제
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL1, MEMBER1, true))
-                .willReturn(true);
-
-        //when
-        SolvedQuizInfo solvedQuizInfo = imageQuizSolver.solveQuiz(request, MEMBER1);
-
-        //then
-        assertThat(solvedQuizInfo.score()).isEqualTo(0L);
-        assertThat(solvedQuizInfo.category()).isEqualTo(IMAGE_QUIZ_ANIMAL1.getQuizCategory());
-    }
-
-    @Test
-    @DisplayName("이미 푼 틀린 ImageQuiz 풀었을 때")
-    public void solveImageQuiz2() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
-
-        given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(IMAGE_QUIZ_ANIMAL1, MEMBER1, true))
-                .willReturn(false);
-
-        //when
-        SolvedQuizInfo solvedQuizInfo = imageQuizSolver.solveQuiz(request, MEMBER1);
-
-        //then
-        assertThat(solvedQuizInfo.score()).isEqualTo(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel()));
-        assertThat(solvedQuizInfo.category()).isEqualTo(IMAGE_QUIZ_ANIMAL1.getQuizCategory());
-    }
-
-    @Test
     @DisplayName("풀지 않은 ImageQuiz 풀었을 때")
-    public void solveImageQuiz3() {
+    public void solveImageQuiz() {
         //given
         QuizSolvedRequest request =
                 new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
 
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
-        given(quizSolvedRepository.existsByImageQuizAndMember(IMAGE_QUIZ_ANIMAL1, MEMBER1)).willReturn(false);
 
         //when
         SolvedQuizInfo solvedQuizInfo = imageQuizSolver.solveQuiz(request, MEMBER1);

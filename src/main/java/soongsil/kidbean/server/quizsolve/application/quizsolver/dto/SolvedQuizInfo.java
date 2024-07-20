@@ -4,7 +4,6 @@ import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
 public record SolvedQuizInfo(
         QuizCategory category,
-        Long score,
-        boolean isExist
+        Long score
 ) {
 }

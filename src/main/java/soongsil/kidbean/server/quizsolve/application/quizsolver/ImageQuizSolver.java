@@ -38,43 +38,15 @@ public class ImageQuizSolver implements QuizSolver {
                 .orElseThrow(() -> new ImageQuizNotFoundException(IMAGE_QUIZ_NOT_FOUND));
         QuizSolved imageQuizSolved = solvedRequest.toQuizSolved(imageQuiz, member);
 
-        if (imageQuizSolvedExists(imageQuiz, member)) {
-            return solveExistingImageQuizSolved(imageQuizSolved, imageQuiz);
-        } else {
-            return solveNewImageQuiz(imageQuizSolved, imageQuiz);
-        }
-    }
-
-    private Boolean imageQuizSolvedExists(ImageQuiz imageQuiz, Member member) {
-        return quizSolvedRepository.existsByImageQuizAndMember(imageQuiz, member);
+        return solveNewImageQuiz(imageQuizSolved, imageQuiz);
     }
 
     private SolvedQuizInfo solveNewImageQuiz(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
 
-        newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(imageQuiz.getAnswer()));
         quizSolvedRepository.save(newQuizSolved);
 
-        return newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(imageQuiz.getQuizCategory(),
-                getPoint(imageQuiz.getLevel()), false) : new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L, false);
-    }
-
-    private SolvedQuizInfo solveExistingImageQuizSolved(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
-
-        Member member = newQuizSolved.getMember();
-        boolean exCorrect = quizSolvedRepository.existsByImageQuizAndMemberAndIsCorrect(imageQuiz, member, true);
-        //이번에 정답을 맞췄는지 확인
-        boolean isCorrect = newQuizSolved.getReply().contains(imageQuiz.getAnswer());
-
-        //푼 QuizSolved 등록
-        newQuizSolved.setAnswerIsCorrect(isCorrect);
-        quizSolvedRepository.save(newQuizSolved);
-
-        //이전에 오답이었고 현재 정답인 경우
-        if (!exCorrect && isCorrect) {
-            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), getPoint(imageQuiz.getLevel()), true);
-        } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
-            return new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L, true);
-        }
+        return !newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L)
+                : new SolvedQuizInfo(imageQuiz.getQuizCategory(), getPoint(imageQuiz.getLevel()));
     }
 
     private static Long getPoint(Level level) {

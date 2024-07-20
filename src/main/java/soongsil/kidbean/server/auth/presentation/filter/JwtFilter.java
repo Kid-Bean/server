@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
             Member member = jwtTokenProvider.getMember(token);
             AuthenticationUtil.makeAuthentication(member);
 
-            log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", member.getSocialId(), requestURI);
+            log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", member.getMemberId(), requestURI);
         }
 
         filterChain.doFilter(request, response);

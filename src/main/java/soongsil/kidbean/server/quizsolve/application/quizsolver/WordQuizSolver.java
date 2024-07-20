@@ -38,44 +38,15 @@ public class WordQuizSolver implements QuizSolver {
                 .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
         QuizSolved wordQuizSolved = solvedRequest.toQuizSolved(wordQuiz, member);
 
-        if (wordQuizSolvedExists(wordQuiz, member)) {
-            return solveExistingWordQuizSolved(wordQuizSolved, wordQuiz);
-        } else {
-            return solveNewWordQuiz(wordQuizSolved, wordQuiz);
-        }
-    }
-
-    private Boolean wordQuizSolvedExists(WordQuiz wordQuiz, Member member) {
-        return quizSolvedRepository.existsByWordQuizAndMember(wordQuiz, member);
+        return solveNewWordQuiz(wordQuizSolved, wordQuiz);
     }
 
     private SolvedQuizInfo solveNewWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
 
-        newQuizSolved.setAnswerIsCorrect(newQuizSolved.getReply().contains(wordQuiz.getAnswer()));
         quizSolvedRepository.save(newQuizSolved);
 
-        return newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(wordQuiz.getQuizCategory(),
-                getPoint(wordQuiz.getLevel()), false) : new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L, false);
-    }
-
-    private SolvedQuizInfo solveExistingWordQuizSolved(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
-
-        Member member = newQuizSolved.getMember();
-        //이전에 맞았는지
-        boolean exCorrect = quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(wordQuiz, member, true);
-        //정답을 포함하고 있는지
-        boolean isCorrect = newQuizSolved.getReply().contains(wordQuiz.getAnswer());
-
-        //푼 QuizSolved 등록
-        newQuizSolved.setAnswerIsCorrect(isCorrect);
-        quizSolvedRepository.save(newQuizSolved);
-
-        //이전에 오답이었고 현재 정답인 경우
-        if (!exCorrect && isCorrect) {
-            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), getPoint(wordQuiz.getLevel()), true);
-        } else {    //이전에 정답인 경우 or 둘 다 오답인 경우
-            return new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L, true);
-        }
+        return !newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L)
+                : new SolvedQuizInfo(wordQuiz.getQuizCategory(), getPoint(wordQuiz.getLevel()));
     }
 
     private static Long getPoint(Level level) {

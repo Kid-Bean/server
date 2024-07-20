@@ -32,47 +32,6 @@ class WordQuizSolverTest {
     private WordQuizRepository wordQuizRepository;
 
     @Test
-    @DisplayName("이미 푼 맞은 WordQuiz 풀었을 때")
-    public void solveWordQuiz1() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
-
-        given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        //이전에 풀었던 문제
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER1, true))
-                .willReturn(true);
-
-        //when
-        SolvedQuizInfo solvedQuizInfo = wordQuizSolver.solveQuiz(request, MEMBER1);
-
-        //then
-        assertThat(solvedQuizInfo.score()).isEqualTo(0L);
-        assertThat(solvedQuizInfo.category()).isEqualTo(WORD_QUIZ.getQuizCategory());
-    }
-
-    @Test
-    @DisplayName("이미 푼 틀린 WordQuiz 풀었을 때")
-    public void solveWordQuiz2() {
-        //given
-        QuizSolvedRequest request =
-                new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
-
-        given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(true);
-        given(quizSolvedRepository.existsByWordQuizAndMemberAndIsCorrect(WORD_QUIZ, MEMBER1, true))
-                .willReturn(false);
-
-        //when
-        SolvedQuizInfo solvedQuizInfo = wordQuizSolver.solveQuiz(request, MEMBER1);
-
-        //then
-        assertThat(solvedQuizInfo.score()).isEqualTo(Level.getPoint(WORD_QUIZ.getLevel()));
-        assertThat(solvedQuizInfo.category()).isEqualTo(WORD_QUIZ.getQuizCategory());
-    }
-
-    @Test
     @DisplayName("풀지 않은 WordQuiz 풀었을 때")
     public void solveWordQuiz() {
         //given
@@ -80,7 +39,6 @@ class WordQuizSolverTest {
                 new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
 
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
-        given(quizSolvedRepository.existsByWordQuizAndMember(WORD_QUIZ, MEMBER1)).willReturn(false);
 
         //when
         SolvedQuizInfo solvedQuizInfo = wordQuizSolver.solveQuiz(request, MEMBER1);
