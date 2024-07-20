@@ -63,7 +63,7 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(tokenProvider.createAccessToken(memberRepository.findById(memberId).get()));
+                .body(tokenProvider.createAccessToken(memberRepository.findById(memberId).orElseThrow()));
     }
 
     /**

@@ -19,12 +19,13 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: testbucket
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
+      bucket: kidbeantest
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: test
+      secretKey: test
+
 
 kakao:
   feign:

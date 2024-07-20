@@ -10,8 +10,8 @@ import soongsil.kidbean.server.summary.domain.QuizScore;
 
 @Repository
 public interface QuizScoreRepository extends JpaRepository<QuizScore, Long> {
+
     Optional<QuizScore> findByMemberAndQuizCategory(Member member, QuizCategory quizCategory);
 
     List<QuizScore> findAllByMember(Member member);
-
 }

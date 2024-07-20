@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
-import soongsil.kidbean.server.quizsolve.application.vo.QuizType;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
 import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
 import soongsil.kidbean.server.quizsolve.domain.type.Level;
@@ -48,10 +47,8 @@ public class AverageScoreScheduler {
                 Long accuracy = calculateAccuracy(solvedList);
                 Level level = Level.calculate(accuracy);
 
-                QuizType quizType = isImageQuiz ? QuizType.IMAGE_QUIZ : QuizType.WORD_QUIZ;
-
                 if (quiz.isLevelUpdateNeed(level)) {
-                    updateMemberTotalScore(quiz, level, quizType);
+                    updateMemberTotalScore(quiz, level);
                     updateLevel(quiz, level);
                 }
             });
@@ -118,12 +115,11 @@ public class AverageScoreScheduler {
         return solvedList.stream()
                 .collect(Collectors.groupingBy(QuizSolved::getMember))
                 .keySet()
-                .stream()
-                .count();
+                .size();
     }
 
     @Transactional
-    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level, QuizType quizType) {
+    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level) {
         List<QuizSolved> quizSolvedList = quizSolvedRepository.findAllByImageQuizAndIsCorrectTrue(imageQuiz);
 
         Set<Member> memberList = quizSolvedList.stream()

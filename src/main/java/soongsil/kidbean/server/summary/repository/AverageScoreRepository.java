@@ -10,9 +10,8 @@ import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 
 @Repository
 public interface AverageScoreRepository extends JpaRepository<AverageScore, Long> {
+
     Optional<AverageScore> findByAgeGroupAndQuizCategory(AgeGroup ageGroup, QuizCategory quizCategory);
 
     List<AverageScore> findAllByAgeGroup(AgeGroup ageGroup);
-
-
 }
