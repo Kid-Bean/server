@@ -16,10 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -561,56 +557,6 @@ public class ImageQuizTuningTest {
         }
 
         stopWatch.stop();
-
-        //then
-        log.info("===================결과 출력부===================");
-        long memberCount = memberRepository.count();
-        long dataCount = imageQuizRepository.count();
-
-        for (ImageQuizSolveListResponse response : resultList) {
-            long[] array = response.imageQuizSolveResponseList().stream()
-                    .mapToLong(ImageQuizSolveResponse::quizId)
-                    .toArray();
-
-            log.info("real data size: {}", response.imageQuizSolveResponseList().size());
-            log.info("data: {}", array);
-        }
-
-        log.info("유저 수: {} 명", memberCount);
-        log.info("데이터 수: {} 개", dataCount);
-        log.info("반복 횟수: {} 회", loopCnt);
-        log.info("총 소요 시간: {} ms", stopWatch.getTotalTimeMillis());
-    }
-
-    @Test
-    @DisplayName("ImageQuizResponse 생성 테스트 - 동시성")
-    void selectRandomImageQuizConcurrent() throws InterruptedException {
-        //given
-        Queue<ImageQuizSolveListResponse> resultList = new ConcurrentLinkedQueue<>();
-        int loopCnt = 1;
-
-        ExecutorService executorService = Executors.newFixedThreadPool(loopCnt);
-        CountDownLatch latch = new CountDownLatch(loopCnt);
-
-        StopWatch stopWatch = new StopWatch();
-
-        //when
-        stopWatch.start();
-
-        for (int i = 0; i < loopCnt; i++) {
-            executorService.execute(() -> {
-                try {
-                    resultList.add(imageQuizService.selectRandomImageQuizList(member.getMemberId(), 5));
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await(); // 모든 스레드가 작업을 완료할 때까지 기다림
-        stopWatch.stop();
-
-        executorService.shutdown();
 
         //then
         log.info("===================결과 출력부===================");

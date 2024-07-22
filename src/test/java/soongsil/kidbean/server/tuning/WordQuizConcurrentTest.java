@@ -40,7 +40,7 @@ import soongsil.kidbean.server.wordquiz.repository.WordQuizRepository;
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-public class WordQuizTuningTest {
+public class WordQuizConcurrentTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -65,7 +65,7 @@ public class WordQuizTuningTest {
 
     @BeforeAll
     void setUp() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 100; i++) {
             Member member = memberRepository.save(
                     Member.builder()
                             .email("email1")
@@ -99,8 +99,8 @@ public class WordQuizTuningTest {
     }
 
     @Test
-    @DisplayName("AnswerQuiz 풀기 테스트 - 동시성(데드락)")
-    void solveAnswerQuizConcurrent() throws Exception {
+    @DisplayName("WordQuiz 풀기 테스트 - 동시성(데드락)")
+    void solveWordQuizConcurrent() throws Exception {
         //given
         int loopCnt = 1;
 
@@ -113,7 +113,7 @@ public class WordQuizTuningTest {
         stopWatch.start();
 
         for (long i = 1; i <= loopCnt; i++) {
-            long finalI = i;
+            long quizId = i;
 
             executorService.execute(() -> {
                 try {
@@ -121,10 +121,15 @@ public class WordQuizTuningTest {
                             jwtTokenProvider.createAccessToken(memberRepository.findById(1L).orElseThrow());
 
                     QuizSolvedListRequest quizSolvedListRequest =
-                            new QuizSolvedListRequest(List.of(QuizSolvedRequest.builder()
-                                    .quizId(finalI)
-                                    .answer("answer")
-                                    .build()));
+                            new QuizSolvedListRequest(List.of(
+                                    QuizSolvedRequest.builder()
+                                            .quizId(quizId)
+                                            .answer("answer")
+                                            .build(),
+                                    QuizSolvedRequest.builder()
+                                            .quizId(quizId + 1)
+                                            .answer("answer")
+                                            .build()));
 
                     mockMvc.perform(post("/quiz/word/solve")
                                     .header("Authorization", "Bearer " + accessToken)
@@ -148,7 +153,7 @@ public class WordQuizTuningTest {
         log.info("===================결과 출력부===================");
         long dataCount = quizSolvedRepository.count();
 
-        Assertions.assertThat(dataCount).isEqualTo(loopCnt);
+        Assertions.assertThat(dataCount).isEqualTo(loopCnt * 2);
 
         log.info("데이터 수: {} 개", dataCount);
         log.info("반복 횟수: {} 회", loopCnt);

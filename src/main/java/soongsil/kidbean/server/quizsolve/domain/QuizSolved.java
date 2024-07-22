@@ -52,10 +52,6 @@ public class QuizSolved extends BaseTimeEntity {
         this.imageQuiz = imageQuiz;
     }
 
-    public void setAnswerIsCorrect(boolean isCorrect) {
-        this.isCorrect = isCorrect;
-    }
-
     public boolean isImageQuizMadeByAdmin() {
         return imageQuiz.getMember().getRole().equals(Role.ADMIN);
     }
