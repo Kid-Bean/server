@@ -37,7 +37,7 @@ import soongsil.kidbean.server.quizsolve.repository.QuizSolvedRepository;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ImageQuizConcurrentTest {
 
     @Autowired
@@ -63,6 +63,7 @@ public class ImageQuizConcurrentTest {
 
     @BeforeAll
     void setUp() {
+        imageQuizRepository.deleteAll();
         for (int i = 1; i <= 100; i++) {
             Member member = memberRepository.save(
                     Member.builder()

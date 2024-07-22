@@ -39,7 +39,7 @@ import soongsil.kidbean.server.wordquiz.repository.WordQuizRepository;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WordQuizConcurrentTest {
 
     @Autowired
@@ -65,6 +65,7 @@ public class WordQuizConcurrentTest {
 
     @BeforeAll
     void setUp() {
+        wordQuizRepository.deleteAll();
         for (int i = 1; i <= 100; i++) {
             Member member = memberRepository.save(
                     Member.builder()

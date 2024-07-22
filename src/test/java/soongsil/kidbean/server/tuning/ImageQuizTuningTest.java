@@ -53,6 +53,7 @@ public class ImageQuizTuningTest {
 
     @BeforeAll
     void setUp() {
+        imageQuizRepository.deleteAll();
         for (int i = 0; i < 500; i++) {
             Member DUMMY_MEMBER = Member.builder()
                     .email("email1")
