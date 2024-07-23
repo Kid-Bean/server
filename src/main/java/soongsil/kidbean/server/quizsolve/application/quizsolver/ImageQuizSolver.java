@@ -41,15 +41,11 @@ public class ImageQuizSolver implements QuizSolver {
         return solveNewImageQuiz(imageQuizSolved, imageQuiz);
     }
 
-    private SolvedQuizInfo solveNewImageQuiz(QuizSolved newQuizSolved, ImageQuiz imageQuiz) {
+    private SolvedQuizInfo solveNewImageQuiz(QuizSolved quizSolved, ImageQuiz imageQuiz) {
 
-        quizSolvedRepository.save(newQuizSolved);
+        QuizSolved newQuizSolved = quizSolvedRepository.save(quizSolved);
 
         return !newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(imageQuiz.getQuizCategory(), 0L)
-                : new SolvedQuizInfo(imageQuiz.getQuizCategory(), getPoint(imageQuiz.getLevel()));
-    }
-
-    private static Long getPoint(Level level) {
-        return Level.getPoint(level);
+                : new SolvedQuizInfo(imageQuiz.getQuizCategory(), Level.getPoint(imageQuiz.getLevel()));
     }
 }

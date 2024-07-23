@@ -41,15 +41,11 @@ public class WordQuizSolver implements QuizSolver {
         return solveNewWordQuiz(wordQuizSolved, wordQuiz);
     }
 
-    private SolvedQuizInfo solveNewWordQuiz(QuizSolved newQuizSolved, WordQuiz wordQuiz) {
+    private SolvedQuizInfo solveNewWordQuiz(QuizSolved quizSolved, WordQuiz wordQuiz) {
 
-        quizSolvedRepository.save(newQuizSolved);
+        QuizSolved newQuizSolved = quizSolvedRepository.save(quizSolved);
 
         return !newQuizSolved.getIsCorrect() ? new SolvedQuizInfo(wordQuiz.getQuizCategory(), 0L)
-                : new SolvedQuizInfo(wordQuiz.getQuizCategory(), getPoint(wordQuiz.getLevel()));
-    }
-
-    private static Long getPoint(Level level) {
-        return Level.getPoint(level);
+                : new SolvedQuizInfo(wordQuiz.getQuizCategory(), Level.getPoint(wordQuiz.getLevel()));
     }
 }
