@@ -31,6 +31,7 @@ import soongsil.kidbean.server.member.domain.type.Gender;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quizsolve.domain.type.Level;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quizsolve.repository.QuizSolvedRepository;
@@ -64,7 +65,7 @@ public class ImageQuizConcurrentTest {
     @BeforeAll
     void setUp() {
         imageQuizRepository.deleteAll();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 0; i <= 200; i++) {
             Member member = memberRepository.save(
                     Member.builder()
                             .email("email1")
@@ -80,6 +81,7 @@ public class ImageQuizConcurrentTest {
                     .answer("answer")
                     .isDefault(false)
                     .level(Level.BRONZE)
+                    .quizCategory(QuizCategory.ANIMAL)
                     .member(member)
                     .build();
 
@@ -98,7 +100,7 @@ public class ImageQuizConcurrentTest {
     @DisplayName("ImageQuiz 풀기 테스트 - 동시성(데드락)")
     void solveImageQuizConcurrent() throws Exception {
         //given
-        int loopCnt = 1;
+        int loopCnt = 100;
 
         ExecutorService executorService = Executors.newFixedThreadPool(loopCnt);
         CountDownLatch latch = new CountDownLatch(loopCnt);

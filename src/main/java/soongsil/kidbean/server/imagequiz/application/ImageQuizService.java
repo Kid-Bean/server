@@ -71,7 +71,7 @@ public class ImageQuizService {
     public ImageQuizSolveScoreResponse solveImageQuizzes(List<QuizSolvedRequest> quizSolvedRequestList,
                                                          Long memberId) {
 
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByIdPessimisticLock(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(
