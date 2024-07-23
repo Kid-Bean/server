@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
 import static soongsil.kidbean.server.imagequiz.fixture.ImageQuizFixture.IMAGE_QUIZ_ANIMAL1;
+import static soongsil.kidbean.server.quizsolve.fixture.QuizSolvedFixture.*;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +39,7 @@ class ImageQuizSolverTest {
                 new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer());
 
         given(imageQuizRepository.findById(IMAGE_QUIZ_ANIMAL1.getQuizId())).willReturn(Optional.of(IMAGE_QUIZ_ANIMAL1));
+        given(quizSolvedRepository.save(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE)).willReturn(IMAGE_QUIZ_SOLVED_ANIMAL_TRUE);
 
         //when
         SolvedQuizInfo solvedQuizInfo = imageQuizSolver.solveQuiz(request, MEMBER1);

@@ -4,6 +4,7 @@ package soongsil.kidbean.server.quizsolve.application.quizsolver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static soongsil.kidbean.server.member.fixture.MemberFixture.MEMBER1;
+import static soongsil.kidbean.server.quizsolve.fixture.QuizSolvedFixture.WORD_QUIZ_SOLVED_TRUE;
 import static soongsil.kidbean.server.wordquiz.fixture.WordQuizFixture.WORD_QUIZ;
 
 import java.util.Optional;
@@ -39,6 +40,7 @@ class WordQuizSolverTest {
                 new QuizSolvedRequest(WORD_QUIZ.getQuizId(), WORD_QUIZ.getAnswer());
 
         given(wordQuizRepository.findById(WORD_QUIZ.getQuizId())).willReturn(Optional.of(WORD_QUIZ));
+        given(quizSolvedRepository.save(WORD_QUIZ_SOLVED_TRUE)).willReturn(WORD_QUIZ_SOLVED_TRUE);
 
         //when
         SolvedQuizInfo solvedQuizInfo = wordQuizSolver.solveQuiz(request, MEMBER1);
