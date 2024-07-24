@@ -15,9 +15,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findBySocialId(String socialId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.OPTIMISTIC)
     @Query("select m from Member m where m.memberId = :memberId")
-    Optional<Member> findByIdPessimisticLock(Long memberId);
+    Optional<Member> findByIdOptimisticLock(Long memberId);
 
     List<Member> findAllByRole(Role role);
 }

@@ -34,13 +34,9 @@ public class QuizSolvedService {
         QuizSolver solver = quizSolverFactory.getSolver(type);
         QuizScorer scorer = quizScorerFactory.getScorer(type);
 
-        Long score = quizSolvedRequestList.stream()
+        return quizSolvedRequestList.stream()
                 .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))
                 .map(solvedQuizInfo -> scorer.addPerQuizScore(solvedQuizInfo, member))
                 .reduce(0L, Long::sum);
-
-        member.updateScore(member.getScore() + score);
-
-        return score;
     }
 }

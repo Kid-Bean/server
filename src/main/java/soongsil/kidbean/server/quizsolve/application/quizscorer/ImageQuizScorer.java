@@ -18,11 +18,9 @@ public class ImageQuizScorer implements QuizScorer {
     @Override
     public Long addPerQuizScore(SolvedQuizInfo solvedQuizInfo, Member member) {
         QuizScore quizScore = quizScoreRepository.findByMemberAndQuizCategory(member, solvedQuizInfo.category())
-                .orElseGet(() -> quizScoreRepository.save(
-                        QuizScore.makeInitQuizScore(member, solvedQuizInfo.category())));
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버의 퀴즈 카테고리가 존재하지 않습니다."));
 
-        QuizScore updateQuizScore = quizScore.addScore(solvedQuizInfo.score()).addCount();
-        quizScoreRepository.save(updateQuizScore);
+        quizScore.addScore(solvedQuizInfo.score());
 
         return solvedQuizInfo.score();
     }

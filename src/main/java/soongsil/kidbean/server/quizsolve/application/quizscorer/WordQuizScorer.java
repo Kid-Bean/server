@@ -21,8 +21,7 @@ public class WordQuizScorer implements QuizScorer {
                 .orElseGet(() -> quizScoreRepository.save(
                         QuizScore.makeInitQuizScore(member, solvedQuizInfo.category())));
 
-        QuizScore updateQuizScore = quizScore.addScore(solvedQuizInfo.score()).addCount();
-        quizScoreRepository.save(updateQuizScore);
+        quizScore.addScore(solvedQuizInfo.score());
 
         return solvedQuizInfo.score();
     }

@@ -14,12 +14,16 @@ import soongsil.kidbean.server.auth.application.jwt.JwtTokenProvider;
 import soongsil.kidbean.server.auth.util.SocialLoginProvider;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
+import soongsil.kidbean.server.summary.domain.QuizScore;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final QuizScoreRepository quizScoreRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final Map<String, SocialLoginProvider> loginProviders;
@@ -34,13 +38,30 @@ public class AuthService {
 
         //로그인 및 회원가입
         Member authenticatedMember = memberRepository.findBySocialId(member.getSocialId())
-                .orElseGet(() -> memberRepository.save(member));
+                .orElseGet(() -> {
+                    Member newMember = memberRepository.save(member);
+
+                    //멤버마다 quizCategory 미리 생성
+                    QuizCategory.allValue()
+                            .forEach(quizCategory ->
+                                    quizScoreRepository.save(QuizScore.makeInitQuizScore(newMember, quizCategory)));
+
+                    return newMember;
+                });
 
         //token 만들기
         String accessToken = jwtTokenProvider.createAccessToken(authenticatedMember);
         String refreshToken = jwtTokenProvider.createRefreshToken(authenticatedMember);
 
         return LoginResponse.of(accessToken, refreshToken);
+    }
+
+    private Member getUserDataFromPlatform(String accessToken, String providerInfo) {
+        SocialLoginProvider signInProvider = loginProviders.get(providerInfo + "LoginProvider");
+        if (signInProvider == null) {
+            throw new IllegalArgumentException("Unknown provider: " + providerInfo);
+        }
+        return signInProvider.getUserData(accessToken);
     }
 
     public ReissueResponse reissueAccessToken(ReissueRequest reissueRequest) {
@@ -55,13 +76,5 @@ public class AuthService {
         } else {
             throw new TokenNotValidException(AuthErrorCode.TOKEN_NOT_VALID);
         }
-    }
-
-    private Member getUserDataFromPlatform(String accessToken, String providerInfo) {
-        SocialLoginProvider signInProvider = loginProviders.get(providerInfo + "LoginProvider");
-        if (signInProvider == null) {
-            throw new IllegalArgumentException("Unknown provider: " + providerInfo);
-        }
-        return signInProvider.getUserData(accessToken);
     }
 }

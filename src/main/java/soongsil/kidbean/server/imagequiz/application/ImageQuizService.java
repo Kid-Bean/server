@@ -37,7 +37,6 @@ import static soongsil.kidbean.server.quizsolve.application.vo.QuizType.IMAGE_QU
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-
 public class ImageQuizService {
 
     private final ImageQuizRepository imageQuizRepository;
@@ -68,10 +67,11 @@ public class ImageQuizService {
      * @return 추가된 점수
      */
     @Transactional
-    public ImageQuizSolveScoreResponse solveImageQuizzes(List<QuizSolvedRequest> quizSolvedRequestList,
-                                                         Long memberId) {
+    public ImageQuizSolveScoreResponse solveImageQuizzes(
+            List<QuizSolvedRequest> quizSolvedRequestList, Long memberId
+    ) {
 
-        Member member = memberRepository.findByIdPessimisticLock(memberId)
+        Member member = memberRepository.findByIdOptimisticLock(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(

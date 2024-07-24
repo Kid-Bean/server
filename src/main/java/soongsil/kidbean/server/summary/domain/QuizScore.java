@@ -63,13 +63,8 @@ public class QuizScore {
         totalScore = totalScore - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
     }
 
-    public QuizScore addScore(Long score) {
+    public void addScore(Long score) {
         totalScore = totalScore + score;
-        return this;
-    }
-
-    public QuizScore addCount() {
         quizCount++;
-        return this;
     }
 }

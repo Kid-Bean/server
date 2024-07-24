@@ -1,5 +1,6 @@
 package soongsil.kidbean.server.tuning;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +9,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +35,8 @@ import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.quizsolve.repository.QuizSolvedRepository;
+import soongsil.kidbean.server.summary.domain.QuizScore;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -57,6 +59,9 @@ public class ImageQuizConcurrentTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
+    private QuizScoreRepository quizScoreRepository;
+
+    @Autowired
     private JwtFilter jwtFilter;
 
     private MockMvc mockMvc;
@@ -75,6 +80,11 @@ public class ImageQuizConcurrentTest {
                             .role(Role.MEMBER)
                             .score(25L)
                             .build());
+
+            //멤버마다 quizCategory 미리 생성
+            QuizCategory.allValue()
+                    .forEach(quizCategory ->
+                            quizScoreRepository.save(QuizScore.makeInitQuizScore(member, quizCategory)));
 
             ImageQuiz imageQuiz = ImageQuiz.builder()
                     .title("title")
@@ -151,7 +161,7 @@ public class ImageQuizConcurrentTest {
         log.info("===================결과 출력부===================");
         long dataCount = quizSolvedRepository.count();
 
-        Assertions.assertThat(dataCount).isEqualTo(loopCnt * 2);
+        assertThat(dataCount).isEqualTo(loopCnt * 2);
 
         log.info("데이터 수: {} 개", dataCount);
         log.info("반복 횟수: {} 회", loopCnt);

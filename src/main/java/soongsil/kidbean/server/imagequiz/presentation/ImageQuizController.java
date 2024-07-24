@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.imagequiz.application.ImageQuizService;
+import soongsil.kidbean.server.imagequiz.application.MemberScoreUpdateStrategy;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedListRequest;
 import soongsil.kidbean.server.imagequiz.dto.request.ImageQuizUpdateRequest;
 import soongsil.kidbean.server.imagequiz.dto.request.ImageQuizUploadRequest;
@@ -40,6 +41,7 @@ import static soongsil.kidbean.server.global.dto.ResponseTemplate.EMPTY_RESPONSE
 public class ImageQuizController {
 
     private final ImageQuizService imageQuizService;
+    private final MemberScoreUpdateStrategy memberScoreUpdateStrategy;
 
     @Operation(summary = "추가한 ImageQuiz 문제 상세 정보 가져오기", description = "ImageQuiz 상세 정보 가져오기")
     @GetMapping("/member/{quizId}")
@@ -87,8 +89,12 @@ public class ImageQuizController {
             @AuthenticationPrincipal AuthUser user,
             @Valid @RequestBody QuizSolvedListRequest request) {
 
-        ImageQuizSolveScoreResponse score = imageQuizService.solveImageQuizzes(
-                request.quizSolvedRequestList(), user.memberId());
+        ImageQuizSolveScoreResponse score =
+                imageQuizService.solveImageQuizzes(request.quizSolvedRequestList(), user.memberId());
+
+        if (score.score() != 0) {
+            memberScoreUpdateStrategy.updateUserScore(score.score(), user.memberId());
+        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)
