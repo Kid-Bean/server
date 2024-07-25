@@ -110,7 +110,7 @@ public class ImageQuizConcurrentTest {
     @DisplayName("ImageQuiz 풀기 테스트 - 동시성(데드락)")
     void solveImageQuizConcurrent() throws Exception {
         //given
-        int loopCnt = 2;
+        int loopCnt = 100;
 
         ExecutorService executorService = Executors.newFixedThreadPool(loopCnt);
         CountDownLatch latch = new CountDownLatch(loopCnt);
