@@ -51,9 +51,6 @@ public class Member extends BaseTimeEntity {
     @Column(name = "score")
     private Long score;
 
-    @Version
-    private Long version;
-
     @Builder
     public Member(String email, String name, OAuthType oAuthType, String socialId, Gender gender, LocalDate birthDate,
                   Role role, Long score) {

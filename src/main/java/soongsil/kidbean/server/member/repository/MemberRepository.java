@@ -20,4 +20,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByIdOptimisticLock(Long memberId);
 
     List<Member> findAllByRole(Role role);
+
+    @Query(value = "SELECT GET_LOCK(:key, 3000)", nativeQuery = true)
+    void getLock(String key);
+
+    @Query(value = "SELECT RELEASE_LOCK(:key)", nativeQuery = true)
+    void releaseLock(String key);
 }

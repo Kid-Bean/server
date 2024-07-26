@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import soongsil.kidbean.server.global.application.config.CommonControllerTest;
 import soongsil.kidbean.server.imagequiz.application.ImageQuizService;
-import soongsil.kidbean.server.imagequiz.application.MemberScoreUpdateStrategy;
+import soongsil.kidbean.server.imagequiz.application.ImageQuizServiceFacade;
 import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizMemberDetailResponse;
 import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizMemberResponse;
 import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizSolveListResponse;
@@ -43,7 +43,7 @@ class ImageQuizControllerTest extends CommonControllerTest {
     private ImageQuizService imageQuizService;
 
     @MockBean
-    private MemberScoreUpdateStrategy memberScoreUpdateStrategy;
+    private ImageQuizServiceFacade imageQuizServiceFacade;
 
     @Autowired
     private MockMvc mockMvc;

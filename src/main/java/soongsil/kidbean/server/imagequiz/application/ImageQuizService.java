@@ -70,8 +70,7 @@ public class ImageQuizService {
     public ImageQuizSolveScoreResponse solveImageQuizzes(
             List<QuizSolvedRequest> quizSolvedRequestList, Long memberId
     ) {
-
-        Member member = memberRepository.findByIdOptimisticLock(memberId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
         return ImageQuizSolveScoreResponse.scoreFrom(
