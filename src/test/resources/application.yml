@@ -9,12 +9,13 @@ spring:
     password: test
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+        show_sql: false
 
 cloud:
   aws:
