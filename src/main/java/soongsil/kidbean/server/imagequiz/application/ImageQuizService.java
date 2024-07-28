@@ -28,6 +28,7 @@ import soongsil.kidbean.server.imagequiz.exception.ImageQuizNotFoundException;
 import soongsil.kidbean.server.imagequiz.repository.ImageQuizRepository;
 
 import java.util.List;
+import soongsil.kidbean.server.quizsolve.util.LockAndUnlock;
 
 import static soongsil.kidbean.server.imagequiz.exception.errorcode.ImageQuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -66,6 +67,7 @@ public class ImageQuizService {
      * @param memberId              문제를 푼 유저의 id
      * @return 추가된 점수
      */
+    @LockAndUnlock(lockName = "SCORE_LOCK")
     @Transactional
     public ImageQuizSolveScoreResponse solveImageQuizzes(
             List<QuizSolvedRequest> quizSolvedRequestList, Long memberId
