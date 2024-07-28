@@ -12,6 +12,9 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Gender;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
+import soongsil.kidbean.server.summary.domain.QuizScore;
+import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 public class MemberInitializer implements ApplicationRunner {
 
     private final MemberRepository memberRepository;
+    private final QuizScoreRepository quizScoreRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -74,7 +78,13 @@ public class MemberInitializer implements ApplicationRunner {
                         .build());
             }
 
-            memberRepository.saveAll(memberList);
+            List<Member> members = memberRepository.saveAll(memberList);
+
+            members.forEach(
+                    member -> QuizCategory.allValue()
+                            .forEach(quizCategory ->
+                                    quizScoreRepository.save(QuizScore.makeInitQuizScore(member, quizCategory)))
+            );
         }
     }
 }
