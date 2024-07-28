@@ -12,7 +12,6 @@ import soongsil.kidbean.server.quizsolve.application.quizsolver.QuizSolver;
 import soongsil.kidbean.server.quizsolve.application.quizsolver.QuizSolverFactory;
 import soongsil.kidbean.server.quizsolve.application.vo.QuizType;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
-import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @Slf4j
 @Service
