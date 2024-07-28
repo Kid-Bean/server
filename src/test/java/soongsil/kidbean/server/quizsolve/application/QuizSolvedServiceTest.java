@@ -23,16 +23,12 @@ import soongsil.kidbean.server.quizsolve.application.quizsolver.dto.SolvedQuizIn
 import soongsil.kidbean.server.quizsolve.application.vo.QuizType;
 import soongsil.kidbean.server.quizsolve.domain.type.Level;
 import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
-import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 
 @ExtendWith(MockitoExtension.class)
 class QuizSolvedServiceTest {
 
     @InjectMocks
     private QuizSolvedService quizSolvedService;
-
-    @Mock
-    private QuizScoreRepository quizScoreRepository;
 
     @Mock
     private QuizSolverFactory quizSolverFactory;

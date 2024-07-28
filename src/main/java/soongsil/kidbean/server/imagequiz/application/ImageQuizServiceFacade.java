@@ -1,28 +1,28 @@
 package soongsil.kidbean.server.imagequiz.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizSolveScoreResponse;
+import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ImageQuizServiceFacade {
 
-    private final MemberRepository memberRepository;
+    private final ImageQuizService imageQuizService;
     private final MemberScoreUpdateStrategy memberScoreUpdateStrategy;
 
-    @Transactional
-    public void updateUserScore(Long score, Long memberId) {
-        if (score != 0) {
-            try {
-                memberRepository.getLock(memberId.toString());
-                memberScoreUpdateStrategy.updateUserScore(memberId, score);
-            } finally {
-                memberRepository.releaseLock(memberId.toString());
-            }
+    public ImageQuizSolveScoreResponse solveImageQuizzes(
+            List<QuizSolvedRequest> quizSolvedRequestList, Long memberId
+    ) {
+        ImageQuizSolveScoreResponse score =
+                imageQuizService.solveImageQuizzes(quizSolvedRequestList, memberId);
+
+        if (score.score() != 0) {
+            memberScoreUpdateStrategy.updateUserScore(score.score(), memberId);
         }
+
+        return score;
     }
 }

@@ -90,9 +90,7 @@ public class ImageQuizController {
             @Valid @RequestBody QuizSolvedListRequest request) {
 
         ImageQuizSolveScoreResponse score =
-                imageQuizService.solveImageQuizzes(request.quizSolvedRequestList(), user.memberId());
-
-        imageQuizServiceFacade.updateUserScore(score.score(), user.memberId());
+                imageQuizServiceFacade.solveImageQuizzes(request.quizSolvedRequestList(), user.memberId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
