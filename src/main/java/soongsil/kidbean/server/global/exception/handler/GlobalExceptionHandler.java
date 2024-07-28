@@ -21,11 +21,11 @@ import soongsil.kidbean.server.global.exception.response.ErrorResponse.Validatio
 import soongsil.kidbean.server.global.exception.response.ErrorResponse.ValidationErrors;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
-import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.AnswerQuizSolvedNotFoundException;
-import soongsil.kidbean.server.quiz.exception.ImageQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.QuizSolvedNotFoundException;
-import soongsil.kidbean.server.quiz.exception.WordQuizNotFoundException;
+import soongsil.kidbean.server.answerquiz.exception.AnswerQuizNotFoundException;
+import soongsil.kidbean.server.quizsolve.exception.AnswerQuizSolvedNotFoundException;
+import soongsil.kidbean.server.imagequiz.exception.ImageQuizNotFoundException;
+import soongsil.kidbean.server.quizsolve.exception.QuizSolvedNotFoundException;
+import soongsil.kidbean.server.wordquiz.exception.WordQuizNotFoundException;
 
 @Slf4j
 @RestControllerAdvice

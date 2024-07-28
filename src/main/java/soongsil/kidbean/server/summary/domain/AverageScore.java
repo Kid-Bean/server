@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 
 @Entity

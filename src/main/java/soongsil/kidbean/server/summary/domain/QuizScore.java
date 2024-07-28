@@ -10,15 +10,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.quiz.application.vo.QuizType;
-import soongsil.kidbean.server.quiz.domain.type.Level;
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quizsolve.domain.type.Level;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
+@Table(name = "quiz_score", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"member_id", "category"})
+})
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,27 +56,15 @@ public class QuizScore {
     }
 
     public static QuizScore makeInitQuizScore(Member member, QuizCategory quizCategory) {
-        return new QuizScore(
-                member,
-                quizCategory,
-                0L,
-                0L
-        );
+        return new QuizScore(member, quizCategory, 0L, 0L);
     }
 
     public void updateScore(Level beforeLevel, Level afterLevel) {
         totalScore = totalScore - Level.getPoint(beforeLevel) + Level.getPoint(afterLevel);
     }
 
-    public QuizScore addScore(Long score) {
+    public void addScore(Long score) {
         totalScore = totalScore + score;
-        return this;
-    }
-
-    public QuizScore addCount(boolean isExist) {
-        if (!isExist) {
-            quizCount++;
-        }
-        return this;
+        quizCount++;
     }
 }

@@ -1,6 +1,7 @@
 package soongsil.kidbean.server.member.application;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
+import static soongsil.kidbean.server.quizsolve.exception.errorcode.QuizSolvedErrorCode.ANSWER_QUIZ_SOLVED_NOT_FOUND;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,15 +16,14 @@ import soongsil.kidbean.server.member.dto.response.UseWordInfo;
 import soongsil.kidbean.server.member.dto.response.UseWordList;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
-import soongsil.kidbean.server.quiz.application.AnalyzeMorphemeService;
-import soongsil.kidbean.server.quiz.application.OpenApiService;
-import soongsil.kidbean.server.quiz.application.vo.MorphemeCheckListResponse;
-import soongsil.kidbean.server.quiz.application.vo.OpenApiResponse;
-import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
-import soongsil.kidbean.server.quiz.exception.AnswerQuizNotFoundException;
-import soongsil.kidbean.server.quiz.exception.errorcode.QuizErrorCode;
-import soongsil.kidbean.server.quiz.repository.AnswerQuizSolvedRepository;
-import soongsil.kidbean.server.quiz.repository.UseWordRepository;
+import soongsil.kidbean.server.quizsolve.application.AnalyzeMorphemeService;
+import soongsil.kidbean.server.answerquiz.application.OpenApiService;
+import soongsil.kidbean.server.quizsolve.application.vo.MorphemeCheckListResponse;
+import soongsil.kidbean.server.quizsolve.application.vo.OpenApiResponse;
+import soongsil.kidbean.server.quizsolve.domain.AnswerQuizSolved;
+import soongsil.kidbean.server.answerquiz.exception.AnswerQuizNotFoundException;
+import soongsil.kidbean.server.quizsolve.repository.AnswerQuizSolvedRepository;
+import soongsil.kidbean.server.quizsolve.repository.UseWordRepository;
 
 @Slf4j
 @Service
@@ -76,6 +76,6 @@ public class VoiceSolvedResultService {
 
     private AnswerQuizSolved findAnswerQuizSolvedById(Long recordId) {
         return answerQuizSolvedRepository.findById(recordId)
-                .orElseThrow(() -> new AnswerQuizNotFoundException(QuizErrorCode.ANSWER_QUIZ_SOLVED_NOT_FOUND));
+                .orElseThrow(() -> new AnswerQuizNotFoundException(ANSWER_QUIZ_SOLVED_NOT_FOUND));
     }
 }

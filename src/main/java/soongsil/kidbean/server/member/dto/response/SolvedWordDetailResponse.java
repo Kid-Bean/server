@@ -2,9 +2,9 @@ package soongsil.kidbean.server.member.dto.response;
 
 
 import java.util.List;
-import soongsil.kidbean.server.quiz.domain.QuizSolved;
-import soongsil.kidbean.server.quiz.domain.Word;
-import soongsil.kidbean.server.quiz.domain.WordQuiz;
+import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
+import soongsil.kidbean.server.wordquiz.domain.Word;
+import soongsil.kidbean.server.wordquiz.domain.WordQuiz;
 
 public record SolvedWordDetailResponse(
         Long solvedId,

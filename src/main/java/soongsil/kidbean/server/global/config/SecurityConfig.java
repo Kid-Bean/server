@@ -1,33 +1,25 @@
 package soongsil.kidbean.server.global.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import soongsil.kidbean.server.auth.application.CustomOAuth2UserService;
-import soongsil.kidbean.server.auth.filter.JwtFilter;
-import soongsil.kidbean.server.auth.filter.JwtAccessDeniedHandler;
-import soongsil.kidbean.server.auth.filter.JwtAuthenticationEntryPoint;
+import soongsil.kidbean.server.auth.presentation.filter.JwtFilter;
+import soongsil.kidbean.server.auth.presentation.filter.JwtAccessDeniedHandler;
+import soongsil.kidbean.server.auth.presentation.filter.JwtAuthenticationEntryPoint;
 
-@Slf4j
-@Profile("!test")
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtFilter jwtFilter;
@@ -59,13 +51,6 @@ public class SecurityConfig {
                         .requestMatchers("/logout", "/auth/refresh-token").hasRole(MEMBER)
                         .requestMatchers("/programs/edit/**").hasRole(ADMIN) //수정
                         .anyRequest().authenticated())  //이외의 요청은 전부 인증 필요
-                .oauth2Login(oauth2 -> {
-                    log.info("oauth2 configure");
-                    oauth2
-                            .userInfoEndpoint(  //OAuth 2 로그인 성공 이후 사용자 정보를 가져올 때의 설정 담당
-                                    userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                                            customOAuth2UserService));
-                })
                 .exceptionHandling(exceptionHandling -> {
                     exceptionHandling
                             .authenticationEntryPoint(jwtAuthenticationEntryPoint) //인증되지 않은 사용자가 보호된 리소스에 액세스 할 때 호출
@@ -74,10 +59,5 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

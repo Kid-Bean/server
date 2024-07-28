@@ -5,16 +5,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import soongsil.kidbean.server.global.domain.BaseTimeEntity;
 import soongsil.kidbean.server.member.domain.type.OAuthType;
 import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.member.domain.type.Gender;
 
 import java.time.LocalDate;
-import soongsil.kidbean.server.quiz.domain.type.Level;
+import soongsil.kidbean.server.quizsolve.domain.type.Level;
 
-@EnableJpaAuditing
+@Table(name = "member")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

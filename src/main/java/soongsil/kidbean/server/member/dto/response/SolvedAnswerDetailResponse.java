@@ -1,7 +1,7 @@
 package soongsil.kidbean.server.member.dto.response;
 
-import soongsil.kidbean.server.quiz.application.vo.MorphemeCheckListResponse;
-import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
+import soongsil.kidbean.server.quizsolve.application.vo.MorphemeCheckListResponse;
+import soongsil.kidbean.server.quizsolve.domain.AnswerQuizSolved;
 
 public record SolvedAnswerDetailResponse(
         Long solvedId,

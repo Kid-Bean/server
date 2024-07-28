@@ -1,6 +1,6 @@
 package soongsil.kidbean.server.member.dto.response;
 
-import soongsil.kidbean.server.quiz.domain.type.QuizCategory;
+import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 import soongsil.kidbean.server.summary.domain.QuizScore;
 
 public record MyScoreInfo(

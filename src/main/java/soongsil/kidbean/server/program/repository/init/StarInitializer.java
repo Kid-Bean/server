@@ -8,8 +8,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import soongsil.kidbean.server.global.util.LocalDummyDataInit;
-import soongsil.kidbean.server.member.repository.init.MemberInitializer;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
+import soongsil.kidbean.server.program.repository.ProgramRepository;
 import soongsil.kidbean.server.program.repository.StarRepository;
 
 @Slf4j
@@ -18,6 +21,8 @@ import soongsil.kidbean.server.program.repository.StarRepository;
 @LocalDummyDataInit
 public class StarInitializer implements ApplicationRunner {
 
+    private final MemberRepository memberRepository;
+    private final ProgramRepository programRepository;
     private final StarRepository starRepository;
 
     @Override
@@ -26,60 +31,70 @@ public class StarInitializer implements ApplicationRunner {
         if (starRepository.count() > 0) {
             log.info("[Star]더미 데이터 존재");
         } else {
+            Member DUMMY_MEMBER = memberRepository.findById(1L).orElseThrow();
+            Member DUMMY_ADMIN = memberRepository.findById(2L).orElseThrow();
+
+            Program PROGRAM1 = programRepository.findById(1L).orElseThrow();
+            Program PROGRAM2 = programRepository.findById(2L).orElseThrow();
+            Program PROGRAM3 = programRepository.findById(3L).orElseThrow();
+            Program PROGRAM4 = programRepository.findById(4L).orElseThrow();
+            Program PROGRAM5 = programRepository.findById(5L).orElseThrow();
+            Program PROGRAM6 = programRepository.findById(6L).orElseThrow();
+
             List<Star> starList = new ArrayList<>();
 
             Star program1_star1 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM1)
-                    .member(MemberInitializer.DUMMY_MEMBER)
+                    .program(PROGRAM1)
+                    .member(DUMMY_MEMBER)
                     .build();
             Star program1_star2 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM1)
-                    .member(MemberInitializer.DUMMY_ADMIN)
+                    .program(PROGRAM1)
+                    .member(DUMMY_ADMIN)
                     .build();
 
             Star program2_star1 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM2)
-                    .member(MemberInitializer.DUMMY_MEMBER)
+                    .program(PROGRAM2)
+                    .member(DUMMY_MEMBER)
                     .build();
             Star program2_star2 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM2)
-                    .member(MemberInitializer.DUMMY_ADMIN)
+                    .program(PROGRAM2)
+                    .member(DUMMY_ADMIN)
                     .build();
 
             Star program3_star1 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM3)
-                    .member(MemberInitializer.DUMMY_MEMBER)
+                    .program(PROGRAM3)
+                    .member(DUMMY_MEMBER)
                     .build();
             Star program3_star2 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM3)
-                    .member(MemberInitializer.DUMMY_ADMIN)
+                    .program(PROGRAM3)
+                    .member(DUMMY_ADMIN)
                     .build();
 
             Star program4_star1 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM4)
-                    .member(MemberInitializer.DUMMY_MEMBER)
+                    .program(PROGRAM4)
+                    .member(DUMMY_MEMBER)
                     .build();
             Star program4_star2 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM4)
-                    .member(MemberInitializer.DUMMY_ADMIN)
+                    .program(PROGRAM4)
+                    .member(DUMMY_ADMIN)
                     .build();
 
             Star program5_star1 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM5)
-                    .member(MemberInitializer.DUMMY_MEMBER)
+                    .program(PROGRAM5)
+                    .member(DUMMY_MEMBER)
                     .build();
             Star program5_star2 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM5)
-                    .member(MemberInitializer.DUMMY_ADMIN)
+                    .program(PROGRAM5)
+                    .member(DUMMY_ADMIN)
                     .build();
 
             Star program6_star1 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM6)
-                    .member(MemberInitializer.DUMMY_MEMBER)
+                    .program(PROGRAM6)
+                    .member(DUMMY_MEMBER)
                     .build();
             Star program6_star2 = Star.builder()
-                    .program(ProgramInitializer.PROGRAM6)
-                    .member(MemberInitializer.DUMMY_ADMIN)
+                    .program(PROGRAM6)
+                    .member(DUMMY_ADMIN)
                     .build();
 
             starList.add(program1_star1);

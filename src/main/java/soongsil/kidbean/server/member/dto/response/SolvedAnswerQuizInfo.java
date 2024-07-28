@@ -1,7 +1,7 @@
 package soongsil.kidbean.server.member.dto.response;
 
 import java.time.LocalDateTime;
-import soongsil.kidbean.server.quiz.domain.AnswerQuizSolved;
+import soongsil.kidbean.server.quizsolve.domain.AnswerQuizSolved;
 
 public record SolvedAnswerQuizInfo(
         Long solvedId,
