@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.util.StopWatch;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.imagequiz.application.ImageQuizService;
@@ -37,7 +38,7 @@ import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 public class ImageQuizTuningTest {
 
     @Autowired
