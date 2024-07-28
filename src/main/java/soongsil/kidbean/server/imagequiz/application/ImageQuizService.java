@@ -67,7 +67,7 @@ public class ImageQuizService {
      * @param memberId              문제를 푼 유저의 id
      * @return 추가된 점수
      */
-    @LockAndUnlock(lockName = "SCORE_LOCK")
+    @LockAndUnlock(lockName = "MEMBER_LOCK")
     @Transactional
     public ImageQuizSolveScoreResponse solveImageQuizzes(
             List<QuizSolvedRequest> quizSolvedRequestList, Long memberId

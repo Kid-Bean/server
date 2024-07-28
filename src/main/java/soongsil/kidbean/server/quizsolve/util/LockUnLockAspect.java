@@ -10,7 +10,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
+import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Order(1)
 @Aspect
@@ -19,23 +19,19 @@ import soongsil.kidbean.server.summary.repository.QuizScoreRepository;
 @Component
 public class LockUnLockAspect {
 
-    private final QuizScoreRepository quizScoreRepository;
+    private final MemberRepository memberRepository;
 
     // Lock 관리 로직
     private void acquireLock(String lockName, Long memberId) {
         String lockKey = lockName + memberId;
 
-        // Lock 획득 로직을 이곳에 작성합니다.
-        quizScoreRepository.getLock(lockKey);
-        log.info("Lock을 획득합니다. {}", lockKey);
+        memberRepository.getLock(lockKey);
     }
 
     private void releaseLock(String lockName, Long memberId) {
         String lockKey = lockName + memberId;
 
-        // Lock 해제 로직을 이곳에 작성합니다.
-        quizScoreRepository.releaseLock(lockKey);
-        log.info("Lock을 해제합니다. {}", lockKey);
+        memberRepository.releaseLock(lockKey);
     }
 
     @Before("@annotation(soongsil.kidbean.server.quizsolve.util.LockAndUnlock)")
@@ -72,7 +68,7 @@ public class LockUnLockAspect {
                 return (Long) args[i];
             }
         }
-        
+
         throw new IllegalArgumentException("memberId 파라미터를 찾을 수 없습니다.");
     }
 

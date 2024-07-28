@@ -3,21 +3,25 @@ package soongsil.kidbean.server.imagequiz.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import soongsil.kidbean.server.quizsolve.util.LockAndUnlock;
+import soongsil.kidbean.server.imagequiz.dto.response.ImageQuizSolveScoreResponse;
+import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedListRequest;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class ImageQuizServiceFacade {
 
+    private final ImageQuizService imageQuizService;
     private final MemberScoreUpdateStrategy memberScoreUpdateStrategy;
 
-    @LockAndUnlock(lockName = "MEMBER_LOCK")
-    @Transactional
-    public void updateUserScore(Long score, Long memberId) {
-        if (score != 0) {
-            memberScoreUpdateStrategy.updateUserScore(memberId, score);
+    public ImageQuizSolveScoreResponse solveImageQuizzes(QuizSolvedListRequest request, Long memberId) {
+        ImageQuizSolveScoreResponse score =
+                imageQuizService.solveImageQuizzes(request.quizSolvedRequestList(), memberId);
+
+        if (score.score() != 0) {
+            memberScoreUpdateStrategy.updateUserScore(memberId, score.score());
         }
+
+        return score;
     }
 }

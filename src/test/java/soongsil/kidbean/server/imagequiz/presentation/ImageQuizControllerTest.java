@@ -81,7 +81,7 @@ class ImageQuizControllerTest extends CommonControllerTest {
                 new QuizSolvedRequest(IMAGE_QUIZ_ANIMAL1.getQuizId(), IMAGE_QUIZ_ANIMAL1.getAnswer())
         ));
 
-        given(imageQuizService.solveImageQuizzes(anyList(), anyLong()))
+        given(imageQuizServiceFacade.solveImageQuizzes(eq(request), anyLong()))
                 .willReturn(ImageQuizSolveScoreResponse.scoreFrom(Level.getPoint(IMAGE_QUIZ_ANIMAL1.getLevel())));
 
         //when
