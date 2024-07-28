@@ -34,6 +34,15 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
+      # TestDB MySQL 설정
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8'
+          mysql database: 'kidbeantestdb'
+          mysql user: 'root'
+          mysql password: 'test'
+
       # Spring boot application 빌드
       - name: Build with gradle
         run: ./gradlew clean build
