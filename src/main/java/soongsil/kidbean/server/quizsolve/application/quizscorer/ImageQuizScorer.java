@@ -2,6 +2,7 @@ package soongsil.kidbean.server.quizsolve.application.quizscorer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.quizsolve.application.quizsolver.dto.SolvedQuizInfo;
@@ -14,7 +15,7 @@ public class ImageQuizScorer implements QuizScorer {
 
     private final QuizScoreRepository quizScoreRepository;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public Long addPerQuizScore(SolvedQuizInfo solvedQuizInfo, Member member) {
         QuizScore quizScore = quizScoreRepository.findByMemberAndQuizCategory(member, solvedQuizInfo.category())
