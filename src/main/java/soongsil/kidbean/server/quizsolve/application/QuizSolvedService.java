@@ -23,8 +23,6 @@ public class QuizSolvedService {
     private final QuizSolverFactory quizSolverFactory;
     private final QuizScorerFactory quizScorerFactory;
 
-    private final QuizScoreRepository quizScoreRepository;
-
     /**
      * 문제를 풀어서 얻은 점수를 return 각각의 문제들은 QuizSolved에 정답을 표기하여 저장
      *
@@ -37,20 +35,9 @@ public class QuizSolvedService {
         QuizSolver solver = quizSolverFactory.getSolver(type);
         QuizScorer scorer = quizScorerFactory.getScorer(type);
 
-        Long score;
-
-        try {
-            quizScoreRepository.getLock(member.getMemberId().toString());
-
-            score = quizSolvedRequestList.stream()
-                    .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))
-                    .map(solvedQuizInfo -> scorer.addPerQuizScore(solvedQuizInfo, member))
-                    .reduce(0L, Long::sum);
-
-        } finally {
-            quizScoreRepository.releaseLock(member.getMemberId().toString());
-        }
-
-        return score;
+        return quizSolvedRequestList.stream()
+                .map(quizSolvedRequest -> solver.solveQuiz(quizSolvedRequest, member))
+                .map(solvedQuizInfo -> scorer.addPerQuizScore(solvedQuizInfo, member))
+                .reduce(0L, Long::sum);
     }
 }
