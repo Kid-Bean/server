@@ -29,16 +29,16 @@
 ### 동작 화면
 | 로그인 화면| 홈 화면 | 그림 맞추기 | 그림 맞추기 1세트 완료 후 |
 | :---: | :---: | :---: | :---: |
-| ![image](https://github.com/Kid-Bean/server/assets/43364585/3a71c7f4-90f0-4b86-981a-fe95e786fb79) | ![image](https://github.com/Kid-Bean/server/assets/43364585/a36e4d71-7b78-438e-9bf1-31ad59f31909) | ![image](https://github.com/Kid-Bean/server/assets/43364585/158e9d59-cf59-4fdd-864a-050bfc4421e2) | ![image](https://github.com/Kid-Bean/server/assets/43364585/384424e4-faed-426a-b11d-d8849754e248) |
+| ![image 51](https://github.com/user-attachments/assets/259c2199-1b63-4dda-ac16-90f52aa1eefa) | ![image 50](https://github.com/user-attachments/assets/c4086fde-35b5-4659-b46e-1c29a3b3974d) | ![image 59](https://github.com/user-attachments/assets/e2ef3759-e7fd-4a01-a9c2-06f91dcb2e59) | ![image 60](https://github.com/user-attachments/assets/d2a8a458-5e71-4673-b4cf-4270cd763839) |
 
 | 단어 맞추기 | 단어 맞추기 1세트 완료 후 | 질문 대답하기 | 질문 대답하기 완료 후 |
 | :---: | :---: | :---: | :---: |
 | ![image](https://github.com/Kid-Bean/server/assets/43364585/7182842f-6cb7-45fd-9d66-d253a2a71e0f) | ![image](https://github.com/Kid-Bean/server/assets/43364585/c3c51cae-a1f8-40e4-be51-049f442f6014) | ![image](https://github.com/Kid-Bean/server/assets/43364585/2d0c32bf-c08e-41fc-856f-740a8a7a6d7e) | ![image](https://github.com/Kid-Bean/server/assets/43364585/d814e77a-bf63-48dd-9ab8-158c5526d851) |
 
-| 프로그램 기본 화면 | 프로그램 목록 | 프로그램 상세 화면 |
-| :---: | :---: | :---: |
-| ![image](https://github.com/Kid-Bean/server/assets/43364585/54fb6be0-f3b3-4f4e-8d7a-9cfc87c079cc) | ![image](https://github.com/Kid-Bean/server/assets/43364585/f3bed563-a82b-4b95-9fda-deeb8abac24f) | ![image](https://github.com/Kid-Bean/server/assets/43364585/1f65b542-ea67-4bd6-bf54-d3d7456e126a) |
-
-| 마이페이지 기본 화면 |  문제 풀이 분석 결과 |  분석 결과 및 아이 음성 듣기 | 내가 등록한 문제 리스트 | 
+| 프로그램 기본 화면 | 프로그램 목록 | 프로그램 상세 화면1 | 프로그램 상세 화면2 |
 | :---: | :---: | :---: | :---: |
-| ![image](https://github.com/Kid-Bean/server/assets/43364585/4d3f30f0-17cf-45f7-b16d-04d7c0deddca) | ![image](https://github.com/Kid-Bean/server/assets/43364585/559a46ea-a717-4af5-aac4-6c77c1a8fd91) | ![image](https://github.com/Kid-Bean/server/assets/43364585/32846c63-09c7-43ba-ac06-9ef83dacd302) | ![image](https://github.com/Kid-Bean/server/assets/43364585/270ac7e0-2a55-4e80-83a8-9555310ef98b) |
+| ![image 52](https://github.com/user-attachments/assets/6daec842-6b35-42bd-b03f-82aa39777a8c) | ![image 55](https://github.com/user-attachments/assets/c2b4f52b-3735-4103-813f-cceb7fd1105d) | ![image 53](https://github.com/user-attachments/assets/0768a328-0b89-49d0-8d34-841a68b4c8c5) | ![image 54](https://github.com/user-attachments/assets/4149f502-a448-4653-bd46-c2533c45cc9d) |
+
+| 마이페이지 기본 화면 |  문제 풀이 분석 결과 |  분석 결과 및 아이 음성 듣기 | 문제 풀이 기록 | 
+| :---: | :---: | :---: | :---: |
+| ![image 56](https://github.com/user-attachments/assets/606ea5c9-4fae-4cbb-8e6c-b8376fae015a) | ![image 57](https://github.com/user-attachments/assets/205676f3-acb8-4dc8-9b37-8ac3e7db2261) | ![image 61](https://github.com/user-attachments/assets/4c37eda4-0fd8-49f2-a972-24828dc90aff) | ![image 58](https://github.com/user-attachments/assets/9abacfd4-6a90-4218-b3a4-ce0ace9e2e39) |
