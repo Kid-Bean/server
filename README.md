@@ -8,7 +8,6 @@
 | 이동영<br/>([@leedy3838](https://github.com/leedy3838)) | 이현지<br/>([@Amepistheo](https://github.com/Amepistheo)) | 손유진<br/>([@syjdjr](https://github.com/syjdjr)) | 남기훈<br/>([@gikhoon](https://github.com/gikhoon))
 | :---: | :---: | :---: | :---: |
 | <img width="250" src="https://avatars.githubusercontent.com/u/43364585?v=4"/> | <img width="250" src="https://avatars.githubusercontent.com/u/110108243?v=4"/> | <img width="250" src="https://avatars.githubusercontent.com/u/81100851?v=4"/> | <img width="250" src="https://avatars.githubusercontent.com/u/52378919?v=4"/> |
-| `퀴즈 풀이, 로그인, cicd 환경 구축`  | `퀴즈 등록, 수정, 삭제 기능 개발` | `프로그램 관련 기능 개발` | `마이페이지 기능 개발` |
 
 ## 🛠 Tech Stacks
 <table>
