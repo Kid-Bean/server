@@ -57,10 +57,10 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "https://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "https://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
+            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
           else
             CURRENT_UPSTREAM=green
           fi
