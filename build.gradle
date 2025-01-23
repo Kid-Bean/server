@@ -53,6 +53,10 @@ dependencies {
     //OpenFeign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    // 모니터링
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     // 테스트 코드 작성시 사용할 DB(H2)
     runtimeOnly 'com.h2database:h2'
     //s3 테스트 mock server
