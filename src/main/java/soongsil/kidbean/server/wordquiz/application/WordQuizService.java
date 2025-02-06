@@ -3,29 +3,24 @@ package soongsil.kidbean.server.wordquiz.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import soongsil.kidbean.server.global.util.RandNumUtil;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quizsolve.application.QuizSolvedService;
+import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.wordquiz.domain.Word;
 import soongsil.kidbean.server.wordquiz.domain.WordQuiz;
-import soongsil.kidbean.server.quizsolve.dto.request.QuizSolvedRequest;
 import soongsil.kidbean.server.wordquiz.dto.request.WordQuizUpdateRequest;
 import soongsil.kidbean.server.wordquiz.dto.request.WordQuizUploadRequest;
-import soongsil.kidbean.server.wordquiz.dto.response.WordQuizMemberDetailResponse;
-import soongsil.kidbean.server.wordquiz.dto.response.WordQuizMemberResponse;
-import soongsil.kidbean.server.wordquiz.dto.response.WordQuizSolveListResponse;
-import soongsil.kidbean.server.wordquiz.dto.response.WordQuizSolveResponse;
-import soongsil.kidbean.server.wordquiz.dto.response.WordQuizSolveScoreResponse;
+import soongsil.kidbean.server.wordquiz.dto.response.*;
 import soongsil.kidbean.server.wordquiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.wordquiz.repository.WordQuizRepository;
 import soongsil.kidbean.server.wordquiz.repository.WordRepository;
 
 import java.util.List;
-import soongsil.kidbean.server.global.util.RandNumUtil;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quizsolve.application.vo.QuizType.WORD_QUIZ;
@@ -69,7 +64,7 @@ public class WordQuizService {
     }
 
     private WordQuiz generateRandomWordQuizPage(Member member, int quizIdx) {
-        return wordQuizRepository.findSingleResultByMember(member, PageRequest.of(quizIdx, 1)).get(0);
+        return wordQuizRepository.findSingleResultByMember(member, (long) quizIdx).get(0);
     }
 
     @Transactional
