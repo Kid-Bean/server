@@ -53,7 +53,7 @@ class WordQuizServiceTest {
         //given
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
         given(wordQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(4);
-        given(wordQuizRepository.findSingleResultByMember(any(Member.class), any(Long.class)))
+        given(wordQuizRepository.findSingleResultByMember(any(Member.class), any(Pageable.class)))
                 .willReturn(List.of(WORD_QUIZ));
 
         //when

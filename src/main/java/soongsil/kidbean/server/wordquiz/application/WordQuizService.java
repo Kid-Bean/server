@@ -3,6 +3,7 @@ package soongsil.kidbean.server.wordquiz.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.global.util.RandNumUtil;
@@ -64,7 +65,7 @@ public class WordQuizService {
     }
 
     private WordQuiz generateRandomWordQuizPage(Member member, int quizIdx) {
-        return wordQuizRepository.findSingleResultByMember(member, (long) quizIdx).get(0);
+        return wordQuizRepository.findSingleResultByMember(member, PageRequest.of(quizIdx, 1)).get(0);
     }
 
     @Transactional
