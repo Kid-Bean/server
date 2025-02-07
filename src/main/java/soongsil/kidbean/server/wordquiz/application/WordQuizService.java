@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import soongsil.kidbean.server.global.util.RandNumUtil;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -45,19 +44,17 @@ public class WordQuizService {
      * @return 랜덤 문제가 들어 있는 DTO
      */
     public WordQuizSolveListResponse selectRandomWordQuiz(Long memberId, Integer quizNum) {
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
 
-        int totalQuizNum = getWordQuizCount(member);
+        List<Long> randomQuizIds = wordQuizRepository.findRandomWordQuizIds(member, quizNum);
 
         List<WordQuizSolveResponse> wordQuizSolveResponseList =
-                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
-                        .map(quizIdx -> generateRandomWordQuizPage(member, quizIdx))
-                        .map(WordQuizSolveResponse::from)
-                        .toList();
+                wordQuizRepository.findByIdsWithWords(randomQuizIds).stream()
+                .map(WordQuizSolveResponse::from)
+                .toList();
 
-        return new WordQuizSolveListResponse(wordQuizSolveResponseList);
+        return WordQuizSolveListResponse.from(wordQuizSolveResponseList);
     }
 
     private int getWordQuizCount(Member member) {

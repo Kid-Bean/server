@@ -19,6 +19,13 @@ public interface WordQuizRepository extends JpaRepository<WordQuiz, Long> {
     @Query("SELECT wq FROM WordQuiz wq JOIN FETCH wq.words WHERE wq.member = :member OR wq.member.role = 'ADMIN'")
     List<WordQuiz> findSingleResultByMember(Member member, Pageable pageable);
 
+    @Query("SELECT wq.quizId FROM WordQuiz wq WHERE wq.member = :member OR wq.member.role = 'ADMIN' ORDER BY RAND() LIMIT :quizNum")
+    List<Long> findRandomWordQuizIds(Member member, int quizNum);
+
+    @Query("SELECT wq FROM WordQuiz wq JOIN FETCH wq.words w WHERE wq.quizId IN :quizIds")
+    List<WordQuiz> findByIdsWithWords(List<Long> quizIds);
+
+
     Optional<WordQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
 
     List<WordQuiz> findAllByMember_MemberId(Long memberId);
