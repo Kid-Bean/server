@@ -21,6 +21,7 @@ import soongsil.kidbean.server.wordquiz.repository.WordQuizRepository;
 import soongsil.kidbean.server.wordquiz.repository.WordRepository;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quizsolve.application.vo.QuizType.WORD_QUIZ;
@@ -44,17 +45,17 @@ public class WordQuizService {
      * @return 랜덤 문제가 들어 있는 DTO
      */
     public WordQuizSolveListResponse selectRandomWordQuiz(Long memberId, Integer quizNum) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        long count = wordQuizRepository.countByMemberId(memberId);
+        int randomOffset = ThreadLocalRandom.current().nextInt((int) (count / quizNum));
 
-        List<Long> randomQuizIds = wordQuizRepository.findRandomWordQuizIds(member, quizNum);
+        List<Long> randomQuizIds = wordQuizRepository.findRandomQuizIds(memberId, PageRequest.of(randomOffset, quizNum));
 
         List<WordQuizSolveResponse> wordQuizSolveResponseList =
                 wordQuizRepository.findByIdsWithWords(randomQuizIds).stream()
-                .map(WordQuizSolveResponse::from)
-                .toList();
+                        .map(WordQuizSolveResponse::from)
+                        .toList();
 
-        return WordQuizSolveListResponse.from(wordQuizSolveResponseList);
+        return new WordQuizSolveListResponse(wordQuizSolveResponseList);
     }
 
     private int getWordQuizCount(Member member) {
