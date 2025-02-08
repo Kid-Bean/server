@@ -49,18 +49,26 @@ class WordQuizServiceTest {
     @Test
     @DisplayName("랜덤 WordQuiz 선택")
     void selectRandomWordQuiz() {
+        // given
+        Long memberId = MEMBER1.getMemberId();
 
-        //given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
-        given(wordQuizRepository.countByMemberOrAdmin(any(Member.class))).willReturn(4);
-        given(wordQuizRepository.findSingleResultByMember(any(Member.class), any(Pageable.class)))
-                .willReturn(List.of(WORD_QUIZ));
+        // Mocking the count of quizzes for the member
+        given(wordQuizRepository.countByMemberId(memberId)).willReturn(9L); // 예시로 9개의 퀴즈가 있다고 가정
 
-        //when
+        // Mocking the random quiz IDs returned
+        given(wordQuizRepository.findRandomQuizIds(eq(memberId), any(Pageable.class)))
+                .willReturn(List.of(1L, 2L, 3L)); // 예시로 3개의 ID 반환
+
+        // Mocking the quizzes returned based on IDs
+        given(wordQuizRepository.findByIdsWithWords(any(List.class)))
+                .willReturn(List.of(WORD_QUIZ)); // 여러 퀴즈를 반환
+
+        // when
         WordQuizSolveListResponse wordQuizSolveListResponse =
-                wordQuizService.selectRandomWordQuiz(MEMBER1.getMemberId(), 3);
+                wordQuizService.selectRandomWordQuiz(memberId, 1);
 
-        //then
+        // then
+        assertThat(wordQuizSolveListResponse.wordQuizSolveResponseList()).hasSize(1);
         assertThat(wordQuizSolveListResponse.wordQuizSolveResponseList().get(0).title())
                 .isEqualTo(WORD_QUIZ.getTitle());
         assertThat(wordQuizSolveListResponse.wordQuizSolveResponseList().get(0).words())
