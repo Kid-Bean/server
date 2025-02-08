@@ -10,6 +10,8 @@ import soongsil.kidbean.server.quizsolve.domain.type.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
 @Table(name = "word_quiz")
@@ -36,6 +38,12 @@ public class WordQuiz {
     @Enumerated(EnumType.STRING)
     private Level level;
 
+    @Column(name = "is_default")
+    private Boolean isDefault;
+
+    @Column(name = "rand_val")
+    private Long randVal;
+
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
@@ -44,14 +52,16 @@ public class WordQuiz {
     private List<Word> words = new ArrayList<>();
 
     @Builder
-    public WordQuiz(QuizCategory quizCategory, String title, String answer, Level level, Member member,
-                    List<Word> words) {
+    public WordQuiz(QuizCategory quizCategory, String title, String answer, Level level,
+                    Boolean isDefault, Member member, List<Word> words) {
         this.quizCategory = quizCategory;
         this.title = title;
         this.answer = answer;
         this.level = level;
+        this.isDefault = isDefault;
         this.member = member;
         this.words = words;
+        this.randVal = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
     }
 
     public void updateWordQuiz(String title, String answer) {
