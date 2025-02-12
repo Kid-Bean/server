@@ -8,26 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import soongsil.kidbean.server.answerquiz.dto.response.*;
 import soongsil.kidbean.server.auth.dto.AuthUser;
 import soongsil.kidbean.server.global.dto.ResponseTemplate;
 import soongsil.kidbean.server.answerquiz.application.AnswerQuizService;
 import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizUpdateRequest;
 import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizUploadRequest;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizMemberDetailResponse;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizMemberResponse;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizResponse;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizSolveScoreResponse;
 
 import java.util.List;
 
@@ -42,12 +31,13 @@ public class AnswerQuizController {
 
     private final AnswerQuizService answerQuizService;
 
-    @Operation(summary = "AnswerQuiz 가져오기", description = "AnswerQuiz 가져오기")
+    @Operation(summary = "AnswerQuiz 가져오기", description = "랜덤 AnswerQuiz 가져오기")
     @GetMapping("/solve")
     public ResponseEntity<ResponseTemplate<Object>> getRandomAnswerQuiz(
-            @AuthenticationPrincipal AuthUser user) {
+            @AuthenticationPrincipal AuthUser user,
+            @RequestParam(defaultValue = "5") Integer quizNum) {
 
-        AnswerQuizResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(user.memberId());
+        AnswerQuizListResponse answerQuizResponse = answerQuizService.selectRandomAnswerQuiz(user.memberId(), quizNum);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -3,6 +3,7 @@ package soongsil.kidbean.server.answerquiz.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
@@ -14,7 +15,11 @@ import java.util.Optional;
 @Repository
 public interface AnswerQuizRepository extends JpaRepository<AnswerQuiz, Long> {
 
-    Integer countByMemberOrMember_Role(Member member, Role role);
+    @Query("SELECT count(*) FROM AnswerQuiz aq WHERE aq.member = :member OR aq.member.role = 'ADMIN'")
+    Integer countByMemberOrAdmin(Member member);
+
+    @Query("SELECT aq FROM AnswerQuiz aq WHERE aq.member = :member OR aq.member.role = 'ADMIN'")
+    List<AnswerQuiz> findSingleResultByMember(Member member, Pageable pageable);
 
     Page<AnswerQuiz> findByMemberOrMember_Role(Member member, Role role, Pageable pageable);
 

@@ -1,37 +1,29 @@
 package soongsil.kidbean.server.answerquiz.application;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
-import soongsil.kidbean.server.member.repository.MemberRepository;
-import soongsil.kidbean.server.quizsolve.application.AnswerQuizSolvedService;
-import soongsil.kidbean.server.quizsolve.application.vo.OpenApiResponse;
 import soongsil.kidbean.server.answerquiz.domain.AnswerQuiz;
 import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizSolvedRequest;
 import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizUpdateRequest;
 import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizUploadRequest;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizMemberDetailResponse;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizMemberResponse;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizResponse;
-import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizSolveScoreResponse;
+import soongsil.kidbean.server.answerquiz.dto.response.*;
 import soongsil.kidbean.server.answerquiz.exception.AnswerQuizNotFoundException;
-import soongsil.kidbean.server.wordquiz.exception.WordQuizNotFoundException;
 import soongsil.kidbean.server.answerquiz.repository.AnswerQuizRepository;
+import soongsil.kidbean.server.global.util.RandNumUtil;
+import soongsil.kidbean.server.member.domain.Member;
+import soongsil.kidbean.server.member.exception.MemberNotFoundException;
+import soongsil.kidbean.server.member.repository.MemberRepository;
+import soongsil.kidbean.server.quizsolve.application.AnswerQuizSolvedService;
+import soongsil.kidbean.server.quizsolve.application.vo.OpenApiResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 import static soongsil.kidbean.server.answerquiz.exception.errorcode.AnswerQuizErrorCode.ANSWER_QUIZ_NOT_FOUND;
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-import static soongsil.kidbean.server.wordquiz.exception.errorcode.WordQuizErrorCode.WORD_QUIZ_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -52,16 +44,20 @@ public class AnswerQuizService {
      * @param memberId 문제를 풀 멤버
      * @return 랜덤 문제가 들어 있는 DTO
      */
-    public AnswerQuizResponse selectRandomAnswerQuiz(Long memberId) {
+    public AnswerQuizListResponse selectRandomAnswerQuiz(Long memberId, Integer quizNum) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-        Page<AnswerQuiz> answerQuizPage = generateRandomAnswerQuizPage(member);
 
-        AnswerQuiz answerQuiz = pageHasAnswerQuiz(answerQuizPage)
-                .orElseThrow(() -> new WordQuizNotFoundException(WORD_QUIZ_NOT_FOUND));
+        int totalQuizNum = getAnswerQuizCount(member);
 
-        return AnswerQuizResponse.from(answerQuiz);
+        List<AnswerQuizResponse> answerQuizResponseList =
+                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
+                        .map(quizIdx -> generateRandomPageWithCategory(member, quizIdx))
+                        .map(AnswerQuizResponse::from)
+                        .toList();
+
+        return AnswerQuizListResponse.from(answerQuizResponseList);
     }
 
     /**
@@ -91,18 +87,8 @@ public class AnswerQuizService {
         return AnswerQuizSolveScoreResponse.scoreFrom(ANSWER_QUIZ_POINT);
     }
 
-    /**
-     * 랜덤 AnswerQuiz 생성
-     *
-     * @param member 문제를 풀 멤버
-     * @return 랜덤 AnswerQuiz 있는 Page
-     */
-    private Page<AnswerQuiz> generateRandomAnswerQuizPage(Member member) {
-
-        int divVal = getAnswerQuizCount(member);
-        int idx = RandomUtil.getPositiveInt() % divVal;
-
-        return answerQuizRepository.findByMemberOrMember_Role(member, Role.ADMIN, PageRequest.of(idx, 1));
+    private AnswerQuiz generateRandomPageWithCategory(Member member, int quizIdx) {
+        return answerQuizRepository.findSingleResultByMember(member, PageRequest.of(quizIdx, 1)).get(0);
     }
 
     /**
@@ -112,21 +98,7 @@ public class AnswerQuizService {
      * @return answerQuiz 수
      */
     private Integer getAnswerQuizCount(Member member) {
-        return answerQuizRepository.countByMemberOrMember_Role(member, Role.ADMIN);
-    }
-
-    /**
-     * 해당 페이지에 AnswerQuiz 있는지 확인 후 Optional로 감싸 return
-     *
-     * @param answerQuizPage answerQuiz가 있는 Page
-     * @return answerQuiz가 있는 Optional
-     */
-    private Optional<AnswerQuiz> pageHasAnswerQuiz(Page<AnswerQuiz> answerQuizPage) {
-        if (answerQuizPage.hasContent()) {
-            return Optional.of(answerQuizPage.getContent().get(0));
-        } else {
-            return Optional.empty();
-        }
+        return answerQuizRepository.countByMemberOrAdmin(member);
     }
 
     public AnswerQuizMemberDetailResponse getAnswerQuizById(Long memberId, Long quizId) {
