@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import soongsil.kidbean.server.answerquiz.domain.AnswerQuiz;
+import soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizResponse;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.domain.type.Role;
 
@@ -21,10 +22,11 @@ public interface AnswerQuizRepository extends JpaRepository<AnswerQuiz, Long> {
     @Query("SELECT aq FROM AnswerQuiz aq WHERE aq.member = :member OR aq.member.role = 'ADMIN'")
     List<AnswerQuiz> findSingleResultByMember(Member member, Pageable pageable);
 
-    @Query("SELECT aq FROM AnswerQuiz aq "
+    @Query("SELECT new soongsil.kidbean.server.answerquiz.dto.response.AnswerQuizResponse(aq.quizId, aq.question, aq.title) "
+            + "FROM AnswerQuiz aq "
             + "WHERE aq.isDefault = TRUE OR aq.member.memberId = :memberId "
             + "ORDER BY RAND() LIMIT :limit")
-    List<AnswerQuiz> findRandomQuizzesByMember(Long memberId, int limit);
+    List<AnswerQuizResponse> findRandomQuizzesByMember(Long memberId, int limit);
 
     Page<AnswerQuiz> findByMemberOrMember_Role(Member member, Role role, Pageable pageable);
 

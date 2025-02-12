@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
 
+@Table(name = "answer_quiz", indexes = {
+        @Index(name = "idx_answer_quiz", columnList = "question, title, member_id, is_default")
+})
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,15 +26,19 @@ public class AnswerQuiz {
     @Column(name = "title", length = 40)
     private String title;
 
+    @Column(name = "is_default")
+    private Boolean isDefault;
+
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @Builder
-    public AnswerQuiz(String question, String title, Member member) {
+    public AnswerQuiz(String question, String title, Member member, Boolean isDefault) {
         this.question = question;
         this.title = title;
         this.member = member;
+        this.isDefault = isDefault;
     }
 
     public void updateAnswerQuiz(String title, String question) {
