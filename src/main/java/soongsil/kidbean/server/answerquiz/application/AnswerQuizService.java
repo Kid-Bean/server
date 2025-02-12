@@ -13,7 +13,6 @@ import soongsil.kidbean.server.answerquiz.dto.request.AnswerQuizUploadRequest;
 import soongsil.kidbean.server.answerquiz.dto.response.*;
 import soongsil.kidbean.server.answerquiz.exception.AnswerQuizNotFoundException;
 import soongsil.kidbean.server.answerquiz.repository.AnswerQuizRepository;
-import soongsil.kidbean.server.global.util.RandNumUtil;
 import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
@@ -45,15 +44,8 @@ public class AnswerQuizService {
      * @return 랜덤 문제가 들어 있는 DTO
      */
     public AnswerQuizListResponse selectRandomAnswerQuiz(Long memberId, Integer quizNum) {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        int totalQuizNum = getAnswerQuizCount(member);
-
         List<AnswerQuizResponse> answerQuizResponseList =
-                RandNumUtil.generateRandomNumbers(0, totalQuizNum - 1, quizNum).stream()
-                        .map(quizIdx -> generateRandomPageWithCategory(member, quizIdx))
+                answerQuizRepository.findRandomQuizzesByMemberOrAdmin(memberId, quizNum).stream()
                         .map(AnswerQuizResponse::from)
                         .toList();
 

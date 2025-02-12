@@ -21,6 +21,12 @@ public interface AnswerQuizRepository extends JpaRepository<AnswerQuiz, Long> {
     @Query("SELECT aq FROM AnswerQuiz aq WHERE aq.member = :member OR aq.member.role = 'ADMIN'")
     List<AnswerQuiz> findSingleResultByMember(Member member, Pageable pageable);
 
+    @Query(value = "SELECT aq.* FROM answer_quiz aq " +
+            "JOIN member m ON aq.member_id = m.member_id " +
+            "WHERE aq.member_id = :memberId OR m.role = 'admin' " +
+            "ORDER BY RAND() LIMIT :limit", nativeQuery = true)
+    List<AnswerQuiz> findRandomQuizzesByMemberOrAdmin(Long memberId, int limit);
+
     Page<AnswerQuiz> findByMemberOrMember_Role(Member member, Role role, Pageable pageable);
 
     Optional<AnswerQuiz> findByQuizIdAndMember_MemberId(Long quizId, Long memberId);
