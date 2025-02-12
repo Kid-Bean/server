@@ -20,6 +20,7 @@ import soongsil.kidbean.server.quizsolve.application.AnswerQuizSolvedService;
 import soongsil.kidbean.server.quizsolve.application.vo.OpenApiResponse;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static soongsil.kidbean.server.answerquiz.exception.errorcode.AnswerQuizErrorCode.ANSWER_QUIZ_NOT_FOUND;
 import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -34,6 +35,7 @@ public class AnswerQuizService {
     private final MemberRepository memberRepository;
     private final OpenApiService openApiService;
     private final AnswerQuizSolvedService answerQuizSolvedService;
+    private final AnswerQuizCountCache answerQuizCountCache;
 
     private static final Long ANSWER_QUIZ_POINT = 3L;
 
@@ -44,12 +46,20 @@ public class AnswerQuizService {
      * @return 랜덤 문제가 들어 있는 DTO
      */
     public AnswerQuizListResponse selectRandomAnswerQuiz(Long memberId, Integer quizNum) {
+        long count = answerQuizCountCache.get(memberId);
+        PageRequest pageRequest = makeRandomPageRequest(count, quizNum);
+
         List<AnswerQuizResponse> answerQuizResponseList =
-                answerQuizRepository.findRandomQuizzesByMember(memberId, quizNum).stream()
+                answerQuizRepository.findRandomQuizzesByMember(memberId, pageRequest).stream()
                         .toList();
 
         return AnswerQuizListResponse.from(answerQuizResponseList);
     }
+
+    private PageRequest makeRandomPageRequest(long count, int quizNum) {
+        return PageRequest.of(ThreadLocalRandom.current().nextInt((int) (count / quizNum)), quizNum);
+    }
+
 
     /**
      * 대답하기 정답을 제출, 녹음 파일을 s3에 저장 후 응답 텍스트를 OpenApi로 분석
@@ -80,16 +90,6 @@ public class AnswerQuizService {
 
     private AnswerQuiz generateRandomPageWithCategory(Member member, int quizIdx) {
         return answerQuizRepository.findSingleResultByMember(member, PageRequest.of(quizIdx, 1)).get(0);
-    }
-
-    /**
-     * 해당 멤버 또는 role이 어드민으로 등록된 사람이 등록한 answerQuiz 수 return
-     *
-     * @param member 문제를 풀고자 하는 멤버
-     * @return answerQuiz 수
-     */
-    private Integer getAnswerQuizCount(Member member) {
-        return answerQuizRepository.countByMemberOrAdmin(member);
     }
 
     public AnswerQuizMemberDetailResponse getAnswerQuizById(Long memberId, Long quizId) {
