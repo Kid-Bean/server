@@ -45,7 +45,7 @@ public class AnswerQuizService {
      */
     public AnswerQuizListResponse selectRandomAnswerQuiz(Long memberId, Integer quizNum) {
         List<AnswerQuizResponse> answerQuizResponseList =
-                answerQuizRepository.findRandomQuizzesByMemberOrAdmin(memberId, quizNum).stream()
+                answerQuizRepository.findRandomQuizzesByMember(memberId, quizNum).stream()
                         .map(AnswerQuizResponse::from)
                         .toList();
 
