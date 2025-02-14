@@ -57,6 +57,10 @@ jobs:
     steps:
       - name: Set target IP
         run: |
+          # 사용하지 않는 Docker 이미지 삭제
+          echo "Deleting unused Docker images..."
+          docker image prune -f
+          
           STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.SERVER_DOMAIN }}/auth/deploy/status")
           echo $STATUS
           if [ $STATUS = 200 ]; then
