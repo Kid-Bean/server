@@ -35,7 +35,6 @@ public class AnswerQuizService {
     private final MemberRepository memberRepository;
     private final OpenApiService openApiService;
     private final AnswerQuizSolvedService answerQuizSolvedService;
-    private final AnswerQuizCountCache answerQuizCountCache;
 
     private static final Long ANSWER_QUIZ_POINT = 3L;
 
@@ -46,20 +45,12 @@ public class AnswerQuizService {
      * @return 랜덤 문제가 들어 있는 DTO
      */
     public AnswerQuizListResponse selectRandomAnswerQuiz(Long memberId, Integer quizNum) {
-        long count = answerQuizCountCache.get(memberId);
-        PageRequest pageRequest = makeRandomPageRequest(count, quizNum);
-
         List<AnswerQuizResponse> answerQuizResponseList =
-                answerQuizRepository.findRandomQuizzesByMember(memberId, pageRequest).stream()
+                answerQuizRepository.findRandomQuizzes(memberId, quizNum).stream()
                         .toList();
 
         return AnswerQuizListResponse.from(answerQuizResponseList);
     }
-
-    private PageRequest makeRandomPageRequest(long count, int quizNum) {
-        return PageRequest.of(ThreadLocalRandom.current().nextInt((int) (count / quizNum)), quizNum);
-    }
-
 
     /**
      * 대답하기 정답을 제출, 녹음 파일을 s3에 저장 후 응답 텍스트를 OpenApi로 분석
