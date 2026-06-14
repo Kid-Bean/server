@@ -14,7 +14,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
 
-@Table(name = "word_quiz")
+@Table(name = "word_quiz", indexes = {
+        @Index(name = "idx_word_quiz_member_id", columnList = "member_id")
+})
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

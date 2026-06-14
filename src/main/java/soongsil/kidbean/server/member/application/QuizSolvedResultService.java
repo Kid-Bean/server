@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.member.application;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.*;
 import static soongsil.kidbean.server.quizsolve.exception.errorcode.QuizSolvedErrorCode.QUIZ_SOLVED_NOT_FOUND;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import soongsil.kidbean.server.member.dto.response.SolvedImageListResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedWordDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedWordQuizInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedWordQuizListResponse;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.member.dto.response.SolvedImageDetailResponse;
 import soongsil.kidbean.server.member.dto.response.SolvedImageInfo;
@@ -93,7 +91,6 @@ public class QuizSolvedResultService {
     }
 
     private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        return memberRepository.getByIdOrThrow(memberId);
     }
 }

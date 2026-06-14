@@ -1,23 +1,23 @@
 package soongsil.kidbean.server.global.application;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import soongsil.kidbean.server.global.exception.FileConvertFailException;
 import soongsil.kidbean.server.global.domain.S3Info;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.Optional;
 
 import static soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode.FILE_CONVERT_FAIL;
 
@@ -26,24 +26,36 @@ import static soongsil.kidbean.server.global.exception.errorcode.GlobalErrorCode
 @Component
 public class S3Uploader {
 
-    private final AmazonS3 amazonS3Client;
+    private static final DateTimeFormatter FILE_NAME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+    private final S3Client s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    //MultipartFile을 전달받아 File로 전환한 후 S3에 업로드 후 url return
+    /**
+     * MultipartFile을 로컬 파일 생성 없이 S3로 스트리밍 업로드한 뒤 저장 정보를 반환한다.
+     */
     public S3Info upload(MultipartFile multipartFile, String folderName) {
-        File uploadFile;
+        String fileName = createFileName(multipartFile.getOriginalFilename());
+        String key = folderName + "/" + fileName;
 
-        try {
-            uploadFile = convert(multipartFile)
-                    .orElseThrow(() -> new FileConvertFailException(FILE_CONVERT_FAIL));
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .contentType(multipartFile.getContentType())
+                .contentLength(multipartFile.getSize())
+                .acl(ObjectCannedACL.PUBLIC_READ)
+                .build();
+
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, multipartFile.getSize()));
         } catch (IOException e) {
             throw new FileConvertFailException(FILE_CONVERT_FAIL);
         }
 
-        String uploadUrl = upload(uploadFile, folderName);
-        String fileName = uploadFile.getName();
+        log.info("File Upload : {}", key);
+        String uploadUrl = s3Client.utilities().getUrl(builder -> builder.bucket(bucket).key(key)).toString();
 
         return S3Info.builder()
                 .s3Url(uploadUrl)
@@ -52,56 +64,18 @@ public class S3Uploader {
                 .build();
     }
 
-    //S3 버킷에 있는 파일을 삭제
     public void deleteFile(S3Info s3Info) {
         String deleteFileName = s3Info.getFolderName() + "/" + s3Info.getFileName();
         log.info("delete fileName: {}", deleteFileName);
-        amazonS3Client.deleteObject(bucket, deleteFileName);
+        s3Client.deleteObject(DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(deleteFileName)
+                .build());
     }
 
-    private String upload(File uploadFile, String folderName) {
-        String fileName = folderName + "/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        //로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
-        removeLocalNewFile(uploadFile);
-
-        //업로드된 파일의 S3 URL 주소 반환
-        return uploadImageUrl;
-    }
-
-    private String putS3(File uploadFile, String fileName) {
-        //PublicRead 권한으로 업로드
-        amazonS3Client.putObject(
-                new PutObjectRequest(bucket, fileName, uploadFile)
-                        .withCannedAcl(CannedAccessControlList.PublicRead)
-        );
-        log.info("File Upload : {}", fileName);
-
-        return amazonS3Client.getUrl(bucket, fileName).toString();
-    }
-
-    private void removeLocalNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("로컬 파일이 삭제되었습니다.");
-        } else {
-            log.info("로컬 파일이 삭제되지 못했습니다.");
-        }
-    }
-
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        //LocalDateTime으로 파일 이름 중복 제거
-        // LocalDateTime을 "yyyyMMddHHmmss" 포맷으로 변경
-        String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        // 포맷된 시간을 파일 이름에 포함
-        String fileName = formattedDateTime + "_" + Objects.requireNonNull(file.getOriginalFilename());
-        File convertFile = new File(fileName);
-
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
-        }
-        return Optional.empty();
+    //LocalDateTime으로 파일 이름 중복 제거 (yyyyMMddHHmmss_원본파일명)
+    private String createFileName(String originalFilename) {
+        String formattedDateTime = LocalDateTime.now().format(FILE_NAME_FORMAT);
+        return formattedDateTime + "_" + Objects.requireNonNull(originalFilename);
     }
 }

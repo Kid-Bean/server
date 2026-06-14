@@ -54,8 +54,8 @@ class QuizSolvedResultServiceTest {
     @DisplayName("이미지 퀴즈 리스트 반환 Service Test")
     void findSolvedImageTest() {
         //given
-        given(memberRepository.findById(eq(MEMBER1.getMemberId())))
-                .willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(eq(MEMBER1.getMemberId())))
+                .willReturn(MEMBER1);
         given(quizSolvedRepository.findAllByMemberAndIsCorrectAndImageQuizIsNotNull(eq(MEMBER1), eq(true)))
                 .willReturn(List.of(QuizSolvedFixture.IMAGE_QUIZ_SOLVED_ANIMAL_TRUE));
 

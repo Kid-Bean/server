@@ -15,33 +15,19 @@ public class ImageQuizCountCache {
     private static final Map<Long, Long> imageQuizCountCache = new ConcurrentHashMap<>();
 
     public void plusCount(Long memberId) {
-        if (imageQuizCountCache.containsKey(memberId)) {
-            imageQuizCountCache.put(memberId, imageQuizCountCache.get(memberId) + 1);
-        } else {    //plusCount 메서드 호출 전 이미 문제 수 증가
-            imageQuizCountCache.put(memberId, imageQuizRepository.countByMemberIdAndDefaultProblem(memberId));
-        }
+        // compute는 ConcurrentHashMap에서 원자적으로 동작하여 read-modify-write 경합을 방지한다.
+        // 캐시에 값이 없으면 DB 조회값(이미 증가가 반영된 값)으로 초기화한다.
+        imageQuizCountCache.compute(memberId, (id, count) ->
+                count == null ? imageQuizRepository.countByMemberIdAndDefaultProblem(id) : count + 1);
     }
 
     public void minusCount(Long memberId) {
-        if (imageQuizCountCache.containsKey(memberId)) {
-            imageQuizCountCache.put(memberId, imageQuizCountCache.get(memberId) - 1);
-        } else {    //minusCount 메서드 호출 전 이미 문제 수 감소
-            imageQuizCountCache.put(memberId, imageQuizRepository.countByMemberIdAndDefaultProblem(memberId));
-        }
+        imageQuizCountCache.compute(memberId, (id, count) ->
+                count == null ? imageQuizRepository.countByMemberIdAndDefaultProblem(id) : count - 1);
     }
 
     public Long get(Long memberId) {
-        // 캐시에서 값을 가져옴
-        Long count = imageQuizCountCache.get(memberId);
-
-        // 캐시에 값이 없으면 ImageQuizRepository에서 값을 가져와 캐시에 넣음
-        if (count == null) {
-            count = imageQuizRepository.countByMemberIdAndDefaultProblem(memberId);
-            if (count != null) {
-                imageQuizCountCache.put(memberId, count);
-            }
-        }
-
-        return count;
+        return imageQuizCountCache.computeIfAbsent(memberId,
+                imageQuizRepository::countByMemberIdAndDefaultProblem);
     }
 }

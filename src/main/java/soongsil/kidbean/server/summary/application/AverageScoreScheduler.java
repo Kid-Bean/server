@@ -33,25 +33,21 @@ public class AverageScoreScheduler {
     private final AverageScoreRepository averageScoreRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
     public void updateImageQuizLevel() {
-        Map<Boolean, List<QuizSolved>> groupedByQuizType = quizSolvedRepository.findAll()
+        Map<ImageQuiz, List<QuizSolved>> solvedByQuiz = quizSolvedRepository.findAllAdminImageQuizSolved()
                 .stream()
-                .filter(QuizSolved::isImageQuizMadeByAdmin)
-                .collect(Collectors.partitioningBy(QuizSolved::isImageQuiz));
+                .collect(Collectors.groupingBy(QuizSolved::getImageQuiz));
 
-        groupedByQuizType.forEach((isImageQuiz, quizSolvedList) -> {
-            Map<ImageQuiz, List<QuizSolved>> groupByQuiz = quizSolvedList.stream()
-                    .collect(Collectors.groupingBy(QuizSolved::getImageQuiz));
+        solvedByQuiz.forEach((quiz, solvedList) -> {
+            Long accuracy = calculateAccuracy(solvedList);
+            Level level = Level.calculate(accuracy);
 
-            groupByQuiz.forEach((quiz, solvedList) -> {
-                Long accuracy = calculateAccuracy(solvedList);
-                Level level = Level.calculate(accuracy);
-
-                if (quiz.isLevelUpdateNeed(level)) {
-                    updateMemberTotalScore(quiz, level);
-                    updateLevel(quiz, level);
-                }
-            });
+            if (quiz.isLevelUpdateNeed(level)) {
+                // 점수 갱신은 기존(이전) 레벨 기준이므로 레벨 변경 전에 먼저 수행한다.
+                updateMemberTotalScore(quiz, solvedList, level);
+                quiz.updateLevel(level);
+            }
         });
     }
 
@@ -91,10 +87,10 @@ public class AverageScoreScheduler {
     }
 
     private List<QuizSolved> getDistinctQuizSolvedList(List<Member> members) {
-        return members.stream()
-                .flatMap(member -> quizSolvedRepository
-                        .findAllByMemberAndIsCorrectTrue(member)
-                        .stream())
+        if (members.isEmpty()) {
+            return List.of();
+        }
+        return quizSolvedRepository.findAllCorrectByMembers(members).stream()
                 .distinct()
                 .toList();
     }
@@ -118,24 +114,17 @@ public class AverageScoreScheduler {
                 .size();
     }
 
-    @Transactional
-    public void updateMemberTotalScore(ImageQuiz imageQuiz, Level level) {
-        List<QuizSolved> quizSolvedList = quizSolvedRepository.findAllByImageQuizAndIsCorrectTrue(imageQuiz);
-
-        Set<Member> memberList = quizSolvedList.stream()
+    private void updateMemberTotalScore(ImageQuiz imageQuiz, List<QuizSolved> solvedList, Level newLevel) {
+        Set<Member> memberList = solvedList.stream()
+                .filter(QuizSolved::getIsCorrect)
                 .map(QuizSolved::getMember)
                 .collect(Collectors.toSet());
 
         memberList.forEach(member -> {
-            member.updateScore(imageQuiz.getLevel(), level);
+            member.updateScore(imageQuiz.getLevel(), newLevel);
             quizScoreRepository.findByMemberAndQuizCategory(member, imageQuiz.getQuizCategory())
-                    .ifPresent(quizScore -> quizScore.updateScore(imageQuiz.getLevel(), level));
+                    .ifPresent(quizScore -> quizScore.updateScore(imageQuiz.getLevel(), newLevel));
         });
-    }
-
-    @Transactional
-    public void updateLevel(ImageQuiz imageQuiz, Level level) {
-        imageQuiz.updateLevel(level);
     }
 
     private Long calculateAccuracy(List<QuizSolved> quizSolvedList) {
@@ -144,7 +133,8 @@ public class AverageScoreScheduler {
         if (quizSolvedCount > 0) {
             long correctSolved = quizSolvedList.stream()
                     .filter(QuizSolved::getIsCorrect).count();
-            return (correctSolved / quizSolvedCount) * 100;
+            // 정수 나눗셈으로 항상 0/100 이 되던 버그 수정: 곱을 먼저 수행한다.
+            return (correctSolved * 100) / quizSolvedCount;
         }
 
         return null;

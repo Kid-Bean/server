@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.wordquiz.domain.WordQuiz;
 import soongsil.kidbean.server.wordquiz.dto.request.WordQuizUpdateRequest;
@@ -111,7 +110,7 @@ class WordQuizServiceTest {
         WordRequest wordRequest = new WordRequest("단어");
         WordQuizUploadRequest request = new WordQuizUploadRequest("테스트 제목", "테스트 정답", List.of(wordRequest));
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(anyLong())).willReturn(MEMBER1);
 
         // when
         wordQuizService.uploadWordQuiz(request, anyLong());

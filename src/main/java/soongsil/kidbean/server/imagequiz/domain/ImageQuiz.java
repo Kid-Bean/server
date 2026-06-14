@@ -16,7 +16,8 @@ import java.util.List;
 import soongsil.kidbean.server.quizsolve.domain.QuizSolved;
 
 @Table(name = "image_quiz", indexes = {
-        @Index(name = "idx_image_quiz_rand_val", columnList = "rand_val, is_default, member_id, answer, s3_url")
+        @Index(name = "idx_image_quiz_rand_val", columnList = "rand_val, is_default, member_id, answer, s3_url"),
+        @Index(name = "idx_image_quiz_member_default", columnList = "member_id, is_default")
 })
 @Getter
 @Entity

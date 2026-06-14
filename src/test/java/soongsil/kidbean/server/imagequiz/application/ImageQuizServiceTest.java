@@ -114,14 +114,14 @@ class ImageQuizServiceTest {
                 "This is the file content".getBytes() // 파일 컨텐츠
         );
 
-        given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(any(Long.class))).willReturn(MEMBER1);
         given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(any(S3Info.class));
 
         // when
         imageQuizService.uploadImageQuiz(request, 1L, file);
 
         // then
-        verify(memberRepository, times(1)).findById(MEMBER1.getMemberId());
+        verify(memberRepository, times(1)).getByIdOrThrow(MEMBER1.getMemberId());
         verify(s3Uploader, times(1)).upload(any(MultipartFile.class), anyString());
         verify(imageQuizRepository, times(1)).save(any(ImageQuiz.class));
     }

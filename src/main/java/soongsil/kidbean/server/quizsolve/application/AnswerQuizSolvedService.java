@@ -58,24 +58,25 @@ public class AnswerQuizSolvedService {
     }
 
     private void enrollUseWords(OpenApiResponse openApiResponse, AnswerQuizSolved answerQuizSolved, Member member) {
-        List<UseWord> wordCountList = useWordRepository.findAllByMember(member);
-        Map<String, Long> wordCountMap = wordCountList.stream()
-                .collect(Collectors.toMap(UseWord::getWordName, UseWord::getCount));
+        // 회원의 기존 단어를 한 번에 조회해 단어명 -> 엔티티 맵으로 보관한다 (단어별 추가 조회 제거).
+        Map<String, UseWord> existingWords = useWordRepository.findAllByMember(member).stream()
+                .collect(Collectors.toMap(UseWord::getWordName, word -> word));
 
         List<UseWord> newUseWords = new ArrayList<>();
 
         openApiResponse.useWordVOList().forEach(useWordVO -> {
             String wordName = useWordVO.word();
             long count = useWordVO.count();
-            long currentCount = wordCountMap.getOrDefault(wordName, 0L);
 
-            if (currentCount > 0) {
-                UseWord existingUseWord = useWordRepository.findByWordNameAndMember(wordName, member)
-                        .orElse(buildUseWord(answerQuizSolved, member, wordName, count));
-
-                existingUseWord.addCount(count);
+            UseWord useWord = existingWords.get(wordName);
+            if (useWord != null) {
+                // 영속 상태 엔티티이므로 dirty checking으로 반영된다.
+                useWord.addCount(count);
             } else {
-                newUseWords.add(buildUseWord(answerQuizSolved, member, wordName, count));
+                UseWord newWord = buildUseWord(answerQuizSolved, member, wordName, count);
+                // 동일 응답 내에 같은 단어가 또 나오면 새로 만들지 않고 누적되도록 맵에 등록한다.
+                existingWords.put(wordName, newWord);
+                newUseWords.add(newWord);
             }
         });
 

@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.quizsolve.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,11 +31,11 @@ public class UseWord {
     private Long count;
 
     @JoinColumn(name = "solved_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     AnswerQuizSolved answerQuizSolved;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     Member member;
 
     @Builder

@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.type.ProgramCategory;
@@ -24,8 +23,8 @@ import soongsil.kidbean.server.program.repository.DayRepository;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 
 import java.util.List;
+import java.util.Set;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.PROGRAM_NOT_FOUND;
 
 @Slf4j
@@ -72,8 +71,12 @@ public class ProgramService {
             throw new ProgramNotFoundException(PROGRAM_NOT_FOUND);
         }
 
-        List<ProgramResponse> programResponseList = programPage.stream()
-                .map(program -> ProgramResponse.of(program, starService.existsByMemberAndProgram(memberId, program)))
+        List<Program> programs = programPage.getContent();
+        List<Long> programIds = programs.stream().map(Program::getProgramId).toList();
+        Set<Long> starredProgramIds = starService.findStarredProgramIds(memberId, programIds);
+
+        List<ProgramResponse> programResponseList = programs.stream()
+                .map(program -> ProgramResponse.of(program, starredProgramIds.contains(program.getProgramId())))
                 .toList();
 
         return ProgramResponseList.from(programResponseList);
@@ -85,8 +88,7 @@ public class ProgramService {
 
     public ProgramResponseList getStarProgramInfoList(Long memberId, Pageable pageable) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        Member member = memberRepository.getByIdOrThrow(memberId);
 
         Page<Program> programPage = programRepository.findAllStarProgramByProgramInfo(pageable, member);
 
@@ -121,8 +123,7 @@ public class ProgramService {
     public void createProgram(Long memberId, EnrollProgramRequest enrollProgramRequest, MultipartFile programImage,
                               MultipartFile departmentImage) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        Member member = memberRepository.getByIdOrThrow(memberId);
 
         String programFolderName = PROGRAM_IMAGE_NAME + enrollProgramRequest.programCategory();
         S3Info programS3Info = s3Uploader.upload(programImage, programFolderName);

@@ -3,8 +3,6 @@ package soongsil.kidbean.server.global.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import io.findify.s3mock.S3Mock;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -19,6 +17,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import soongsil.kidbean.server.global.application.config.AwsS3MockConfig;
 import soongsil.kidbean.server.global.domain.S3Info;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -27,7 +27,7 @@ import soongsil.kidbean.server.global.domain.S3Info;
 class S3UploaderTest {
 
     @Autowired
-    private AmazonS3 amazonS3;
+    private S3Client s3Client;
 
     @Autowired
     private S3Uploader s3Uploader;
@@ -40,15 +40,15 @@ class S3UploaderTest {
 
     //S3Mock 서버 실행, 사용할 버킷 생성
     @BeforeAll
-    void setUp(@Autowired S3Mock s3Mock, @Autowired AmazonS3 amazonS3) {
+    void setUp(@Autowired S3Mock s3Mock) {
         s3Mock.start();
-        amazonS3.createBucket(BUCKET_NAME);
+        s3Client.createBucket(builder -> builder.bucket(BUCKET_NAME));
     }
 
     //S3Mock 종료
     @AfterAll
-    void tearDown(@Autowired S3Mock s3Mock, @Autowired AmazonS3 amazonS3) {
-        amazonS3.shutdown();
+    void tearDown(@Autowired S3Mock s3Mock) {
+        s3Client.close();
         s3Mock.stop();
     }
 
@@ -76,7 +76,8 @@ class S3UploaderTest {
         s3Uploader.deleteFile(s3Info);
 
         // then
-        assertThatThrownBy(() -> amazonS3.getObject(BUCKET_NAME, s3Info.getS3Url()))
-                .isInstanceOf(AmazonS3Exception.class);
+        assertThatThrownBy(() -> s3Client.getObject(
+                builder -> builder.bucket(BUCKET_NAME).key(s3Info.getS3Url())))
+                .isInstanceOf(S3Exception.class);
     }
 }

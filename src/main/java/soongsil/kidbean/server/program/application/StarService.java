@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.program.domain.Program;
 import soongsil.kidbean.server.program.domain.Star;
@@ -14,8 +13,9 @@ import soongsil.kidbean.server.program.exception.ProgramNotFoundException;
 import soongsil.kidbean.server.program.repository.ProgramRepository;
 import soongsil.kidbean.server.program.repository.StarRepository;
 
+import java.util.List;
+import java.util.Set;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.program.exception.errorcode.ProgramErrorCode.PROGRAM_NOT_FOUND;
 
 @Slf4j
@@ -31,8 +31,7 @@ public class StarService {
     //즐겨 찾기 저장
     public StarResponse saveStar(Long memberId, Long programId) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        Member member = memberRepository.getByIdOrThrow(memberId);
         Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException(PROGRAM_NOT_FOUND));
 
@@ -48,10 +47,7 @@ public class StarService {
     }
 
     @Transactional(readOnly = true)
-    public Boolean existsByMemberAndProgram(Long memberId, Program program) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
-
-        return starRepository.existsByMemberAndProgram(member, program);
+    public Set<Long> findStarredProgramIds(Long memberId, List<Long> programIds) {
+        return starRepository.findStarredProgramIds(memberId, programIds);
     }
 }

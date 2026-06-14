@@ -11,7 +11,6 @@ import soongsil.kidbean.server.global.application.S3Uploader;
 import soongsil.kidbean.server.global.domain.S3Info;
 import soongsil.kidbean.server.imagequiz.util.ImageQuizCountCache;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quizsolve.application.QuizSolvedService;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
@@ -31,7 +30,6 @@ import java.util.List;
 import soongsil.kidbean.server.quizsolve.util.LockAndUnlock;
 
 import static soongsil.kidbean.server.imagequiz.exception.errorcode.ImageQuizErrorCode.IMAGE_QUIZ_NOT_FOUND;
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quizsolve.application.vo.QuizType.IMAGE_QUIZ;
 
 @Slf4j
@@ -72,8 +70,7 @@ public class ImageQuizService {
     public ImageQuizSolveScoreResponse solveImageQuizzes(
             List<QuizSolvedRequest> quizSolvedRequestList, Long memberId
     ) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        Member member = memberRepository.getByIdOrThrow(memberId);
 
         return ImageQuizSolveScoreResponse.scoreFrom(
                 quizSolvedService.solveQuizzes(quizSolvedRequestList, member, IMAGE_QUIZ));
@@ -102,8 +99,7 @@ public class ImageQuizService {
 
     @Transactional
     public void uploadImageQuiz(ImageQuizUploadRequest request, Long memberId, MultipartFile multipartFile) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        Member member = memberRepository.getByIdOrThrow(memberId);
 
         ImageQuiz imageQuiz = request.toImageQuiz(member);
         S3Info s3Info = uploadS3Info(multipartFile, request.quizCategory());

@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.member.domain.Member;
 
+@Table(name = "answer_quiz", indexes = {
+        @Index(name = "idx_answer_quiz_member_id", columnList = "member_id")
+})
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

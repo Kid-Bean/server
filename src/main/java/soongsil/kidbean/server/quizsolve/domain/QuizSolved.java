@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import soongsil.kidbean.server.global.domain.BaseTimeEntity;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.domain.type.Role;
 import soongsil.kidbean.server.imagequiz.domain.ImageQuiz;
 import soongsil.kidbean.server.wordquiz.domain.WordQuiz;
 import soongsil.kidbean.server.quizsolve.domain.type.QuizCategory;
@@ -50,14 +49,6 @@ public class QuizSolved extends BaseTimeEntity {
         this.member = member;
         this.wordQuiz = wordQuiz;
         this.imageQuiz = imageQuiz;
-    }
-
-    public boolean isImageQuizMadeByAdmin() {
-        return imageQuiz.getMember().getRole().equals(Role.ADMIN);
-    }
-
-    public Boolean isImageQuiz() {
-        return this.getImageQuiz() == null;
     }
 
     @Override

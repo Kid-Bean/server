@@ -59,8 +59,8 @@ class AnswerQuizServiceTest {
     @DisplayName("랜덤 WordQuiz 선택")
     void selectRandomWordQuiz() {
         //given
-        given(memberRepository.findById(MEMBER1.getMemberId()))
-                .willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(MEMBER1.getMemberId()))
+                .willReturn(MEMBER1);
         given(answerQuizRepository.countByMemberOrMember_Role(MEMBER1, Role.ADMIN))
                 .willReturn(1);
         given(answerQuizRepository.findByMemberOrMember_Role(MEMBER1, Role.ADMIN, PageRequest.of(0, 1)))
@@ -87,7 +87,7 @@ class AnswerQuizServiceTest {
         AnswerQuizSolvedRequest answerQuizSolvedRequest =
                 new AnswerQuizSolvedRequest(ANSWER_QUIZ.getQuizId(), submitAnswer);
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(anyLong())).willReturn(MEMBER1);
         given(answerQuizRepository.findById(anyLong())).willReturn(Optional.of(ANSWER_QUIZ));
         given(openApiService.analyzeAnswer(submitAnswer)).willReturn(openApiResponse);
 
@@ -138,7 +138,7 @@ class AnswerQuizServiceTest {
         AnswerQuizUploadRequest request = new AnswerQuizUploadRequest(ANSWER_QUIZ.getTitle(),
                 ANSWER_QUIZ.getQuestion());
 
-        given(memberRepository.findById(MEMBER1.getMemberId())).willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(MEMBER1.getMemberId())).willReturn(MEMBER1);
 
         // when
         answerQuizService.uploadAnswerQuiz(request, MEMBER1.getMemberId());

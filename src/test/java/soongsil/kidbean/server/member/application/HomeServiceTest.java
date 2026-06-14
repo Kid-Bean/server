@@ -9,8 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import soongsil.kidbean.server.member.dto.response.HomeResponse;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -29,7 +27,7 @@ class HomeServiceTest {
     @DisplayName("홈화면 정보 가져오기")
     void getHomeInfo() {
         // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(anyLong())).willReturn(MEMBER1);
         
         // when
         HomeResponse response = homeService.getHomeInfo(anyLong());

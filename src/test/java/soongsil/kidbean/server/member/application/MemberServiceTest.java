@@ -9,8 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import soongsil.kidbean.server.member.dto.request.MemberInfoRequest;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -31,7 +29,7 @@ class MemberServiceTest {
         // given
         MemberInfoRequest request = new MemberInfoRequest(MEMBER1.getName(), MEMBER1.getGender(), MEMBER1.getBirthDate());
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(MEMBER1));
+        given(memberRepository.getByIdOrThrow(anyLong())).willReturn(MEMBER1);
 
         // when
         memberService.uploadMemberInfo(request, anyLong());

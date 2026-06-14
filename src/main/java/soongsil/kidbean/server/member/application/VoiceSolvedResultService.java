@@ -1,6 +1,5 @@
 package soongsil.kidbean.server.member.application;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
 import static soongsil.kidbean.server.quizsolve.exception.errorcode.QuizSolvedErrorCode.ANSWER_QUIZ_SOLVED_NOT_FOUND;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizInfo;
 import soongsil.kidbean.server.member.dto.response.SolvedAnswerQuizListResponse;
 import soongsil.kidbean.server.member.dto.response.UseWordInfo;
 import soongsil.kidbean.server.member.dto.response.UseWordList;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.quizsolve.application.AnalyzeMorphemeService;
 import soongsil.kidbean.server.answerquiz.application.OpenApiService;
@@ -64,8 +62,7 @@ public class VoiceSolvedResultService {
     }
 
     private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        return memberRepository.getByIdOrThrow(memberId);
     }
 
     private List<UseWordInfo> find5SortedWordInfo(Member member) {

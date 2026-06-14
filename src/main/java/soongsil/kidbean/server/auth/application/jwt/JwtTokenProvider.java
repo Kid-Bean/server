@@ -1,10 +1,7 @@
 package soongsil.kidbean.server.auth.application.jwt;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -17,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import soongsil.kidbean.server.member.domain.Member;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 
 @Slf4j
@@ -29,12 +25,15 @@ public class JwtTokenProvider {
     private final MemberRepository memberRepository;
 
     private Key key;
+    private JwtParser jwtParser;
     private static final String MEMBER_ROLE = "role";
 
     @PostConstruct
     public void setKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        // parser는 thread-safe하므로 한 번만 생성해 재사용한다 (요청마다 재생성 비용 제거).
+        this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
     /**
@@ -44,8 +43,6 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();
 
         Date accessValidity = new Date(now + jwtProperties.getAccessTokenExpiration());
-
-        log.info("expire: {}", accessValidity);
 
         return Jwts.builder()
                 // 토큰의 발급 시간을 기록
@@ -85,27 +82,17 @@ public class JwtTokenProvider {
 
     public boolean validateToken(final String token) {
         try {
-            log.info("now date: {}", new Date());
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-
-            log.info("expire date: {}", claims.getBody().getExpiration());
-            return claims.getBody().getExpiration().after(new Date());
+            Date expiration = jwtParser.parseClaimsJws(token).getBody().getExpiration();
+            return expiration.after(new Date());
         } catch (Exception e) {
-            log.error("Token validation error: ", e);
+            log.warn("Token validation failed: {}", e.getMessage());
             return false;
         }
     }
 
     public Member getMember(String token) {
-        Long id = Long.parseLong(Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject());
+        Long id = Long.parseLong(jwtParser.parseClaimsJws(token).getBody().getSubject());
 
-        log.info("in getMember() socialId: {}", id);
-
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        return memberRepository.getByIdOrThrow(id);
     }
 }

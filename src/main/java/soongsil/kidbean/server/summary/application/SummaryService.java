@@ -1,7 +1,5 @@
 package soongsil.kidbean.server.summary.application;
 
-import static soongsil.kidbean.server.member.exception.errorcode.MemberErrorCode.MEMBER_NOT_FOUND;
-
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +9,6 @@ import soongsil.kidbean.server.member.domain.Member;
 import soongsil.kidbean.server.member.dto.response.AgeScoreInfo;
 import soongsil.kidbean.server.member.dto.response.ImageQuizScoreResponse;
 import soongsil.kidbean.server.member.dto.response.MyScoreInfo;
-import soongsil.kidbean.server.member.exception.MemberNotFoundException;
 import soongsil.kidbean.server.member.repository.MemberRepository;
 import soongsil.kidbean.server.summary.domain.type.AgeGroup;
 import soongsil.kidbean.server.summary.repository.AverageScoreRepository;
@@ -47,7 +44,6 @@ public class SummaryService {
     }
 
     private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+        return memberRepository.getByIdOrThrow(memberId);
     }
 }

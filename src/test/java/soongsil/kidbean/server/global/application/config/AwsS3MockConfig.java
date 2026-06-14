@@ -1,14 +1,13 @@
 package soongsil.kidbean.server.global.application.config;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.AnonymousAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.findify.s3mock.S3Mock;
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @TestConfiguration
 public class AwsS3MockConfig {
@@ -26,15 +25,12 @@ public class AwsS3MockConfig {
     }
 
     @Bean
-    public AmazonS3 amazonS3() {
-        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
-                "http://localhost:9001", region);
-
-        return AmazonS3ClientBuilder
-                .standard()
-                .withPathStyleAccessEnabled(true)
-                .withEndpointConfiguration(endpoint)
-                .withCredentials(new AWSStaticCredentialsProvider(new AnonymousAWSCredentials()))
+    public S3Client s3Client() {
+        return S3Client.builder()
+                .region(Region.of(region))
+                .endpointOverride(URI.create("http://localhost:9001"))
+                .forcePathStyle(true)
+                .credentialsProvider(AnonymousCredentialsProvider.create())
                 .build();
     }
 }
